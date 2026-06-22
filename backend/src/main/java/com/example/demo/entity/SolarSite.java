@@ -12,5 +12,7 @@ public class SolarSite {
     private Long id;
     @Column(name = "site_name",unique = true, nullable = false)
     private String siteName;
-    @Column(name = "location")
+    @Column(name = "location_coordinates",nullable=false)
+    private String locationCoordinates;
+    @colu
 }
