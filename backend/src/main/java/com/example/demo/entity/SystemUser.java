@@ -13,4 +13,8 @@ public class SystemUser {
     @Id
     @GeneratedValue(stratergy = GenerationType.IDENTITY)
     private Long id;
+
+    public SystemUser(Long id) {
+        this.id = id;
+    }
 }
