@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,5 +16,7 @@ public class SolarSite {
     private String siteName;
     @Column(name = "location_coordinates",nullable=false)
     private String locationCoordinates;
-    @Column()
+    @Column(name = "rated_capacity_kw", nullable = false)
+    private BigDecimal ratedCapacityKw;
+    @Column(name = "rated_capacity_kw", nullable = false)
 }
