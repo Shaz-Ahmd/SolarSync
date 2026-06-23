@@ -14,14 +14,19 @@ import jakarta.persistence.Table;
 public class SolarSite {
     @Id
     private Long id;
+
     @Column(name = "site_name",unique = true, nullable = false)
     private String siteName;
+
     @Column(name = "location_coordinates",nullable=false)
     private String locationCoordinates;
+
     @Column(name = "rated_capacity_kw", nullable = false)
     private BigDecimal ratedCapacityKw;
+
     @Column(name = "commission_date", nullable = false)
     private LocalDate commissionDate;
+    
     public Long getId() {
         return id;
     }
