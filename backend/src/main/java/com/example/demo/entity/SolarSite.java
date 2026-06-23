@@ -2,10 +2,14 @@ package com.example.demo.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -30,8 +34,11 @@ public class SolarSite {
 
     @OneToMany(
         mappedBy = "site",
-        cascade = CascadeType.ALL
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY
     )
+    @JsonManagedReference
+    private List<SolarPanel>
 
     public Long getId() {
         return id;
