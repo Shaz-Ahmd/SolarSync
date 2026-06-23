@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -21,8 +23,8 @@ public class SolarPanel {
     private Long id;
 
     @JoinColumn(name = "site_id",nullable = false)
-    @Js
+    @JsonBackReference
     @ManyToOne
-    private 
+    private SolarSite site;
 
 }
