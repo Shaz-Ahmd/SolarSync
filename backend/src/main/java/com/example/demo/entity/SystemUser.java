@@ -36,8 +36,7 @@ public class SystemUser {
     @Column(nullable = false)
     private Role role;
 
-    public 
-
+    
     public Long getId() {
         return id;
     }
