@@ -14,5 +14,5 @@ public class SolarSite {
     private String siteName;
     @Column(name = "location_coordinates",nullable=false)
     private String locationCoordinates;
-    @colu
+    @Column()
 }
