@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,5 +23,6 @@ public class SolarSite {
     private BigDecimal ratedCapacityKw;
     @Column(name = "commission_date", nullable = false)
     private LocalDate commissionDate;
-    @OneToMany()
+    @OneToMany(mappedBy = "site",cascade=CascadeTypeAll, fetch=FetchType.LAZY)
+    private List<SolarPanel> 
 }
