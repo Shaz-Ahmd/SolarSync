@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.beans.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -47,6 +48,9 @@ public class SolarSite {
     )
     @JsonManagedReference
     private List<SolarPanel> panels;
+
+    @Transient
+    private BigDecimal currentGeneration;
 
     public Long getId() {
         return id;
