@@ -23,6 +23,9 @@ public class SolarSite {
     private BigDecimal ratedCapacityKw;
     @Column(name = "commission_date", nullable = false)
     private LocalDate commissionDate;
-    @OneToMany(mappedBy = "site",cascade=CascadeTypeAll, fetch=FetchType.LAZY)
+    @OneToMany(
+        mappedBy = "site",
+        cascade=CascadeTypeAll, 
+        fetch=FetchType.LAZY)
     private List<SolarPanel> @OneToMany panels;
 }
