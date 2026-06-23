@@ -24,5 +24,5 @@ public class SolarSite {
     @Column(name = "commission_date", nullable = false)
     private LocalDate commissionDate;
     @OneToMany(mappedBy = "site",cascade=CascadeTypeAll, fetch=FetchType.LAZY)
-    private List<SolarPanel> 
+    private List<SolarPanel> @OneToMany panels;
 }
