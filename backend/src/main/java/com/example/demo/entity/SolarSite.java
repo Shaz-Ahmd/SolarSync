@@ -3,10 +3,11 @@ package com.example.demo.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,7 +27,12 @@ public class SolarSite {
 
     @Column(name = "commission_date", nullable = false)
     private LocalDate commissionDate;
-    
+
+    @OneToMany(
+        mappedBy = "site",
+        cascade = CascadeType.ALL
+    )
+
     public Long getId() {
         return id;
     }
