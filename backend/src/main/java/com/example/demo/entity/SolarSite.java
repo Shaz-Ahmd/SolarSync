@@ -13,9 +13,17 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "solar_sites")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SolarSite {
     @Id
     private Long id;
@@ -38,7 +46,7 @@ public class SolarSite {
         fetch = FetchType.LAZY
     )
     @JsonManagedReference
-    private List<SolarPanel>
+    private List<SolarPanel> panels;
 
     public Long getId() {
         return id;
