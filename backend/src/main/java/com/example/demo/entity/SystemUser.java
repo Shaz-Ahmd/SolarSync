@@ -8,14 +8,17 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "system_users")
 @Data
 @Builder
-@no
+@NoArgsConstructor
+@AllArgsConstructor
 public class SystemUser {
     @Id
     private Long id;
