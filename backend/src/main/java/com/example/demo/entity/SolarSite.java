@@ -22,5 +22,35 @@ public class SolarSite {
     private BigDecimal ratedCapacityKw;
     @Column(name = "commission_date", nullable = false)
     private LocalDate commissionDate;
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getSiteName() {
+        return siteName;
+    }
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+    public String getLocationCoordinates() {
+        return locationCoordinates;
+    }
+    public void setLocationCoordinates(String locationCoordinates) {
+        this.locationCoordinates = locationCoordinates;
+    }
+    public BigDecimal getRatedCapacityKw() {
+        return ratedCapacityKw;
+    }
+    public void setRatedCapacityKw(BigDecimal ratedCapacityKw) {
+        this.ratedCapacityKw = ratedCapacityKw;
+    }
+    public LocalDate getCommissionDate() {
+        return commissionDate;
+    }
+    public void setCommissionDate(LocalDate commissionDate) {
+        this.commissionDate = commissionDate;
+    }
     
 }
