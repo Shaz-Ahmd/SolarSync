@@ -1,10 +1,12 @@
 package com.example.demo.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,5 +20,7 @@ public class SolarSite {
     private String locationCoordinates;
     @Column(name = "rated_capacity_kw", nullable = false)
     private BigDecimal ratedCapacityKw;
-    @Column(name = "rated_capacity_kw", nullable = false)
+    @Column(name = "commission_date", nullable = false)
+    private LocalDate commissionDate;
+    @OneToMany()
 }
