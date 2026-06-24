@@ -37,9 +37,10 @@ public class SolarPanel {
     private String modelType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, )
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     private PanelStatus status;
 
-
+    @Column(name = "installation_date", nullable = false)
+    private installationDate
 
 }
