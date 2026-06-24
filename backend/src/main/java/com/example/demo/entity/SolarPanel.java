@@ -32,5 +32,9 @@ public class SolarPanel {
     private String serialString;
 
     @Column(name = "model_type", nullable = false)
+    private String modelType;
+
+    
+    private PanelStatus status;
 
 }
