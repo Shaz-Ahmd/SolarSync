@@ -11,6 +11,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,8 +46,15 @@ public class SolarPanel {
     @Column(name = "installation_date", nullable = false)
     private LocalDate installationDate;
 
-    @Builder.Defau
+    @Builder.Default
     @Column(name = "usage_count", nullable = false)
-    private int usageCount; 
+    private int usageCount = 0; 
+
+    @OneToMany(
+        mappedBy = "panel",
+        cascade = ALL,
+        orphanRemoval = true
+    )
+    
 
 }
