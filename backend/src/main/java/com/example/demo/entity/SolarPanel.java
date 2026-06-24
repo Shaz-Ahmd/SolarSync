@@ -28,6 +28,9 @@ public class SolarPanel {
     @ManyToOne()
     private SolarSite site;
 
-    @Column(name =  "serial")
+    @Column(name =  "serial_number", unique = true, nullable = false)
+    private String serialString;
+
+    @Column(name = "model_type", nullable = false)
 
 }
