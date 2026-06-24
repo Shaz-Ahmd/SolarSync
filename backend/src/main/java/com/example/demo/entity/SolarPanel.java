@@ -45,7 +45,8 @@ public class SolarPanel {
     @Column(name = "installation_date", nullable = false)
     private LocalDate installationDate;
 
+    @Builder.Defau
     @Column(name = "usage_count", nullable = false)
-    
+    private int usageCount; 
 
 }
