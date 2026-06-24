@@ -37,7 +37,9 @@ public class SolarPanel {
     private String modelType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, )
     private PanelStatus status;
+
+
 
 }
