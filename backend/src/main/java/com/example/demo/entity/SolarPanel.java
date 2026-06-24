@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -41,6 +43,9 @@ public class SolarPanel {
     private PanelStatus status;
 
     @Column(name = "installation_date", nullable = false)
-    private installationDate
+    private LocalDate installationDate;
+
+    @Column(name = "usage_count", nullable = false)
+    
 
 }
