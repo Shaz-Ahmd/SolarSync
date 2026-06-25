@@ -24,5 +24,9 @@ public class MaintenanceTicket {
     @ManyToOne
     private SolarSite site;
 
+    @JoinColumn(name = "panel_id",nullable = false)
+    @ManyToOne
+    private SolarPanel panel;
+
     
 }
