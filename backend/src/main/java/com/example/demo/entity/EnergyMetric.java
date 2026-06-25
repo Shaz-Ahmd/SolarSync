@@ -31,6 +31,7 @@ public class EnergyMetric {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    
+    @Column(name = "generation_kwh", nullable = false, precision = 10, scale = 4)
+    private
     
 }
