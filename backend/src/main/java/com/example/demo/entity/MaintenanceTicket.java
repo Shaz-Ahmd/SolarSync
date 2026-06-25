@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -36,5 +38,8 @@ public class MaintenanceTicket {
     @Column(name = "issue_description",nullable = false, columnDefinition = "TEXT")
     private String issueDescription;
 
-    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    status
+
 }
