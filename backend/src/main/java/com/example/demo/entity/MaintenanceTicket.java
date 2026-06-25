@@ -40,6 +40,6 @@ public class MaintenanceTicket {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    status
+    private TicketStatus status;
 
 }
