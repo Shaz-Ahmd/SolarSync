@@ -24,5 +24,7 @@ public class EnergyMetric {
     @JoinColumn(name = "panel_id", nullable = false)
     @ManyToOne
     private SolarPanel panel;
+
+    
     
 }
