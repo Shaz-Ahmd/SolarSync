@@ -69,4 +69,6 @@ public class SolarPanel {
     @JsonIgnore
     private List<EnergyMetric> tickets;
 
+    
+
 }
