@@ -42,4 +42,8 @@ public class MaintenanceTicket {
     @Column(nullable = false)
     private TicketStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TicketStatus priority;
+
 }
