@@ -33,5 +33,8 @@ public class MaintenanceTicket {
     @ManyToOne
     private SystemUser technician;
 
-    @Column(name = "issue")
+    @Column(name = "issue_description",nullable = false, columnDefinition = "TEXT")
+    private String issueDescription;
+
+    
 }
