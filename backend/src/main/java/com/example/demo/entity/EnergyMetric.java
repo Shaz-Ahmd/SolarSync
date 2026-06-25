@@ -2,9 +2,18 @@ package com.example.demo.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table()
+@Table(name = "energy_metrics")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EnergyMetric {
+    
     
 }
