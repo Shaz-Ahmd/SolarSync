@@ -1,6 +1,5 @@
 package com.example.demo.repository;
 
-
-public class SystemUserRepository extends JpaRe {
+public class SystemUserRepository extends JpaRepository<Entity>,{
     
 }
