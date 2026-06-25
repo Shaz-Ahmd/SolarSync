@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -32,6 +33,8 @@ public class EnergyMetric {
     private LocalDateTime timestamp;
 
     @Column(name = "generation_kwh", nullable = false, precision = 10, scale = 4)
-    private
+    private BigDecimal generationKwh;
+
+    @Column(name = "grid_consumption_kwh",)
     
 }
