@@ -49,6 +49,6 @@ public class MaintenanceTicket {
     private Priority priority;
 
     @Column(name = "reported_at",nullable = false)
-    private LocalDateTime reported
+    private LocalDateTime reportedAt;
 
 }
