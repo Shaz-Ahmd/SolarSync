@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -45,5 +47,8 @@ public class MaintenanceTicket {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Priority priority;
+
+    @Column(name = "reported_at",nullable = false)
+    private LocalDateTime reported
 
 }
