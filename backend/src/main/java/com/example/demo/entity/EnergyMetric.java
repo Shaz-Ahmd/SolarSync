@@ -35,6 +35,7 @@ public class EnergyMetric {
     @Column(name = "generation_kwh", nullable = false, precision = 10, scale = 4)
     private BigDecimal generationKwh;
 
-    @Column(name = "grid_consumption_kwh",)
+    @Column(name = "grid_consumption_kwh",nullable = false, precision = 10, scale = 4)
+    private BigDecimal gridConsumptionKwh;
     
 }
