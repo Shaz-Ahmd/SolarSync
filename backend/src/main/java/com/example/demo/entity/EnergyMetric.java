@@ -1,5 +1,8 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -24,6 +27,9 @@ public class EnergyMetric {
     @JoinColumn(name = "panel_id", nullable = false)
     @ManyToOne
     private SolarPanel panel;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
     
     
