@@ -1,5 +1,9 @@
 package com.example.demo.repository;
 
-public interface SolarPanelRepository {
+import javax.swing.text.html.parser.Entity;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SolarPanelRepository extends JpaRepository<Entity,Long>{
     
 }

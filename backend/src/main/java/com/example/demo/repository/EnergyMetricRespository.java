@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
-public class EnergyMetricRespository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EnergyMetricRespository extends JpaRepository{
     
 }
