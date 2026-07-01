@@ -14,7 +14,7 @@ import com.example.demo.entity.SystemUser;
 public interface SystemUserRepository extends JpaRepository<SystemUser,Long>{
     Optional<SystemUser> findByUsername(String username);
     Optional<SystemUser> findByEmail(String email);
-    List<SystemUser> findByRole(SystemUser.Role role);
+    List<SystemUser> findByRole(Role role);
 
 
 }
