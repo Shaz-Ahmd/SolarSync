@@ -12,7 +12,9 @@ import com.example.demo.entity.SystemUser;
 
 @Repository
 public interface SystemUserRepository extends JpaRepository<SystemUser,Long>{
-    Optional<SystemUser> findBy
+    Optional<SystemUser> findByUsername(String username);
+
+    Optional<SystemUser> findByEmail(String )
 
 
     List<
