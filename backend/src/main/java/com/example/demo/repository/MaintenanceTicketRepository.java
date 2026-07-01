@@ -4,6 +4,6 @@ import javax.swing.text.html.parser.Entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MaintenanceTicketRepository extends JpaRepository<Entity,Long>{
+public interface MaintenanceTicketRepository extends JpaRepository<,Long>{
     
 }
