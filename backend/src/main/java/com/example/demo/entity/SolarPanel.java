@@ -51,7 +51,7 @@ public class SolarPanel {
 
     @Builder.Default
     @Column(name = "usage_count", nullable = false)
-    private String usageCount = 0; 
+    private int usageCount = 0; 
 
     @OneToMany(
         mappedBy = "panel",
