@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.EfficiencyReportDto;
@@ -16,53 +15,32 @@ import com.example.demo.service.EnergyAnalyticsService;
 @RequestMapping("/api/metrics")
 public class MetricController {
 
-    private final EnergyAnalyticsService energyAnalyticsService;
+    private final EnergyAnalyticsService analyticsService;
 
-    public MetricController(EnergyAnalyticsService energyAnalyticsService) {
-        this.energyAnalyticsService = energyAnalyticsService;
+    public MetricController(EnergyAnalyticsService analyticsService) {
+        this.analyticsService = analyticsService;
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<String> uploadMetrics(
-            @RequestBody MetricBatchDto metricBatchDto) {
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
+    public ResponseEntity<Void> ingestMetrics(
+            @RequestBody MetricBatchDto dto) {
 
-        energyAnalyticsService.processMetricBatch(metricBatchDto);
-
-        return ResponseEntity.ok("Metrics uploaded successfully.");
+        analyticsService.ingestMetrics(dto);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/panel/{panelId}")
-    public ResponseEntity<List<EnergyMetric>> getPanelMetrics(
-            @PathVariable Long panelId) {
+    @GetMapping("/analytics")
+    public ResponseEntity<EfficiencyReportDto> getAnalytics() {
 
         return ResponseEntity.ok(
-                energyAnalyticsService.getMetricsByPanel(panelId));
+                analyticsService.getGlobalEfficiencyReport());
     }
 
-    @GetMapping("/report")
-    public ResponseEntity<EfficiencyReportDto> getEfficiencyReport(
-            @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end) {
+    @GetMapping("/recent")
+    public ResponseEntity<List<EnergyMetric>> getRecentMetrics() {
 
         return ResponseEntity.ok(
-                energyAnalyticsService.generateEfficiencyReport(start, end));
-    }
-
-    @GetMapping("/generation")
-    public ResponseEntity<BigDecimal> getTotalGeneration(
-            @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end) {
-
-        return ResponseEntity.ok(
-                energyAnalyticsService.getTotalGeneration(start, end));
-    }
-
-    @GetMapping("/consumption")
-    public ResponseEntity<BigDecimal> getTotalConsumption(
-            @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end) {
-
-        return ResponseEntity.ok(
-                energyAnalyticsService.getTotalConsumption(start, end));
+                analyticsService.getRecentMetrics());
     }
 }
