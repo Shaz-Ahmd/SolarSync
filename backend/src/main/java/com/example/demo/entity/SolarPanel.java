@@ -37,7 +37,7 @@ public class SolarPanel {
     private SolarSite site;
 
     @Column(name =  "serial_number", unique = true, nullable = false)
-    private String serialString;
+    private String serialNumber;
 
     @Column(name = "model_type", nullable = false)
     private String modelType;
