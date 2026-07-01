@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.text.html.parser.Entity;
 
@@ -10,9 +11,9 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.SystemUser;
 
 @Repository
-public interface SystemUserRepository extends JpaRepository<Entity,Long>{
-    Optimal<SystemUser> findByUsername(String username);
-    
+public interface SystemUserRepository extends JpaRepository<SystemUser,Long>{
+    Optional<SystemUser> findBy
+
 
     List<
 
