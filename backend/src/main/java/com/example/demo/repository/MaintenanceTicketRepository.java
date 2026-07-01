@@ -9,5 +9,7 @@ import com.example.demo.entity.MaintenanceTicket;
 
 @Repository
 public interface MaintenanceTicketRepository extends JpaRepository<MaintenanceTicket,Long>{
-    List<>
+    List<MaintenanceTicket> findBySiteId(Long siteId);
+    List<MaintenanceTicket> findByTechnicianId(Long technicianId);
+    List<MaintenanceTicket> findBySiteId(Long siteId);
 }
