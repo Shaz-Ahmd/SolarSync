@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.Role;
-import com.example.demo.entity.SystemUser;
+import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EfficiencyReportDto {
-    
+    private BigDecimal totalGeneration;
+    private BigDecimal totalConsumption;
+    private BigDecimal efficiencyRatio;
+    private long totalActivePanels;
+    private long openTickets;
+    private long inProgressTickets;
+    private long resolvedTickets;
 }
