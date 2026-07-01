@@ -8,5 +8,5 @@ import com.example.demo.entity.EnergyMetric;
 
 @Repository
 public interface EnergyMetricRespository extends JpaRepository<EnergyMetric,Long>{
-    @Query("SELECT SUM(e.generationKwh") FROM EnergyMetric e WHERE
+    @Query("SELECT SUM(e.generationKwh") FROM EnergyMetric e WHERE e.timestamp
 }
