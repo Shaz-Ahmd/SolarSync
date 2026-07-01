@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.EfficiencyReportDto;
 import com.example.demo.dto.MetricBatchDto;
 import com.example.demo.entity.EnergyMetric;
-import com.example.demo.entity.MaintenanceTicket;
+import com.example.demo.entity.PanelStatus;
 import com.example.demo.entity.SolarPanel;
+import com.example.demo.entity.TicketStatus;
+import com.example.demo.repository.EnergyMetricRepository;
 import com.example.demo.repository.MaintenanceTicketRepository;
 import com.example.demo.repository.SolarPanelRepository;
 
@@ -45,8 +48,8 @@ public class EnergyAnalyticsService {
             panel.setUsageCount(panel.getUsageCount() + 1);
 
             if (panel.getUsageCount() >= 5 &&
-                    panel.getStatus() == SolarPanel.PanelStatus.ACTIVE) {
-                panel.setStatus(SolarPanel.PanelStatus.MAINTENANCE_REQUIRED);
+                    panel.getStatus() == PanelStatus.ACTIVE) {
+                panel.setStatus(PanelStatus.MAINTENANCE_REQUIRED);
             }
 
             panelRepository.save(panel);
@@ -89,13 +92,13 @@ public class EnergyAnalyticsService {
                 .totalConsumption(totalCon)
                 .efficiencyRatio(ratio)
                 .totalActivePanels(
-                        panelRepository.countByStatus(SolarPanel.PanelStatus.ACTIVE))
+                        panelRepository.countByStatus(PanelStatus.ACTIVE))
                 .openTickets(
-                        ticketRepository.countByStatus(MaintenanceTicket.TicketStatus.OPEN))
+                        ticketRepository.countByStatus(TicketStatus.OPEN))
                 .inProgressTickets(
-                        ticketRepository.countByStatus(MaintenanceTicket.TicketStatus.IN_PROGRESS))
+                        ticketRepository.countByStatus(TicketStatus.IN_PROGRESS))
                 .resolvedTickets(
-                        ticketRepository.countByStatus(MaintenanceTicket.TicketStatus.RESOLVED))
+                        ticketRepository.countByStatus(TicketStatus.RESOLVED))
                 .build();
     }
 
