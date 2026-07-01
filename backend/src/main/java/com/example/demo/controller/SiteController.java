@@ -2,8 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.SiteCreationDto;
@@ -21,13 +21,12 @@ public class SiteController {
     }
 
     @PostMapping
-    public ResponseEntity<SolarSite> createSite(
-            @RequestBody SiteCreationDto siteCreationDto) {
+    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
+    public ResponseEntity<SolarSite> registerSite(
+            @RequestBody SiteCreationDto dto) {
 
-        SolarSite site = siteManagementService
-                .registerSiteWithInitialPanels(siteCreationDto);
-
-        return new ResponseEntity<>(site, HttpStatus.CREATED);
+        return ResponseEntity.ok(
+                siteManagementService.registerSiteWithInitialPanels(dto));
     }
 
     @GetMapping
