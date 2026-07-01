@@ -1,9 +1,13 @@
 package com.example.demo.repository;
 
-import javax.swing.text.html.parser.Entity;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface MaintenanceTicketRepository extends JpaRepository<,Long>{
-    
+import com.example.demo.entity.MaintenanceTicket;
+
+@Repository
+public interface MaintenanceTicketRepository extends JpaRepository<MaintenanceTicket,Long>{
+    List<>
 }
