@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.MaintenanceTicket;
+import com.example.demo.entity.Priority;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,6 @@ public class TicketRequestDto {
      private Long siteId;
     private Long panelId;
     private String issueDescription;
-    private MaintenanceTicket.Priority priority;
+    private Priority priority;
     private Long technicianId;
 }
