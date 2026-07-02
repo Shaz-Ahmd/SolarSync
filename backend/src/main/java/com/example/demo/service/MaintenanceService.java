@@ -11,6 +11,7 @@ import com.example.demo.dto.TicketRequestDto;
 import com.example.demo.entity.MaintenanceTicket;
 import com.example.demo.entity.PanelStatus;
 import com.example.demo.entity.Priority;
+import com.example.demo.entity.Role;
 import com.example.demo.entity.SolarPanel;
 import com.example.demo.entity.SolarSite;
 import com.example.demo.entity.SystemUser;
@@ -77,7 +78,7 @@ public class MaintenanceService {
         SystemUser technician = userRepository.findById(technicianId)
                 .orElseThrow(() -> new RuntimeException("Technician not found"));
 
-        if (technician.getRole() != Role.ROLE_MAINTENANCE_TECHNICIAN) {
+        if (technician.getRole() != Role.MAINTENANCE_TECHNICIAN) {
             throw new RuntimeException("User is not a technician");
         }
 
