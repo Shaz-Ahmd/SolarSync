@@ -77,7 +77,7 @@ public class MaintenanceService {
         SystemUser technician = userRepository.findById(technicianId)
                 .orElseThrow(() -> new RuntimeException("Technician not found"));
 
-        if (technician.getRole() != getRole.MAINTENANCE_TECHNICIAN) {
+        if (technician.getRole() != Role.ROLE_MAINTENANCE_TECHNICIAN) {
             throw new RuntimeException("User is not a technician");
         }
 
@@ -104,7 +104,7 @@ public class MaintenanceService {
                             ticket.getTechnician().getId());
 
             Priority highestPriority = tickets.stream()
-                    .filter(t -> t.getStatus() != MaintenanceTicket.TicketStatus.RESOLVED)
+                    .filter(t -> t.getStatus() != TicketStatus.RESOLVED)
                     .map(MaintenanceTicket::getPriority)
                     .max(Comparator.naturalOrder())
                     .orElse(ticket.getPriority());
