@@ -18,13 +18,16 @@ import com.example.demo.repository.SolarSiteRepository;
 
 @Service
 public class SiteManagementService {
+
     private final SolarSiteRepository siteRepository;
     private final SolarPanelRepository panelRepository;
     private final EnergyMetricRepository metricRepository;
 
-    public SiteManagementService(SolarSiteRepository siteRepository,
-                                 SolarPanelRepository panelRepository,
-                                 EnergyMetricRepository metricRepository) {
+    public SiteManagementService(
+            SolarSiteRepository siteRepository,
+            SolarPanelRepository panelRepository,
+            EnergyMetricRepository metricRepository) {
+
         this.siteRepository = siteRepository;
         this.panelRepository = panelRepository;
         this.metricRepository = metricRepository;
@@ -33,9 +36,10 @@ public class SiteManagementService {
     @Transactional(rollbackFor = Exception.class)
     public SolarSite registerSiteWithInitialPanels(SiteCreationDto dto) {
 
-        boolean exists = siteRepository.findAll().stream()
-                .anyMatch(site -> site.getSiteName()
-                        .equalsIgnoreCase(dto.getSiteName()));
+        boolean exists = siteRepository.findAll()
+                .stream()
+                .anyMatch(site ->
+                        site.getSiteName().equalsIgnoreCase(dto.getSiteName()));
 
         if (exists) {
             throw new RuntimeException(
@@ -84,11 +88,8 @@ public class SiteManagementService {
             BigDecimal generation =
                     metricRepository.getTotalGenerationBySite(site.getId());
 
-            if (generation == null) {
-                generation = BigDecimal.ZERO;
-            }
-
-            site.setCurrentGeneration(generation);
+            site.setCurrentGeneration(
+                    generation == null ? BigDecimal.ZERO : generation);
         }
 
         return sites;
@@ -97,17 +98,13 @@ public class SiteManagementService {
     public SolarSite getSiteById(Long id) {
 
         SolarSite site = siteRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Site not found"));
+                .orElseThrow(() -> new RuntimeException("Site not found"));
 
         BigDecimal generation =
                 metricRepository.getTotalGenerationBySite(site.getId());
 
-        if (generation == null) {
-            generation = BigDecimal.ZERO;
-        }
-
-        site.setCurrentGeneration(generation);
+        site.setCurrentGeneration(
+                generation == null ? BigDecimal.ZERO : generation);
 
         return site;
     }
