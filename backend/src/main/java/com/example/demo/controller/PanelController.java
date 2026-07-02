@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.PanelDto;
+import com.example.demo.entity.PanelStatus;
 import com.example.demo.entity.SolarPanel;
 import com.example.demo.service.SiteManagementService;
 
@@ -38,7 +39,7 @@ public class PanelController {
     @PutMapping("/{panelId}/status")
     public ResponseEntity<SolarPanel> updatePanelStatus(
             @PathVariable Long panelId,
-            @RequestParam SolarPanel.PanelStatus status) {
+            @RequestParam PanelStatus status) {
 
         return ResponseEntity.ok(
                 siteManagementService.updatePanelStatus(panelId, status));
