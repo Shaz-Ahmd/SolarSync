@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.SolarSite;
 
 @Repository
-public interface SolarSiteRepository extends JpaRepository<SolarSite,Long> {
-    @Query("SELECT SUM(s.ratedCapacityKw FROM SolarSite s")BigDecimal getTotalSystemCapacity();
+public interface SolarSiteRepository extends JpaRepository<SolarSite, Long> {
+
+    @Query("SELECT SUM(s.ratedCapacityKw) FROM SolarSite s")
+    BigDecimal getTotalSystemCapacity();
+
 }
