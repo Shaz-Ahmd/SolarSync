@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.authentication.AuthenticationManager;
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 // import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.entity.SystemUser;
 import com.example.demo.repository.SystemUserRepository;
-import com.example.demo.util.JwtUtils;
+// import com.example.demo.util.JwtUtils;
 
 @Service
 public class AuthService {
@@ -72,9 +72,9 @@ public class AuthService {
         // String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
-                .token(token)
-                .username(user.getUsername())
-                .role(user.getRole().name())
+                .token(null)
+                .username(null)
+                .role(null)
                 .build();
     }
 }

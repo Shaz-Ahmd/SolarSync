@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.SiteCreationDto;
@@ -21,7 +21,7 @@ public class SiteController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
+    // @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     public ResponseEntity<SolarSite> registerSite(
             @RequestBody SiteCreationDto dto) {
 
