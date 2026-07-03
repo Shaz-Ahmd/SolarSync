@@ -16,7 +16,7 @@ import com.example.demo.util.JwtUtils;
 public class AuthService {
 
     private final SystemUserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+//     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
@@ -25,7 +25,7 @@ public class AuthService {
                        JwtUtils jwtUtils,
                        AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        // this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
     }
@@ -35,7 +35,9 @@ public class AuthService {
         SystemUser user = SystemUser.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                // .password(passwordEncoder.encode(request.getPassword()))
+                                .password(request.getPassword())
+
                 .role(request.getRole())
                 .build();
 
