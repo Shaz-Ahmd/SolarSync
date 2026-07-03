@@ -17,16 +17,23 @@ public class AuthService {
 
     private final SystemUserRepository userRepository;
 //     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
-    private final AuthenticationManager authenticationManager;
+//     private final JwtUtils jwtUtils;
+//     private final AuthenticationManager authenticationManager;
 
-    public AuthService(SystemUserRepository userRepository,
-                       JwtUtils jwtUtils,
-                       AuthenticationManager authenticationManager) {
+//     public AuthService(SystemUserRepository userRepository,
+//                        JwtUtils jwtUtils,
+//                        AuthenticationManager authenticationManager) {
+//         this.userRepository = userRepository;
+//         // this.passwordEncoder = passwordEncoder;
+//         this.jwtUtils = jwtUtils;
+//         this.authenticationManager = authenticationManager;
+//     }
+
+        public AuthService(SystemUserRepository userRepository) {
         this.userRepository = userRepository;
         // this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-        this.authenticationManager = authenticationManager;
+        // this.jwtUtils = jwtUtils;
+        // this.authenticationManager = authenticationManager;
     }
 
     public AuthResponseDto register(RegisterDto request) {
@@ -42,10 +49,10 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String token = jwtUtils.generateToken(user);
+        // String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
-                .token(token)
+                .token(null)
                 .username(user.getUsername())
                 .role(user.getRole().name())
                 .build();
@@ -53,16 +60,16 @@ public class AuthService {
 
     public AuthResponseDto authenticate(AuthRequestDto request) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()));
+        // authenticationManager.authenticate(
+        //         new UsernamePasswordAuthenticationToken(
+        //                 request.getUsername(),
+        //                 request.getPassword()));
 
-        SystemUser user = userRepository
-                .findByUsername(request.getUsername())
-                .orElseThrow();
+        // SystemUser user = userRepository
+        //         .findByUsername(request.getUsername())
+        //         .orElseThrow();
 
-        String token = jwtUtils.generateToken(user);
+        // String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
                 .token(token)
