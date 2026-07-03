@@ -66,7 +66,7 @@ public class AuthService {
         return AuthResponseDto.builder()
                 .token(token)
                 .username(user.getUsername())
-                .role(user.getRole().getRoleName())
+                .role(user.getRole().getRole().toString())
                 .build();
     }
 }
