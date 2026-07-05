@@ -30,10 +30,10 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-        public AuthService(SystemUserRepository userRepository, AuthenticationManager authenticationManager) {
-                this.userRepository = userRepository;
-                this.passwordEncoder = passwordEncoder;
-                this.jwtUtils = jwtUtils;
+        public AuthService(SystemUserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+                                this.userRepository = userRepository;
+                                this.passwordEncoder = passwordEncoder;
+                        this.jwtUtils = jwtUtils;
                 this.authenticationManager = authenticationManager;
     }
 
@@ -42,7 +42,7 @@ public class AuthService {
         SystemUser user = SystemUser.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                // .password(passwordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword()))
                                 .password(request.getPassword())
 
                 .role(request.getRole())
@@ -50,7 +50,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        // String token = jwtUtils.generateToken(user);
+        String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
                 .token(null)
