@@ -24,16 +24,17 @@ public class AuthService {
                        JwtUtils jwtUtils,
                        AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.passwordEncoder = null;
         // this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
     }
 
-        public AuthService(SystemUserRepository userRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-        this.authenticationManager = authenticationManager;
+        public AuthService(SystemUserRepository userRepository, AuthenticationManager authenticationManager) {
+                this.userRepository = userRepository;
+                this.passwordEncoder = passwordEncoder;
+                this.jwtUtils = jwtUtils;
+                this.authenticationManager = authenticationManager;
     }
 
     public AuthResponseDto register(RegisterDto request) {
