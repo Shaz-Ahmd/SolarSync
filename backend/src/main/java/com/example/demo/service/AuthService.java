@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-// import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-// import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.AuthRequestDto;
@@ -10,30 +10,30 @@ import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.entity.SystemUser;
 import com.example.demo.repository.SystemUserRepository;
-// import com.example.demo.util.JwtUtils;
+import com.example.demo.util.JwtUtils;
 
 @Service
 public class AuthService {
 
     private final SystemUserRepository userRepository;
-//     private final PasswordEncoder passwordEncoder;
-//     private final JwtUtils jwtUtils;
-//     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
 
-//     public AuthService(SystemUserRepository userRepository,
-//                        JwtUtils jwtUtils,
-//                        AuthenticationManager authenticationManager) {
-//         this.userRepository = userRepository;
-//         // this.passwordEncoder = passwordEncoder;
-//         this.jwtUtils = jwtUtils;
-//         this.authenticationManager = authenticationManager;
-//     }
+    public AuthService(SystemUserRepository userRepository,
+                       JwtUtils jwtUtils,
+                       AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        // this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
+    }
 
         public AuthService(SystemUserRepository userRepository) {
         this.userRepository = userRepository;
-        // this.passwordEncoder = passwordEncoder;
-        // this.jwtUtils = jwtUtils;
-        // this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
     }
 
     public AuthResponseDto register(RegisterDto request) {
@@ -60,16 +60,16 @@ public class AuthService {
 
     public AuthResponseDto authenticate(AuthRequestDto request) {
 
-        // authenticationManager.authenticate(
-        //         new UsernamePasswordAuthenticationToken(
-        //                 request.getUsername(),
-        //                 request.getPassword()));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()));
 
-        // SystemUser user = userRepository
-        //         .findByUsername(request.getUsername())
-        //         .orElseThrow();
+        SystemUser user = userRepository
+                .findByUsername(request.getUsername())
+                .orElseThrow();
 
-        // String token = jwtUtils.generateToken(user);
+        String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
                 .token(null)
