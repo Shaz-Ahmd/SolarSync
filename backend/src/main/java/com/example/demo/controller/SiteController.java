@@ -22,7 +22,7 @@ public class SiteController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('SYSTEM_ADMINISTRATOR')")
+    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     public ResponseEntity<SolarSite> registerSite(
             @RequestBody SiteCreationDto dto) {
 
