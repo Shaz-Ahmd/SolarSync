@@ -21,7 +21,7 @@ public class TicketController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('SOLAR_OPERATOR')")
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<MaintenanceTicket> reportIssue(
             @RequestBody TicketRequestDto dto) {
 
@@ -39,7 +39,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}/resolve")
-    @PreAuthorize("hasRole('MAINTENANCE_TECHNICIAN')")
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<MaintenanceTicket> resolveTicket(
             @PathVariable Long id) {
 
