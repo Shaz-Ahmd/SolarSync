@@ -26,6 +26,7 @@ public class DataSeeder implements CommandLineRunner {
         if (userRepository.count() == 0) {
 
             userRepository.save(SystemUser.builder()
+                    .id(1L)
                     .username("admin")
                     .email("admin@solarsync.com")
                     .password(passwordEncoder.encode("admin123"))
@@ -33,6 +34,7 @@ public class DataSeeder implements CommandLineRunner {
                     .build());
 
             userRepository.save(SystemUser.builder()
+                    .id(2L)
                     .username("operator")
                     .email("operator@solarsync.com")
                     .password(passwordEncoder.encode("operator123"))
@@ -40,6 +42,7 @@ public class DataSeeder implements CommandLineRunner {
                     .build());
 
             userRepository.save(SystemUser.builder()
+                    .id(3L)
                     .username("technician")
                     .email("technician@solarsync.com")
                     .password(passwordEncoder.encode("technician123"))

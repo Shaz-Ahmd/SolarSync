@@ -25,9 +25,9 @@ import lombok.NoArgsConstructor;
 public class EnergyMetric {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @JoinColumn(name = "panel_id", nullable = false)
     @ManyToOne
     private SolarPanel panel;
