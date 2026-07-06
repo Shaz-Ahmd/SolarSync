@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-// import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.PanelDto;
@@ -40,7 +40,7 @@ public class PanelController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasRole('SOLAR_OPERATOR')")
+    @PreAuthorize("hasRole('SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> addPanel(
             @RequestBody PanelDto dto) {
 
@@ -59,7 +59,7 @@ public class PanelController {
     }
 
     @PutMapping("/{id}")
-    // @PreAuthorize("hasRole('SOLAR_OPERATOR')")
+    @PreAuthorize("hasRole('SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> updatePanel(
             @PathVariable Long id,
             @RequestBody PanelDto dto) {
@@ -76,7 +76,7 @@ public class PanelController {
     }
 
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasRole('SOLAR_OPERATOR')")
+    @PreAuthorize("hasRole('SOLAR_OPERATOR')")
     public ResponseEntity<Void> deletePanel(
             @PathVariable Long id) {
 
