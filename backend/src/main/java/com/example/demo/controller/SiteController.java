@@ -12,6 +12,7 @@ import com.example.demo.service.SiteManagementService;
 
 @RestController
 @RequestMapping("/api/sites")
+
 public class SiteController {
 
     private final SiteManagementService siteManagementService;
