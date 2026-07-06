@@ -39,7 +39,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}/resolve")
-    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize("hasAuthority('ROLE_MAINTENANCE_TECHNICIAN')")
     public ResponseEntity<MaintenanceTicket> resolveTicket(
             @PathVariable Long id) {
 
