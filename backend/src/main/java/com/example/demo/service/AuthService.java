@@ -16,25 +16,18 @@ import com.example.demo.util.JwtUtils;
 public class AuthService {
 
     private final SystemUserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-    private final AuthenticationManager authenticationManager;
 
     public AuthService(SystemUserRepository userRepository,
-                       JwtUtils jwtUtils,
-                       AuthenticationManager authenticationManager) {
+                       AuthenticationManager authenticationManager,
+                       PasswordEncoder passwordEncoder,
+                       JwtUtils jwtUtils) {
         this.userRepository = userRepository;
-        this.passwordEncoder = null;
+        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
-        this.authenticationManager = authenticationManager;
-    }
-
-        public AuthService(SystemUserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
-                                this.userRepository = userRepository;
-                                this.passwordEncoder = passwordEncoder;
-                        this.jwtUtils = jwtUtils;
-                this.authenticationManager = authenticationManager;
     }
 
     public AuthResponseDto register(RegisterDto request) {
@@ -43,8 +36,6 @@ public class AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                                .password(request.getPassword())
-
                 .role(request.getRole())
                 .build();
 
@@ -53,7 +44,7 @@ public class AuthService {
         String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
-                .token(null)
+                .token(token)
                 .username(user.getUsername())
                 .role(user.getRole().name())
                 .build();
@@ -68,14 +59,14 @@ public class AuthService {
 
         SystemUser user = userRepository
                 .findByUsername(request.getUsername())
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         String token = jwtUtils.generateToken(user);
 
         return AuthResponseDto.builder()
-                .token(null)
-                .username(null)
-                .role(null)
+                .token(token)
+                .username(user.getUsername())
+                .role(user.getRole().name())
                 .build();
     }
 }
