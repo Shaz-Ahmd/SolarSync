@@ -2,7 +2,7 @@ package com.example.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationConfiguration;
+//import org.springframework.security.authentication.AuthenticationConfiguration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,9 +45,9 @@ public class ApplicationConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration)
+            //AuthenticationConfiguration configuration)
             throws Exception {
 
-        return configuration.getAuthenticationManager();
+        //return configuration.getAuthenticationManager();
     }
 }
