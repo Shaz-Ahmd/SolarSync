@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/technicians")
-    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
+    //@PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     public ResponseEntity<List<SystemUser>> getTechnicians() {
 
         return ResponseEntity.ok(
