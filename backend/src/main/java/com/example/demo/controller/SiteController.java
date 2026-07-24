@@ -22,7 +22,7 @@ public class SiteController {
     }
 
     
-    //@PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
+    //@PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')") this preauthorixze should come below post 
     @PostMapping
     public ResponseEntity<SolarSite> registerSite(
             @RequestBody SiteCreationDto dto) {
