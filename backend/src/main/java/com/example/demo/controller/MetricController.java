@@ -21,8 +21,8 @@ public class MetricController {
         this.analyticsService = analyticsService;
     }
 
-    //@PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     @PostMapping("/batch")
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<Void> ingestMetrics(
             @RequestBody MetricBatchDto dto) {
 

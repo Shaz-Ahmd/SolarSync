@@ -39,8 +39,8 @@ public class PanelController {
         return ResponseEntity.of(panelRepository.findById(id));
     }
 
-    //@PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> addPanel(
             @RequestBody PanelDto dto) {
 
@@ -58,8 +58,8 @@ public class PanelController {
         return ResponseEntity.ok(panelRepository.save(panel));
     }
 
-    //@PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> updatePanel(
             @PathVariable Long id,
             @RequestBody PanelDto dto) {
@@ -75,8 +75,8 @@ public class PanelController {
         return ResponseEntity.ok(panelRepository.save(panel));
     }
 
-    //@PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<Void> deletePanel(
             @PathVariable Long id) {
 
