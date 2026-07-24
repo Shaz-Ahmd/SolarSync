@@ -20,16 +20,16 @@ public class TicketController {
         this.maintenanceService = maintenanceService;
     }
 
-    //@PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<MaintenanceTicket> reportIssue(
             @RequestBody TicketRequestDto dto) {
 
         return ResponseEntity.ok(maintenanceService.reportIssue(dto));
     }
 
-    //@PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     @PutMapping("/{id}/assign")
+    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     public ResponseEntity<MaintenanceTicket> assignTechnician(
             @PathVariable Long id,
             @RequestParam Long technicianId) {
@@ -38,8 +38,8 @@ public class TicketController {
                 maintenanceService.assignTechnician(id, technicianId));
     }
 
-    //@PreAuthorize("hasAuthority('ROLE_MAINTENANCE_TECHNICIAN')")
     @PatchMapping("/{id}/resolve")
+    @PreAuthorize("hasAuthority('ROLE_MAINTENANCE_TECHNICIAN')")
     public ResponseEntity<MaintenanceTicket> resolveTicket(
             @PathVariable Long id) {
 

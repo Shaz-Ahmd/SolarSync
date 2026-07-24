@@ -22,8 +22,8 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    //@PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     @GetMapping("/technicians")
+    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     public ResponseEntity<List<SystemUser>> getTechnicians() {
 
         return ResponseEntity.ok(
