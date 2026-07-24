@@ -39,8 +39,8 @@ public class PanelController {
         return ResponseEntity.of(panelRepository.findById(id));
     }
 
-    @PostMapping
     //@PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
+    @PostMapping
     public ResponseEntity<SolarPanel> addPanel(
             @RequestBody PanelDto dto) {
 
