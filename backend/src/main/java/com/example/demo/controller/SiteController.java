@@ -21,8 +21,9 @@ public class SiteController {
         this.siteManagementService = siteManagementService;
     }
 
-    @PostMapping
+    
     //@PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
+    @PostMapping
     public ResponseEntity<SolarSite> registerSite(
             @RequestBody SiteCreationDto dto) {
 
