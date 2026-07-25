@@ -59,7 +59,7 @@ public class PanelController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> updatePanel(
             @PathVariable Long id,
             @RequestBody PanelDto dto) {
@@ -76,11 +76,11 @@ public class PanelController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<Void> deletePanel(
             @PathVariable Long id) {
 
         panelRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build(); 
     }
 }
