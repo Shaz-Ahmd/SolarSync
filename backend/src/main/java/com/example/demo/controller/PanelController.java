@@ -40,7 +40,7 @@ public class PanelController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR', 'ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> addPanel(
             @RequestBody PanelDto dto) {
 
