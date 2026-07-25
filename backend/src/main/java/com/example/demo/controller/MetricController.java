@@ -22,7 +22,7 @@ public class MetricController {
     }
 
     @PostMapping("/batch")
-    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<Void> ingestMetrics(
             @RequestBody MetricBatchDto dto) {
 
