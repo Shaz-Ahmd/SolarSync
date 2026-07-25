@@ -76,7 +76,7 @@ public class PanelController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize("hasAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<Void> deletePanel(
             @PathVariable Long id) {
 
