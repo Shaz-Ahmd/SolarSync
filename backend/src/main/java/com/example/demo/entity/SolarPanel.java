@@ -70,7 +70,7 @@ public class SolarPanel {
         orphanRemoval = true
     )
     @JsonIgnore
-    private List<EnergyMetric> tickets;
+    private List<MaintenanceTicket> tickets;
 
     
 
