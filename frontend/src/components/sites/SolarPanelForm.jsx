@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import {
   createPanel,
   updatePanel,
-} from "../../store/panelSlice";
+} from '../../store/slices/panelSlice';
 
 const SolarPanelForm = ({
   panelToEdit,
