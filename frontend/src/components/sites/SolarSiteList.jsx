@@ -9,7 +9,7 @@ import SolarSiteForm from "./SolarSiteForm";
 import {
   fetchSites,
   setSearchQuery,
-} from "../../store/siteSlice";
+} from '../../store/slices/siteSlice';
 
 const SolarSiteList = () => {
   const dispatch = useDispatch();

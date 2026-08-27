@@ -8,11 +8,11 @@ import SolarPanelForm from "./SolarPanelForm";
 import {
   fetchSiteById,
   fetchPanelsBySite,
-} from "../../store/siteSlice";
+} from '../../store/slices/siteSlice';
 
 import {
   deletePanel,
-} from "../../store/panelSlice";
+} from '../../store/slices/panelSlice';
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
