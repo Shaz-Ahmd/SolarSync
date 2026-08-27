@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
 
-function NotificationStack() {
+const NotificationStack = ({ notifications = [] }) => {
   return (
-    <div>NotificationStack</div>
-  )
-}
+    <div className="notification-stack">
+      {notifications.map((note, index) => (
+        <div
+          key={index}
+          className={`notification-item-${note.type}`}
+        >
+          {note.message}
+        </div>
+      ))}
+    </div>
+  );
+};
 
-export default NotificationStack
+export default NotificationStack;
