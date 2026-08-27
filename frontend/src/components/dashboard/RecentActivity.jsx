@@ -1,9 +1,31 @@
-import React from 'react'
+import React from 'react';
 
-function RecentActivity() {
+const RecentActivity = ({ metrics }) => {
   return (
-    <div>RecentActivity</div>
-  )
-}
+    <div>
+      <h3>Recent Activity</h3>
 
-export default RecentActivity
+      {metrics.map((metric, index) => (
+        <div className="activity-item" key={index}>
+          <div>
+            {new Date(metric.timestamp).toLocaleTimeString()}
+          </div>
+
+          <div>
+            Panel #{metric.panel.id}
+          </div>
+
+          <div>
+            ⚡ {metric.generationKwh.toFixed(2)} KWh
+          </div>
+
+          <div>
+            🔌 {metric.gridConsumptionKwh.toFixed(2)} KWh
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default RecentActivity;

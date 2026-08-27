@@ -1,9 +1,39 @@
-import React from 'react'
+import React from 'react';
 
-function CapacityBar() {
+const CapacityBar = ({ current, total }) => {
+  const percentage = Math.min(
+    (current / total) * 100,
+    100
+  );
+
+  const color =
+    percentage > 90
+      ? '#ef4444'
+      : percentage > 70
+      ? '#f59e0b'
+      : '#22c55e';
+
   return (
-    <div>CapacityBar</div>
-  )
-}
+    <div className="capacity-container">
+      <div>
+        <span>
+          {current.toFixed(1)} / {total.toFixed(1)} KW
+        </span>
 
-export default CapacityBar
+        <span>
+          {percentage.toFixed(0)}%
+        </span>
+      </div>
+
+      <div
+        className="capacity-fill"
+        style={{
+          width: `${percentage}%`,
+          backgroundColor: color
+        }}
+      />
+    </div>
+  );
+};
+
+export default CapacityBar;
