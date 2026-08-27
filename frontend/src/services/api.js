@@ -4,6 +4,7 @@ const api = axios.create({
   baseURL: "http://localhost:8080",
 });
 
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -19,6 +20,7 @@ api.interceptors.request.use(
   }
 );
 
+// Response interceptor
 api.interceptors.response.use(
   (response) => {
     return response;
