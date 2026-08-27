@@ -23,7 +23,7 @@ import RecentActivity from "./components/dashboard/RecentActivity";
 import {
   fetchAnalytics,
   fetchRecentMetrics,
-} from "./store/analyticsSlice";
+} from "./store/slices/metricSlice";
 
 import "./App.css";
 
