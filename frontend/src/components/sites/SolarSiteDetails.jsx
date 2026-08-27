@@ -7,8 +7,11 @@ import SolarPanelForm from "./SolarPanelForm";
 
 import {
   fetchSiteById,
-  fetchPanelsBySite,
 } from '../../store/slices/siteSlice';
+
+import {
+  fetchPanelsBySite,
+} from "../../store/slices/panelSlice";
 
 import {
   deletePanel,
