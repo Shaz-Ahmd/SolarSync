@@ -8,7 +8,7 @@ import {
   fetchTickets,
   resolveTicket,
   clearError,
-} from "../../store/ticketSlice";
+} from '../../store/slices/ticketSlice';
 
 const MaintenanceTicketList = () => {
   const dispatch = useDispatch();

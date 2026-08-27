@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import { fetchSites } from '../../store/slices/siteSlice';
-import { reportTicket } from "../../store/ticketSlice";
+import { reportTicket } from '../../store/slices/ticketSlice';
 
 const MaintenanceTicketForm = ({
   onClose,
