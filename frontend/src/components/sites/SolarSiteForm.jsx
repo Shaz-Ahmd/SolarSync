@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createSite } from "../../store/siteSlice";
+import { createSite } from '../../store/slices/siteSlice';
 
 const SolarSiteForm = ({ onClose }) => {
   const dispatch = useDispatch();
