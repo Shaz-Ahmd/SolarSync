@@ -1,9 +1,22 @@
-import React from 'react'
+import React from 'react';
 
-function ErrorHandler() {
+const ErrorHandler = ({ error }) => {
+  if (!error) {
+    return null;
+  }
+
+  const message =
+    typeof error === 'string'
+      ? error
+      : error.message || 'An unexpected error occurred';
+
   return (
-    <div>ErrorHandler</div>
-  )
-}
+    <div className="error-handler">
+      <div className="error-banner">
+        <span>⚠ {message}</span>
+      </div>
+    </div>
+  );
+};
 
-export default ErrorHandler
+export default ErrorHandler;
