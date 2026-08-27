@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import Navbar from "./components/layout/Navbar";
-import Login from "./components/auth/Login";
+import Login from "./components/Login";
 
 import SolarSiteList from "./components/sites/SolarSiteList";
 import SolarSiteDetails from "./components/sites/SolarSiteDetails";
