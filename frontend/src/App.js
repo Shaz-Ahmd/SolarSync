@@ -39,7 +39,7 @@ export const Dashboard = () => {
     analytics,
     recent,
   } = useSelector(
-    (state) => state.analytics
+    (state) => state.metrics
   );
 
   useEffect(() => {
