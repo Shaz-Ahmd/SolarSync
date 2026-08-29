@@ -2,54 +2,64 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
-import { fetchSites } from '../../store/slices/siteSlice';
-import { reportTicket } from '../../store/slices/ticketSlice';
+import { fetchSites } from "../../store/slices/siteSlice";
+import { reportTicket } from "../../store/slices/ticketSlice";
 
-const MaintenanceTicketForm = ({
-  onClose,
-}) => {
+const MaintenanceTicketForm = ({ onClose }) => {
   const dispatch = useDispatch();
 
-  const { sites } = useSelector(
+  // Get sites from Redux.
+  // If sites is undefined, use an empty array so .map() will not crash.
+  const { sites = [] } = useSelector(
     (state) => state.sites
   );
 
-  const [technicians, setTechnicians] =
-    useState([]);
-
+  const [technicians, setTechnicians] = useState([]);
   const [panels, setPanels] = useState([]);
 
-  const [formData, setFormData] =
-    useState({
-      siteId: "",
-      panelId: "",
-      issueDescription: "",
-      priority: "MEDIUM",
-      technicianId: "",
-    });
+  const [formData, setFormData] = useState({
+    siteId: "",
+    panelId: "",
+    issueDescription: "",
+    priority: "MEDIUM",
+    technicianId: "",
+  });
 
+  // Fetch sites and technicians when form opens
   useEffect(() => {
     dispatch(fetchSites());
 
     axios
       .get("/api/users/technicians")
       .then((response) => {
-        setTechnicians(response.data);
+        // Make sure technicians is always an array
+        setTechnicians(
+          Array.isArray(response.data)
+            ? response.data
+            : []
+        );
       })
       .catch((error) => {
-        console.error(error);
+        console.error(
+          "Error fetching technicians:",
+          error
+        );
+
+        setTechnicians([]);
       });
   }, [dispatch]);
 
+  // When user selects a site
   const handleSiteChange = async (e) => {
     const siteId = e.target.value;
 
     setFormData({
       ...formData,
-      siteId,
+      siteId: siteId,
       panelId: "",
     });
 
+    // No site selected
     if (!siteId) {
       setPanels([]);
       return;
@@ -60,20 +70,31 @@ const MaintenanceTicketForm = ({
         `/api/panels/site/${siteId}`
       );
 
-      const filteredPanels =
-        response.data.filter(
-          (panel) =>
-            panel.status ===
-              "MAINTENANCE_REQUIRED" ||
-            panel.status === "FAULTY"
-        );
+      // Make sure response is an array
+      const sitePanels = Array.isArray(response.data)
+        ? response.data
+        : [];
+
+      // Only show panels that need maintenance
+      const filteredPanels = sitePanels.filter(
+        (panel) =>
+          panel.status ===
+            "MAINTENANCE_REQUIRED" ||
+          panel.status === "FAULTY"
+      );
 
       setPanels(filteredPanels);
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error fetching panels:",
+        error
+      );
+
+      setPanels([]);
     }
   };
 
+  // Handle normal input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -81,25 +102,36 @@ const MaintenanceTicketForm = ({
     });
   };
 
+  // Submit maintenance ticket
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await dispatch(
-      reportTicket(formData)
-    ).unwrap();
+    try {
+      await dispatch(
+        reportTicket(formData)
+      ).unwrap();
 
-    onClose();
+      onClose();
+    } catch (error) {
+      console.error(
+        "Error reporting ticket:",
+        error
+      );
+    }
   };
 
   return (
     <div className="modal-overlay">
+
       <div className="modal-card">
 
         <h2>Report Maintenance Issue</h2>
 
         <form onSubmit={handleSubmit}>
 
-          {/* SITE */}
+          {/* =========================
+              SITE
+          ========================== */}
 
           <select
             name="siteId"
@@ -111,7 +143,7 @@ const MaintenanceTicketForm = ({
               Select Site
             </option>
 
-            {sites.map((site) => (
+            {(sites || []).map((site) => (
               <option
                 key={site.id}
                 value={site.id}
@@ -121,7 +153,10 @@ const MaintenanceTicketForm = ({
             ))}
           </select>
 
-          {/* PANEL */}
+
+          {/* =========================
+              PANEL
+          ========================== */}
 
           <select
             name="panelId"
@@ -134,7 +169,7 @@ const MaintenanceTicketForm = ({
               Select Panel
             </option>
 
-            {panels.map((panel) => (
+            {(panels || []).map((panel) => (
               <option
                 key={panel.id}
                 value={panel.id}
@@ -145,7 +180,10 @@ const MaintenanceTicketForm = ({
             ))}
           </select>
 
-          {/* DESCRIPTION */}
+
+          {/* =========================
+              DESCRIPTION
+          ========================== */}
 
           <textarea
             name="issueDescription"
@@ -156,7 +194,10 @@ const MaintenanceTicketForm = ({
             required
           />
 
-          {/* PRIORITY */}
+
+          {/* =========================
+              PRIORITY
+          ========================== */}
 
           <select
             name="priority"
@@ -180,7 +221,10 @@ const MaintenanceTicketForm = ({
             </option>
           </select>
 
-          {/* TECHNICIAN */}
+
+          {/* =========================
+              TECHNICIAN
+          ========================== */}
 
           <select
             name="technicianId"
@@ -192,7 +236,7 @@ const MaintenanceTicketForm = ({
               Select Technician
             </option>
 
-            {technicians.map((tech) => (
+            {(technicians || []).map((tech) => (
               <option
                 key={tech.id}
                 value={tech.id}
@@ -201,6 +245,11 @@ const MaintenanceTicketForm = ({
               </option>
             ))}
           </select>
+
+
+          {/* =========================
+              BUTTONS
+          ========================== */}
 
           <button
             type="submit"
@@ -219,6 +268,7 @@ const MaintenanceTicketForm = ({
         </form>
 
       </div>
+
     </div>
   );
 };
