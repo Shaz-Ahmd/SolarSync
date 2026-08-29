@@ -12,11 +12,17 @@ import {
 const MaintenanceTicketList = () => {
   const dispatch = useDispatch();
 
-  const {
-  items: tickets = [],
-  loading,
-  error,
-  } = useSelector((state) => state.tickets);
+  const ticketState = useSelector(
+    (state) => state.tickets || {}
+  );
+
+  const tickets =
+    ticketState.items ||
+    ticketState.tickets ||
+    [];
+
+  const loading = ticketState.loading;
+  const error = ticketState.error;
 
   const { user } = useSelector(
     (state) => state.auth
