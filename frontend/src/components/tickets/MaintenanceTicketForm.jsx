@@ -25,13 +25,14 @@ const MaintenanceTicketForm = ({
   const dispatch = useDispatch();
 
   const {
-    items,
+    items = [],
   } = useSelector(
     (state) => state.sites
   );
 
-  const sites =
-    Array.isArray(items) ? items : [];
+  const sites = Array.isArray(items)
+    ? items
+    : [];
 
   const [technicians, setTechnicians] =
     useState([]);
@@ -81,18 +82,17 @@ const MaintenanceTicketForm = ({
     const siteId =
       e.target.value;
 
-    setFormData({
-      ...formData,
+    setFormData((previous) => ({
+      ...previous,
       siteId,
       panelId: "",
-    });
+    }));
 
     if (!siteId) {
 
       setPanels([]);
 
       return;
-
     }
 
     try {
@@ -107,7 +107,19 @@ const MaintenanceTicketForm = ({
           ? response.data
           : [];
 
-      // Show all panels for the selected site.
+      /*
+       * Do NOT filter by panel status here.
+       *
+       * The database currently contains:
+       * SP-1001 -> ACTIVE
+       * SP-1002 -> ACTIVE
+       * SP-1003 -> ACTIVE
+       *
+       * All panels belonging to the selected
+       * site should therefore be available
+       * for selection.
+       */
+
       setPanels(panelData);
 
     } catch (error) {
@@ -120,16 +132,15 @@ const MaintenanceTicketForm = ({
       setPanels([]);
 
     }
-
   };
 
   const handleChange = (e) => {
 
-    setFormData({
-      ...formData,
+    setFormData((previous) => ({
+      ...previous,
       [e.target.name]:
         e.target.value,
-    });
+    }));
 
   };
 
@@ -170,6 +181,8 @@ const MaintenanceTicketForm = ({
           onSubmit={handleSubmit}
         >
 
+          {/* SITE */}
+
           <select
             name="siteId"
             value={formData.siteId}
@@ -193,6 +206,8 @@ const MaintenanceTicketForm = ({
             ))}
 
           </select>
+
+          {/* PANEL */}
 
           <select
             name="panelId"
@@ -220,6 +235,8 @@ const MaintenanceTicketForm = ({
 
           </select>
 
+          {/* DESCRIPTION */}
+
           <textarea
             name="issueDescription"
             rows="3"
@@ -230,6 +247,8 @@ const MaintenanceTicketForm = ({
             onChange={handleChange}
             required
           />
+
+          {/* PRIORITY */}
 
           <select
             name="priority"
@@ -255,6 +274,8 @@ const MaintenanceTicketForm = ({
 
           </select>
 
+          {/* TECHNICIAN */}
+
           <select
             name="technicianId"
             value={formData.technicianId}
@@ -279,12 +300,16 @@ const MaintenanceTicketForm = ({
 
           </select>
 
+          {/* SUBMIT */}
+
           <button
             type="submit"
             className="btn-primary"
           >
             Submit Ticket
           </button>
+
+          {/* CANCEL */}
 
           <button
             type="button"
