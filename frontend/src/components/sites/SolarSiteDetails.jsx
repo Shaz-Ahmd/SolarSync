@@ -14,60 +14,143 @@ import {
   deletePanel,
 } from "../../store/slices/panelSlice";
 
+
 const SolarSiteDetails = () => {
+
   const { id } = useParams();
 
   const dispatch = useDispatch();
 
+
+  // =====================================================
+  // SITE STATE
+  // =====================================================
+
   const {
     selectedItem,
     loading,
-  } = useSelector((state) => state.sites);
+  } = useSelector(
+    (state) => state.sites
+  );
+
+
+  // =====================================================
+  // PANEL STATE
+  // IMPORTANT:
+  // panelSlice uses "items", not "panels"
+  // =====================================================
 
   const {
-    panels = [],
-  } = useSelector((state) => state.panels);
+    items: panels = [],
+  } = useSelector(
+    (state) => state.panels
+  );
+
+
+  // =====================================================
+  // AUTH STATE
+  // =====================================================
 
   const {
     user,
-  } = useSelector((state) => state.auth);
+  } = useSelector(
+    (state) => state.auth
+  );
 
-  const [panelToEdit, setPanelToEdit] = useState(undefined);
+
+  // =====================================================
+  // LOCAL STATE
+  // =====================================================
+
+  const [panelToEdit, setPanelToEdit] =
+    useState(undefined);
+
+
+  // =====================================================
+  // LOAD SITE + PANELS
+  // =====================================================
 
   useEffect(() => {
-    dispatch(fetchSiteById(id));
-    dispatch(fetchPanelsBySite(id));
+
+    dispatch(
+      fetchSiteById(id)
+    );
+
+    dispatch(
+      fetchPanelsBySite(id)
+    );
+
   }, [dispatch, id]);
 
+
+  // =====================================================
+  // LOADING
+  // =====================================================
+
   if (loading || !selectedItem) {
+
     return (
       <div className="container">
         Loading site details...
       </div>
     );
+
   }
 
+
   const site = selectedItem;
+
+
+  // =====================================================
+  // DELETE PANEL
+  // =====================================================
+
+  const handleDelete = (panelId) => {
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this panel?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    dispatch(
+      deletePanel(panelId)
+    );
+
+  };
+
+
+  // =====================================================
+  // ROLE
+  // =====================================================
 
   const isSolarOperator =
     user?.role === "SOLAR_OPERATOR";
 
-  const handleDelete = (panelId) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this panel?"
-      )
-    ) {
-      dispatch(deletePanel(panelId));
-    }
-  };
+
+  // =====================================================
+  // UI
+  // =====================================================
 
   return (
+
     <div className="container">
+
+
+      {/* ================================================= */}
+      {/* SITE HEADER */}
+      {/* ================================================= */}
 
       <h1>
         {site.siteName}
       </h1>
+
+
+      {/* ================================================= */}
+      {/* SITE INFORMATION */}
+      {/* ================================================= */}
 
       <div className="site-info">
 
@@ -93,76 +176,144 @@ const SolarSiteDetails = () => {
 
       </div>
 
+
       {/* ================================================= */}
       {/* SIMULATE GENERATION */}
       {/* ================================================= */}
 
       {isSolarOperator && (
+
         <button
           type="button"
           className="btn-primary"
+          disabled={
+            site.ingesting ||
+            site.currentGeneration >=
+              site.ratedCapacityKw
+          }
+          onClick={() => {
+            console.log(
+              "Simulate Generation clicked"
+            );
+          }}
         >
-          Simulate Generation
+          ⚡ Simulate Generation
         </button>
+
       )}
 
+
       {/* ================================================= */}
-      {/* PANELS */}
+      {/* PANELS TABLE */}
       {/* ================================================= */}
 
       <table>
 
         <thead>
+
           <tr>
-            <th>Serial Number</th>
-            <th>Model</th>
-            <th>Status</th>
-            <th>Usage (Sims)</th>
-            <th>Installation</th>
-            <th>Actions</th>
+
+            <th>
+              Serial Number
+            </th>
+
+            <th>
+              Model
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Usage (Sims)
+            </th>
+
+            <th>
+              Installation
+            </th>
+
+            <th>
+              Actions
+            </th>
+
           </tr>
+
         </thead>
+
 
         <tbody>
 
           {panels.map((panel) => (
-            <tr key={panel.id}>
+
+            <tr
+              key={panel.id}
+            >
+
+
+              {/* SERIAL NUMBER */}
 
               <td>
                 {panel.serialNumber}
               </td>
 
+
+              {/* MODEL */}
+
               <td>
                 {panel.modelType}
               </td>
 
+
+              {/* STATUS */}
+
               <td>
+
                 <span className="badge">
                   {panel.status}
                 </span>
+
               </td>
 
+
+              {/* USAGE */}
+
               <td>
+
                 <div className="mini-bar">
+
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) * 100,
+                        ((panel.usageCount || 0) / 5) *
+                          100,
                         100
                       )}%`,
                     }}
                   />
+
                 </div>
+
               </td>
+
+
+              {/* INSTALLATION */}
 
               <td>
                 {panel.installationDate}
               </td>
 
+
+              {/* ACTIONS */}
+
               <td>
 
                 {isSolarOperator && (
+
                   <>
+
+                    {/* EDIT */}
+
                     <button
                       type="button"
                       onClick={() =>
@@ -172,6 +323,9 @@ const SolarSiteDetails = () => {
                       Edit
                     </button>
 
+
+                    {/* DELETE */}
+
                     <button
                       type="button"
                       onClick={() =>
@@ -180,33 +334,41 @@ const SolarSiteDetails = () => {
                     >
                       Delete
                     </button>
+
                   </>
+
                 )}
 
               </td>
 
             </tr>
+
           ))}
 
         </tbody>
 
       </table>
 
+
       {/* ================================================= */}
       {/* EMPTY STATE */}
       {/* ================================================= */}
 
       {panels.length === 0 && (
+
         <EmptyState
           message="No panels registered for this site."
         />
+
       )}
+
 
       {/* ================================================= */}
       {/* ADD PANEL */}
       {/* ================================================= */}
 
       {isSolarOperator && (
+
         <button
           type="button"
           className="btn-primary"
@@ -216,13 +378,16 @@ const SolarSiteDetails = () => {
         >
           + Add Panel
         </button>
+
       )}
+
 
       {/* ================================================= */}
       {/* PANEL FORM */}
       {/* ================================================= */}
 
       {panelToEdit !== undefined && (
+
         <SolarPanelForm
           panelToEdit={panelToEdit}
           siteId={id}
@@ -230,10 +395,14 @@ const SolarSiteDetails = () => {
             setPanelToEdit(undefined)
           }
         />
+
       )}
 
     </div>
+
   );
+
 };
+
 
 export default SolarSiteDetails;
