@@ -16,22 +16,30 @@ import {
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
+
   const dispatch = useDispatch();
 
   const {
     selectedItem,
     loading,
-  } = useSelector((state) => state.sites);
+  } = useSelector(
+    (state) => state.sites
+  );
 
   const {
     items: panels = [],
-  } = useSelector((state) => state.panels);
+  } = useSelector(
+    (state) => state.panels
+  );
 
   const {
     user,
-  } = useSelector((state) => state.auth);
+  } = useSelector(
+    (state) => state.auth
+  );
 
-  const [panelToEdit, setPanelToEdit] = useState(undefined);
+  const [panelToEdit, setPanelToEdit] =
+    useState(undefined);
 
   useEffect(() => {
     dispatch(fetchSiteById(id));
@@ -55,6 +63,9 @@ const SolarSiteDetails = () => {
     currentGeneration: 0,
   };
 
+  const isSolarOperator =
+    user?.role === "SOLAR_OPERATOR";
+
   const handleDelete = (panelId) => {
     if (
       window.confirm(
@@ -65,13 +76,22 @@ const SolarSiteDetails = () => {
     }
   };
 
-  const isSolarOperator =
-    user?.role === "SOLAR_OPERATOR";
+  const handleSimulateGeneration = () => {
+    console.log(
+      "Simulate Generation clicked"
+    );
+  };
 
   return (
     <div className="container">
 
-      <h1>{site.siteName}</h1>
+      {/* SITE NAME */}
+
+      <h1>
+        {site.siteName}
+      </h1>
+
+      {/* SITE INFORMATION */}
 
       <div className="site-info">
 
@@ -99,37 +119,54 @@ const SolarSiteDetails = () => {
 
       {/* SIMULATE GENERATION */}
 
-      <button
-  type="button"
-  className="btn-primary"
-  disabled={user?.role !== "SOLAR_OPERATOR"}
-  onClick={() => {
-    if (user?.role === "SOLAR_OPERATOR") {
-      console.log("Simulate Generation clicked");
-    }
-  }}
->
-  Simulate Generation
-</button>
+      {isSolarOperator && (
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={
+            handleSimulateGeneration
+          }
+        >
+          Simulate Generation
+        </button>
+      )}
 
-      {/* PANELS */}
+      {/* PANELS TABLE */}
 
       <table>
 
         <thead>
           <tr>
-            <th>Serial Number</th>
-            <th>Model</th>
-            <th>Status</th>
-            <th>Usage (Sims)</th>
-            <th>Installation</th>
-            <th>Actions</th>
+            <th>
+              Serial Number
+            </th>
+
+            <th>
+              Model
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Usage (Sims)
+            </th>
+
+            <th>
+              Installation
+            </th>
+
+            <th>
+              Actions
+            </th>
           </tr>
         </thead>
 
         <tbody>
 
           {panels.map((panel) => (
+
             <tr key={panel.id}>
 
               <td>
@@ -147,16 +184,21 @@ const SolarSiteDetails = () => {
               </td>
 
               <td>
+
                 <div className="mini-bar">
+
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) * 100,
+                        ((panel.usageCount || 0) / 5) *
+                          100,
                         100
                       )}%`,
                     }}
                   />
+
                 </div>
+
               </td>
 
               <td>
@@ -170,7 +212,9 @@ const SolarSiteDetails = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        setPanelToEdit(panel)
+                        setPanelToEdit(
+                          panel
+                        )
                       }
                     >
                       Edit
@@ -179,7 +223,9 @@ const SolarSiteDetails = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        handleDelete(panel.id)
+                        handleDelete(
+                          panel.id
+                        )
                       }
                     >
                       Delete
@@ -190,6 +236,7 @@ const SolarSiteDetails = () => {
               </td>
 
             </tr>
+
           ))}
 
         </tbody>
