@@ -13,11 +13,11 @@ const MaintenanceTicketList = () => {
   const dispatch = useDispatch();
 
   const {
-    tickets = [],
-    loading,
-    error,
+  items: tickets = [],
+  loading,
+  error,
   } = useSelector(
-    (state) => state.tickets
+  (state) => state.tickets
   );
 
   const { user } = useSelector(
