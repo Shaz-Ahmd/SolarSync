@@ -1,5 +1,39 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+import { useSelector } from "react-redux";
+
+import Navbar from "./components/layout/Navbar";
+import Login from "./components/Login";
+
+import SolarSiteList from "./components/sites/SolarSiteList";
+import SolarSiteDetails from "./components/sites/SolarSiteDetails";
+
+import MaintenanceTicketList from "./components/tickets/MaintenanceTicketList";
+
+import StatCards from "./components/dashboard/StatCards";
+import StatusDonut from "./components/dashboard/StatusDonut";
+import RecentActivity from "./components/dashboard/RecentActivity";
+
+import "./App.css";
+
+
+// ======================================================
+// DASHBOARD
+// ======================================================
+
 export const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
+
+  // ------------------------------------------------------
+  // TEMPORARY FRONTEND DATA
+  // Backend integration will be added later.
+  // ------------------------------------------------------
 
   const analytics = {
     dailyGeneration: 1250.5,
@@ -45,6 +79,10 @@ export const Dashboard = () => {
     },
   ];
 
+  // ------------------------------------------------------
+  // No logged-in user
+  // ------------------------------------------------------
+
   if (!user) {
     return null;
   }
@@ -52,7 +90,9 @@ export const Dashboard = () => {
   return (
     <div className="container">
 
+      {/* Welcome Section */}
       <div className="welcome-card">
+
         <h1>
           Welcome back, {user.username}!
         </h1>
@@ -63,27 +103,50 @@ export const Dashboard = () => {
             {user.role?.replace(/_/g, " ")}
           </strong>
         </p>
+
       </div>
+
+
+      {/* ==================================================
+          ADMIN DASHBOARD
+          ================================================== */}
 
       {user.role === "SYSTEM_ADMINISTRATOR" && (
         <>
-          <StatCards stats={analytics} />
 
+          {/* Statistics */}
+          <StatCards
+            stats={analytics}
+          />
+
+
+          {/* Ticket Status */}
           <StatusDonut
             data={analytics.ticketData}
           />
 
+
+          {/* Recent Activity */}
           <RecentActivity
             metrics={recent}
           />
+
         </>
       )}
+
+
+      {/* ==================================================
+          OPERATOR / OTHER USER DASHBOARD
+          ================================================== */}
 
       {user.role !== "SYSTEM_ADMINISTRATOR" && (
         <div className="action-cards">
 
           <div className="action-card">
-            <h3>Solar Sites</h3>
+
+            <h3>
+              Solar Sites
+            </h3>
 
             <p>
               View and manage solar sites.
@@ -92,10 +155,15 @@ export const Dashboard = () => {
             <a href="/sites">
               View All Sites
             </a>
+
           </div>
 
+
           <div className="action-card">
-            <h3>Maintenance Tickets</h3>
+
+            <h3>
+              Maintenance Tickets
+            </h3>
 
             <p>
               View maintenance tickets.
@@ -104,6 +172,7 @@ export const Dashboard = () => {
             <a href="/tickets">
               Go to Tickets
             </a>
+
           </div>
 
         </div>
@@ -112,3 +181,125 @@ export const Dashboard = () => {
     </div>
   );
 };
+
+
+// ======================================================
+// PROTECTED ROUTE
+// ======================================================
+
+const ProtectedRoute = ({ children }) => {
+
+  const { user } = useSelector(
+    (state) => state.auth
+  );
+
+  if (!user) {
+
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+
+  }
+
+  return children;
+};
+
+
+// ======================================================
+// APP
+// ======================================================
+
+const App = () => {
+
+  return (
+    <Router>
+
+      <div className="glass-container App">
+
+        {/* Navigation */}
+        <Navbar />
+
+
+        <Routes>
+
+          {/* ================= LOGIN ================= */}
+
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+
+
+          {/* ================= DASHBOARD ================= */}
+
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* ================= SOLAR SITES ================= */}
+
+          <Route
+            path="/sites"
+            element={
+              <ProtectedRoute>
+                <SolarSiteList />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* ================= SITE DETAILS ================= */}
+
+          <Route
+            path="/sites/:id"
+            element={
+              <ProtectedRoute>
+                <SolarSiteDetails />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* ================= TICKETS ================= */}
+
+          <Route
+            path="/tickets"
+            element={
+              <ProtectedRoute>
+                <MaintenanceTicketList />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* ================= UNKNOWN ROUTE ================= */}
+
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to="/"
+                replace
+              />
+            }
+          />
+
+        </Routes>
+
+      </div>
+
+    </Router>
+  );
+};
+
+
+export default App;

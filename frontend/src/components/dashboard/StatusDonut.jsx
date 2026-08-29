@@ -1,20 +1,33 @@
 import React from "react";
 
 const StatusDonut = ({ data = [] }) => {
-  const total = data.reduce(
-    (sum, item) => sum + item.value,
+  // Make sure data is always an array
+  const safeData = Array.isArray(data) ? data : [];
+
+  const total = safeData.reduce(
+    (sum, item) => sum + (Number(item.value) || 0),
     0
   );
 
+  // No ticket data
   if (total === 0) {
-    return <div>No Ticket Data</div>;
+    return (
+      <div className="status-donut">
+        <h3>Ticket Status</h3>
+        <div className="no-ticket-data">
+          No Ticket Data
+        </div>
+      </div>
+    );
   }
 
   let currentAngle = -Math.PI / 2;
 
-  const arcs = data.map((item) => {
+  const arcs = safeData.map((item) => {
+    const value = Number(item.value) || 0;
+
     const angle =
-      (item.value / total) * Math.PI * 2;
+      (value / total) * Math.PI * 2;
 
     const startAngle = currentAngle;
     const endAngle = currentAngle + angle;
@@ -37,37 +50,72 @@ const StatusDonut = ({ data = [] }) => {
 
     return {
       ...item,
+      value,
       path,
     };
   });
 
   return (
-    <div>
-      <svg
-        viewBox="-1 -1 2 2"
-        width="200"
-        height="200"
-      >
-        {arcs.map((arc, index) => (
-          <path
-            key={index}
-            d={arc.path}
-            fill="none"
-            stroke={arc.color}
-            strokeWidth="0.25"
-          />
-        ))}
-      </svg>
+    <div className="status-donut">
+
+      <h3>Ticket Status</h3>
+
+      <div className="donut-container">
+
+        <svg
+          viewBox="-1 -1 2 2"
+          width="200"
+          height="200"
+          className="donut-chart"
+        >
+          {arcs.map((arc, index) => (
+            <path
+              key={index}
+              d={arc.path}
+              fill="none"
+              stroke={arc.color || "#999"}
+              strokeWidth="0.25"
+              strokeLinecap="round"
+            />
+          ))}
+        </svg>
+
+        <div className="donut-total">
+          <strong>{total}</strong>
+          <span>Total Tickets</span>
+        </div>
+
+      </div>
 
       <div className="donut-legend">
-        {data.map((item, index) => (
-          <div key={index}>
-            <span>
-              {item.label}: {item.value}
+
+        {safeData.map((item, index) => (
+          <div
+            key={index}
+            className="donut-legend-item"
+          >
+
+            <span
+              className="legend-color"
+              style={{
+                backgroundColor:
+                  item.color || "#999",
+              }}
+            />
+
+            <span className="legend-label">
+              {item.label}
             </span>
+
+            <span className="legend-value">
+              {item.value}
+            </span>
+
           </div>
         ))}
+
       </div>
+
     </div>
   );
 };
