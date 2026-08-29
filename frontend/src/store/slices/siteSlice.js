@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import siteService from "../../services/sitesService";
 
 const initialState = {
-  sites: [],
-  site: null,
+  items: [],
+  selectedItem: null,
   loading: false,
   error: null,
   searchQuery: "",
@@ -60,10 +60,6 @@ const siteSlice = createSlice({
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
     },
-
-    clearError: (state) => {
-      state.error = null;
-    },
   },
 
   extraReducers: (builder) => {
@@ -77,7 +73,7 @@ const siteSlice = createSlice({
 
       .addCase(fetchSites.fulfilled, (state, action) => {
         state.loading = false;
-        state.sites = action.payload || [];
+        state.items = action.payload;
       })
 
       .addCase(fetchSites.rejected, (state, action) => {
@@ -93,7 +89,7 @@ const siteSlice = createSlice({
 
       .addCase(fetchSiteById.fulfilled, (state, action) => {
         state.loading = false;
-        state.site = action.payload;
+        state.selectedItem = action.payload;
       })
 
       .addCase(fetchSiteById.rejected, (state, action) => {
@@ -109,10 +105,7 @@ const siteSlice = createSlice({
 
       .addCase(createSite.fulfilled, (state, action) => {
         state.loading = false;
-
-        if (action.payload) {
-          state.sites.push(action.payload);
-        }
+        state.items.push(action.payload);
       })
 
       .addCase(createSite.rejected, (state, action) => {
@@ -122,9 +115,6 @@ const siteSlice = createSlice({
   },
 });
 
-export const {
-  setSearchQuery,
-  clearError,
-} = siteSlice.actions;
+export const { setSearchQuery } = siteSlice.actions;
 
 export default siteSlice.reducer;

@@ -1,30 +1,38 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { createSite } from "../../store/slices/siteSlice";
+import {
+  createSite,
+} from "../../store/slices/siteSlice";
 
 const SolarSiteForm = ({ onClose }) => {
+
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    siteName: "",
-    locationCoordinates: "",
-    ratedCapacityKw: "",
-    commissionDate: "",
-  });
+  const [formData, setFormData] =
+    useState({
+      siteName: "",
+      locationCoordinates: "",
+      ratedCapacityKw: "",
+      commissionDate: "",
+    });
 
-  const [error, setError] = useState("");
+  const [error, setError] =
+    useState("");
 
   const handleChange = (e) => {
-    setFormData((previous) => ({
-      ...previous,
+
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value,
-    }));
+    });
 
     setError("");
+
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
+
     e.preventDefault();
 
     const coordinateRegex =
@@ -32,38 +40,39 @@ const SolarSiteForm = ({ onClose }) => {
 
     if (
       !coordinateRegex.test(
-        formData.locationCoordinates
+        formData.locationCoordinates.trim()
       )
     ) {
+
       setError(
         'Invalid coordinates. Please use "Lat, Lng" format (e.g. 34.05, -118.24).'
       );
+
       return;
+
     }
 
-    try {
-      await dispatch(
-        createSite(formData)
-      ).unwrap();
+    dispatch(
+      createSite(formData)
+    );
 
-      onClose();
-    } catch (error) {
-      setError(
-        typeof error === "string"
-          ? error
-          : "Failed to create solar site."
-      );
-    }
+    onClose();
+
   };
 
   return (
+
     <div className="modal-overlay">
 
       <div className="modal-card">
 
-        <h2>Register New Solar Site</h2>
+        <h2>
+          Register New Solar Site
+        </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+        >
 
           <input
             type="text"
@@ -86,9 +95,11 @@ const SolarSiteForm = ({ onClose }) => {
           />
 
           {error && (
+
             <div className="error-message">
               {error}
             </div>
+
           )}
 
           <input
@@ -131,6 +142,7 @@ const SolarSiteForm = ({ onClose }) => {
       </div>
 
     </div>
+
   );
 };
 
