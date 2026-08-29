@@ -1,51 +1,49 @@
-import React, { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import Navbar from "./components/layout/Navbar";
-import Login from "./components/Login";
-
-import SolarSiteList from "./components/sites/SolarSiteList";
-import SolarSiteDetails from "./components/sites/SolarSiteDetails";
-
-import MaintenanceTicketList from "./components/tickets/MaintenanceTicketList";
-
-import StatCards from "./components/dashboard/StatCards";
-import StatusDonut from "./components/dashboard/StatusDonut";
-import RecentActivity from "./components/dashboard/RecentActivity";
-
-import {
-  fetchAnalytics,
-  fetchRecentMetrics,
-} from "./store/slices/metricSlice";
-
-import "./App.css";
-
-
 export const Dashboard = () => {
-  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
-  const { user } = useSelector(
-    (state) => state.auth
-  );
+  const analytics = {
+    dailyGeneration: 1250.5,
+    gridConsumption: 840.25,
+    systemEfficiency: 87.5,
+    activePanels: 24,
+    openTickets: 3,
 
-  const {
-    analytics,
-    recent,
-  } = useSelector(
-    (state) => state.metrics
-  );
+    ticketData: [
+      {
+        label: "Open",
+        value: 3,
+        color: "#ef4444",
+      },
+      {
+        label: "In Progress",
+        value: 2,
+        color: "#f59e0b",
+      },
+      {
+        label: "Resolved",
+        value: 8,
+        color: "#22c55e",
+      },
+    ],
+  };
 
-  useEffect(() => {
-    dispatch(fetchAnalytics());
-    dispatch(fetchRecentMetrics());
-  }, [dispatch]);
+  const recent = [
+    {
+      id: 1,
+      message: "Solar Site Alpha generated 1250 kWh today",
+      date: "Today",
+    },
+    {
+      id: 2,
+      message: "Maintenance ticket created",
+      date: "Today",
+    },
+    {
+      id: 3,
+      message: "Solar Panel inspection completed",
+      date: "Yesterday",
+    },
+  ];
 
   if (!user) {
     return null;
@@ -55,163 +53,62 @@ export const Dashboard = () => {
     <div className="container">
 
       <div className="welcome-card">
-
         <h1>
-          Welcome back, {user?.username}!
+          Welcome back, {user.username}!
         </h1>
 
         <p>
           Your role:{" "}
           <strong>
-            {user?.role?.replace(/_/g, " ")}
+            {user.role?.replace(/_/g, " ")}
           </strong>
         </p>
-
       </div>
 
-      {user.role ===
-        "SYSTEM_ADMINISTRATOR" &&
-        analytics && (
-          <>
+      {user.role === "SYSTEM_ADMINISTRATOR" && (
+        <>
+          <StatCards stats={analytics} />
 
-            <StatCards
-              stats={analytics}
-            />
+          <StatusDonut
+            data={analytics.ticketData}
+          />
 
-            <StatusDonut
-              data={analytics.ticketData}
-            />
+          <RecentActivity
+            metrics={recent}
+          />
+        </>
+      )}
 
-            <RecentActivity
-              metrics={recent}
-            />
+      {user.role !== "SYSTEM_ADMINISTRATOR" && (
+        <div className="action-cards">
 
-          </>
-        )}
+          <div className="action-card">
+            <h3>Solar Sites</h3>
 
-      {user.role !==
-        "SYSTEM_ADMINISTRATOR" && (
-          <div className="action-cards">
+            <p>
+              View and manage solar sites.
+            </p>
 
-            <div className="action-card">
-              <h3>Solar Sites</h3>
-
-              <p>
-                View and manage solar sites.
-              </p>
-
-              <a href="/sites">
-                View All Sites
-              </a>
-            </div>
-
-            <div className="action-card">
-              <h3>Maintenance Tickets</h3>
-
-              <p>
-                View maintenance tickets.
-              </p>
-
-              <a href="/tickets">
-                Go to Tickets
-              </a>
-            </div>
-
+            <a href="/sites">
+              View All Sites
+            </a>
           </div>
-        )}
+
+          <div className="action-card">
+            <h3>Maintenance Tickets</h3>
+
+            <p>
+              View maintenance tickets.
+            </p>
+
+            <a href="/tickets">
+              Go to Tickets
+            </a>
+          </div>
+
+        </div>
+      )}
 
     </div>
   );
 };
-
-
-const ProtectedRoute = ({
-  children,
-}) => {
-  const { user } = useSelector(
-    (state) => state.auth
-  );
-
-  if (!user) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-      />
-    );
-  }
-
-  return children;
-};
-
-
-const App = () => {
-  return (
-    <Router>
-
-      <div className="glass-container App">
-
-        <Navbar />
-
-        <Routes>
-
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/sites"
-            element={
-              <ProtectedRoute>
-                <SolarSiteList />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/sites/:id"
-            element={
-              <ProtectedRoute>
-                <SolarSiteDetails />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/tickets"
-            element={
-              <ProtectedRoute>
-                <MaintenanceTicketList />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
-          />
-
-        </Routes>
-
-      </div>
-
-    </Router>
-  );
-};
-
-export default App;
