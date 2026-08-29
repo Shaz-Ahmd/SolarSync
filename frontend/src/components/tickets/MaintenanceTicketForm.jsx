@@ -8,11 +8,9 @@ import { reportTicket } from "../../store/slices/ticketSlice";
 const MaintenanceTicketForm = ({ onClose }) => {
   const dispatch = useDispatch();
 
-  const sitesState = useSelector(
-    (state) => state.sites
-  );
-
-  const sites = sitesState?.sites || [];
+  const {
+    sites = [],
+  } = useSelector((state) => state.sites);
 
   const [technicians, setTechnicians] = useState([]);
   const [panels, setPanels] = useState([]);
@@ -42,6 +40,7 @@ const MaintenanceTicketForm = ({ onClose }) => {
           "Failed to fetch technicians:",
           error
         );
+
         setTechnicians([]);
       });
   }, [dispatch]);
@@ -49,8 +48,8 @@ const MaintenanceTicketForm = ({ onClose }) => {
   const handleSiteChange = async (e) => {
     const siteId = e.target.value;
 
-    setFormData((prev) => ({
-      ...prev,
+    setFormData((previous) => ({
+      ...previous,
       siteId,
       panelId: "",
     }));
@@ -81,16 +80,15 @@ const MaintenanceTicketForm = ({ onClose }) => {
         "Failed to fetch panels:",
         error
       );
+
       setPanels([]);
     }
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
+    setFormData((previous) => ({
+      ...previous,
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -105,7 +103,7 @@ const MaintenanceTicketForm = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error(
-        "Failed to submit maintenance ticket:",
+        "Failed to submit ticket:",
         error
       );
     }
@@ -113,6 +111,7 @@ const MaintenanceTicketForm = ({ onClose }) => {
 
   return (
     <div className="modal-overlay">
+
       <div className="modal-card">
 
         <h2>Report Maintenance Issue</h2>
@@ -159,8 +158,10 @@ const MaintenanceTicketForm = ({ onClose }) => {
                 key={panel.id}
                 value={panel.id}
               >
-                Panel #{panel.id} (
-                {panel.serialNumber})
+                Panel #{panel.id}
+                {panel.serialNumber
+                  ? ` (${panel.serialNumber})`
+                  : ""}
               </option>
             ))}
           </select>
@@ -222,8 +223,6 @@ const MaintenanceTicketForm = ({ onClose }) => {
             ))}
           </select>
 
-          {/* BUTTONS */}
-
           <button
             type="submit"
             className="btn-primary"
@@ -241,6 +240,7 @@ const MaintenanceTicketForm = ({ onClose }) => {
         </form>
 
       </div>
+
     </div>
   );
 };

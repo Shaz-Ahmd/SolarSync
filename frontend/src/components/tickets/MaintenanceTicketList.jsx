@@ -12,19 +12,17 @@ import {
 const MaintenanceTicketList = () => {
   const dispatch = useDispatch();
 
-  const ticketState = useSelector(
+  const {
+    tickets = [],
+    loading,
+    error,
+  } = useSelector(
     (state) => state.tickets
   );
 
-  const tickets = ticketState?.tickets || [];
-  const loading = ticketState?.loading || false;
-  const error = ticketState?.error || null;
-
-  const authState = useSelector(
+  const { user } = useSelector(
     (state) => state.auth
   );
-
-  const user = authState?.user || null;
 
   const [showForm, setShowForm] =
     useState(false);
@@ -61,10 +59,13 @@ const MaintenanceTicketList = () => {
       <div className="page-header">
         <h1>Maintenance Tickets</h1>
 
-        {user?.role === "SOLAR_OPERATOR" && (
+        {user?.role ===
+          "SOLAR_OPERATOR" && (
           <button
             className="btn-primary"
-            onClick={() => setShowForm(true)}
+            onClick={() =>
+              setShowForm(true)
+            }
           >
             + Report Issue
           </button>
@@ -73,7 +74,9 @@ const MaintenanceTicketList = () => {
 
       {error && (
         <div className="error-message">
-          {error}
+          {typeof error === "string"
+            ? error
+            : "Failed to load tickets."}
         </div>
       )}
 
@@ -84,7 +87,11 @@ const MaintenanceTicketList = () => {
       ) : tickets.length === 0 ? (
         <EmptyState
           message="No maintenance tickets found."
-          onAction={() => setShowForm(true)}
+          onAction={() =>
+            user?.role ===
+              "SOLAR_OPERATOR" &&
+            setShowForm(true)
+          }
         />
       ) : (
         <table>
@@ -105,15 +112,18 @@ const MaintenanceTicketList = () => {
               <tr key={ticket.id}>
 
                 <td>
-                  {ticket.site?.siteName || "-"}
+                  {ticket.site?.siteName ||
+                    "N/A"}
                 </td>
 
                 <td>
-                  #{ticket.panel?.id || "-"}
+                  {ticket.panel?.id
+                    ? `#${ticket.panel.id}`
+                    : "N/A"}
                 </td>
 
                 <td>
-                  {ticket.issueDescription || "-"}
+                  {ticket.issueDescription}
                 </td>
 
                 <td>
@@ -134,15 +144,18 @@ const MaintenanceTicketList = () => {
                 </td>
 
                 <td>
-                  {ticket.status !== "RESOLVED" &&
+                  {ticket.status !==
+                    "RESOLVED" &&
                     user?.role ===
                       "MAINTENANCE_TECHNICIAN" &&
                     ticket.technician?.username ===
-                      user?.username && (
+                      user.username && (
                       <button
                         className="btn-success"
                         onClick={() =>
-                          handleResolve(ticket.id)
+                          handleResolve(
+                            ticket.id
+                          )
                         }
                       >
                         Resolve Ticket
@@ -158,7 +171,9 @@ const MaintenanceTicketList = () => {
 
       {showForm && (
         <MaintenanceTicketForm
-          onClose={() => setShowForm(false)}
+          onClose={() =>
+            setShowForm(false)
+          }
         />
       )}
 

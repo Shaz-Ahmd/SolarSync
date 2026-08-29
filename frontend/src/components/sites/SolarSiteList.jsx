@@ -1,48 +1,38 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import CapacityBar from "../common/CapacityBar";
 import EmptyState from "../common/EmptyState";
 import SolarSiteForm from "./SolarSiteForm";
 
+import {
+  fetchSites,
+} from "../../store/slices/siteSlice";
+
 const SolarSiteList = () => {
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const {
+    sites = [],
+    loading,
+    error,
+  } = useSelector((state) => state.sites);
+
+  const { user } = useSelector(
+    (state) => state.auth
+  );
 
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Temporary frontend data.
-  // Backend/API integration will be added later.
-  const sites = [
-    {
-      id: 1,
-      siteName: "Solar Site Alpha",
-      locationCoordinates: "12.9716, 77.5946",
-      currentGeneration: 75,
-      ratedCapacityKw: 100,
-      commissionDate: "2025-01-15",
-      panels: [
-        { id: 1, name: "Panel A" },
-        { id: 2, name: "Panel B" },
-      ],
-    },
-    {
-      id: 2,
-      siteName: "Solar Site Beta",
-      locationCoordinates: "13.0827, 80.2707",
-      currentGeneration: 60,
-      ratedCapacityKw: 80,
-      commissionDate: "2025-03-10",
-      panels: [
-        { id: 3, name: "Panel C" },
-      ],
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchSites());
+  }, [dispatch]);
 
   const filteredItems = sites.filter((site) =>
     site.siteName
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(searchQuery.toLowerCase())
   );
 
@@ -67,12 +57,33 @@ const SolarSiteList = () => {
           type="text"
           placeholder="Search solar sites by name..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) =>
+            setSearchQuery(e.target.value)
+          }
         />
       </div>
 
-      {filteredItems.length === 0 ? (
-        <EmptyState message="No solar sites found." />
+      {error && (
+        <div className="error-message">
+          {typeof error === "string"
+            ? error
+            : "Failed to load solar sites."}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="loading-state">
+          Loading sites...
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <EmptyState
+          message="No solar sites found."
+          onAction={
+            user?.role === "SYSTEM_ADMINISTRATOR"
+              ? () => setShowForm(true)
+              : undefined
+          }
+        />
       ) : (
         <table>
           <thead>
@@ -90,7 +101,9 @@ const SolarSiteList = () => {
             {filteredItems.map((site) => (
               <tr key={site.id}>
 
-                <td>{site.siteName}</td>
+                <td>
+                  {site.siteName}
+                </td>
 
                 <td>
                   {site.locationCoordinates}
@@ -98,8 +111,12 @@ const SolarSiteList = () => {
 
                 <td>
                   <CapacityBar
-                    current={site.currentGeneration}
-                    total={site.ratedCapacityKw}
+                    current={
+                      site.currentGeneration || 0
+                    }
+                    total={
+                      site.ratedCapacityKw || 0
+                    }
                   />
                 </td>
 

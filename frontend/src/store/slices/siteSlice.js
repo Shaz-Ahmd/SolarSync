@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import siteService from "../../services/sitesService";
 
 const initialState = {
-  items: [],
-  selectedItem: null,
+  sites: [],
+  site: null,
   loading: false,
   error: null,
   searchQuery: "",
@@ -60,11 +60,16 @@ const siteSlice = createSlice({
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
     },
+
+    clearError: (state) => {
+      state.error = null;
+    },
   },
 
   extraReducers: (builder) => {
     builder
 
+      // FETCH ALL SITES
       .addCase(fetchSites.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -72,7 +77,7 @@ const siteSlice = createSlice({
 
       .addCase(fetchSites.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
+        state.sites = action.payload || [];
       })
 
       .addCase(fetchSites.rejected, (state, action) => {
@@ -80,6 +85,7 @@ const siteSlice = createSlice({
         state.error = action.payload;
       })
 
+      // FETCH ONE SITE
       .addCase(fetchSiteById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -87,7 +93,7 @@ const siteSlice = createSlice({
 
       .addCase(fetchSiteById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedItem = action.payload;
+        state.site = action.payload;
       })
 
       .addCase(fetchSiteById.rejected, (state, action) => {
@@ -95,6 +101,7 @@ const siteSlice = createSlice({
         state.error = action.payload;
       })
 
+      // CREATE SITE
       .addCase(createSite.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -102,7 +109,10 @@ const siteSlice = createSlice({
 
       .addCase(createSite.fulfilled, (state, action) => {
         state.loading = false;
-        state.items.push(action.payload);
+
+        if (action.payload) {
+          state.sites.push(action.payload);
+        }
       })
 
       .addCase(createSite.rejected, (state, action) => {
@@ -112,6 +122,9 @@ const siteSlice = createSlice({
   },
 });
 
-export const { setSearchQuery } = siteSlice.actions;
+export const {
+  setSearchQuery,
+  clearError,
+} = siteSlice.actions;
 
 export default siteSlice.reducer;
