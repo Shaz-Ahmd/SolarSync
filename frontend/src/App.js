@@ -30,10 +30,9 @@ import "./App.css";
 export const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
-  // ------------------------------------------------------
-  // TEMPORARY FRONTEND DATA
-  // Backend integration will be added later.
-  // ------------------------------------------------------
+  if (!user) {
+    return null;
+  }
 
   const analytics = {
     dailyGeneration: 1250.5,
@@ -64,35 +63,37 @@ export const Dashboard = () => {
   const recent = [
     {
       id: 1,
-      message: "Solar Site Alpha generated 1250 kWh today",
-      date: "Today",
+      timestamp: new Date().toISOString(),
+      panel: {
+        id: 1,
+      },
+      generationKwh: 1250.5,
+      gridConsumptionKwh: 840.25,
     },
     {
       id: 2,
-      message: "Maintenance ticket created",
-      date: "Today",
+      timestamp: new Date().toISOString(),
+      panel: {
+        id: 2,
+      },
+      generationKwh: 980.25,
+      gridConsumptionKwh: 650.5,
     },
     {
       id: 3,
-      message: "Solar Panel inspection completed",
-      date: "Yesterday",
+      timestamp: new Date().toISOString(),
+      panel: {
+        id: 3,
+      },
+      generationKwh: 1100.75,
+      gridConsumptionKwh: 720.35,
     },
   ];
-
-  // ------------------------------------------------------
-  // No logged-in user
-  // ------------------------------------------------------
-
-  if (!user) {
-    return null;
-  }
 
   return (
     <div className="container">
 
-      {/* Welcome Section */}
       <div className="welcome-card">
-
         <h1>
           Welcome back, {user.username}!
         </h1>
@@ -100,53 +101,34 @@ export const Dashboard = () => {
         <p>
           Your role:{" "}
           <strong>
-            {user.role?.replace(/_/g, " ")}
+            {user.role
+              ? user.role.replace(/_/g, " ")
+              : "USER"}
           </strong>
         </p>
-
       </div>
 
 
-      {/* ==================================================
-          ADMIN DASHBOARD
-          ================================================== */}
-
       {user.role === "SYSTEM_ADMINISTRATOR" && (
         <>
+          <StatCards stats={analytics} />
 
-          {/* Statistics */}
-          <StatCards
-            stats={analytics}
-          />
-
-
-          {/* Ticket Status */}
           <StatusDonut
             data={analytics.ticketData}
           />
 
-
-          {/* Recent Activity */}
           <RecentActivity
             metrics={recent}
           />
-
         </>
       )}
 
-
-      {/* ==================================================
-          OPERATOR / OTHER USER DASHBOARD
-          ================================================== */}
 
       {user.role !== "SYSTEM_ADMINISTRATOR" && (
         <div className="action-cards">
 
           <div className="action-card">
-
-            <h3>
-              Solar Sites
-            </h3>
+            <h3>Solar Sites</h3>
 
             <p>
               View and manage solar sites.
@@ -155,15 +137,11 @@ export const Dashboard = () => {
             <a href="/sites">
               View All Sites
             </a>
-
           </div>
 
 
           <div className="action-card">
-
-            <h3>
-              Maintenance Tickets
-            </h3>
+            <h3>Maintenance Tickets</h3>
 
             <p>
               View maintenance tickets.
@@ -172,7 +150,6 @@ export const Dashboard = () => {
             <a href="/tickets">
               Go to Tickets
             </a>
-
           </div>
 
         </div>
@@ -188,20 +165,17 @@ export const Dashboard = () => {
 // ======================================================
 
 const ProtectedRoute = ({ children }) => {
-
   const { user } = useSelector(
     (state) => state.auth
   );
 
   if (!user) {
-
     return (
       <Navigate
         to="/login"
         replace
       />
     );
-
   }
 
   return children;
@@ -213,19 +187,16 @@ const ProtectedRoute = ({ children }) => {
 // ======================================================
 
 const App = () => {
-
   return (
     <Router>
 
       <div className="glass-container App">
 
-        {/* Navigation */}
         <Navbar />
-
 
         <Routes>
 
-          {/* ================= LOGIN ================= */}
+          {/* LOGIN */}
 
           <Route
             path="/login"
@@ -233,7 +204,7 @@ const App = () => {
           />
 
 
-          {/* ================= DASHBOARD ================= */}
+          {/* DASHBOARD */}
 
           <Route
             path="/"
@@ -245,7 +216,7 @@ const App = () => {
           />
 
 
-          {/* ================= SOLAR SITES ================= */}
+          {/* SITES */}
 
           <Route
             path="/sites"
@@ -257,7 +228,7 @@ const App = () => {
           />
 
 
-          {/* ================= SITE DETAILS ================= */}
+          {/* SITE DETAILS */}
 
           <Route
             path="/sites/:id"
@@ -269,7 +240,7 @@ const App = () => {
           />
 
 
-          {/* ================= TICKETS ================= */}
+          {/* TICKETS */}
 
           <Route
             path="/tickets"
@@ -281,7 +252,7 @@ const App = () => {
           />
 
 
-          {/* ================= UNKNOWN ROUTE ================= */}
+          {/* UNKNOWN ROUTE */}
 
           <Route
             path="*"
@@ -301,5 +272,4 @@ const App = () => {
   );
 };
 
-
-export default App;
+export default App; 
