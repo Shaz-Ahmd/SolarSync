@@ -1,19 +1,29 @@
-import api from "./api";
+import axios from "axios";
 
 const siteService = {
   // GET /api/sites
   getAll: () => {
-    return api.get("/api/sites");
-  },
-
-  // POST /api/sites
-  create: (siteData) => {
-    return api.post("/api/sites", siteData);
+    return axios.get("/api/sites");
   },
 
   // GET /api/sites/{id}
   getById: (id) => {
-    return api.get(`/api/sites/${id}`);
+    return axios.get(`/api/sites/${id}`);
+  },
+
+  // POST /api/sites
+  create: (siteData) => {
+    return axios.post("/api/sites", siteData);
+  },
+
+  // PUT /api/sites/{id}
+  update: (id, siteData) => {
+    return axios.put(`/api/sites/${id}`, siteData);
+  },
+
+  // DELETE /api/sites/{id}
+  delete: (id) => {
+    return axios.delete(`/api/sites/${id}`);
   },
 };
 
