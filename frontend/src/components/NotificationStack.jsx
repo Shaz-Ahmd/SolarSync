@@ -1,16 +1,26 @@
-import React from 'react';
+import React from "react";
 
-const NotificationStack = ({ notifications = [] }) => {
+const NotificationStack = ({
+  notifications = [],
+}) => {
+  if (!Array.isArray(notifications)) {
+    return null;
+  }
+
   return (
     <div className="notification-stack">
+
       {notifications.map((note, index) => (
         <div
-          key={index}
-          className={`notification-item-${note.type}`}
+          key={note.id || index}
+          className={`notification-item-${
+            note.type || "info"
+          }`}
         >
           {note.message}
         </div>
       ))}
+
     </div>
   );
 };

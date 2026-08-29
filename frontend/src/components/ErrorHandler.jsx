@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const ErrorHandler = ({ error }) => {
   if (!error) {
@@ -6,14 +6,15 @@ const ErrorHandler = ({ error }) => {
   }
 
   const message =
-    typeof error === 'string'
+    typeof error === "string"
       ? error
-      : error.message || 'An unexpected error occurred';
+      : error?.message ||
+        "An unexpected error occurred";
 
   return (
     <div className="error-handler">
       <div className="error-banner">
-        <span>⚠ {message}</span>
+        ⚠ {message}
       </div>
     </div>
   );

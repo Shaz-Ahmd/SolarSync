@@ -1,28 +1,28 @@
-import React from 'react';
+import React from "react";
 
 const EmptyState = ({
-  message,
-  actionText,
-  onAction
+  message = "No records found in the system.",
+  actionText = "Add New",
+  onAction,
 }) => {
   return (
     <div className="empty-state">
+
       <div className="empty-icon">
         📭
       </div>
 
-      <p>
-        {message || 'No records found in the system.'}
-      </p>
+      <p>{message}</p>
 
       {onAction && (
         <button
           className="btn-primary"
           onClick={onAction}
         >
-          {actionText || 'Add New'}
+          {actionText}
         </button>
       )}
+
     </div>
   );
 };
