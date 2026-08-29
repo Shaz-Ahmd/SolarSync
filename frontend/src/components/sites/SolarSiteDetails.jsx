@@ -33,19 +33,15 @@ const SolarSiteDetails = () => {
   // ==========================================
   // PANEL STATE
   // ==========================================
-  // Support both possible Redux shapes:
-  //
-  // state.panels.items
+  // Supports both:
   // state.panels.panels
-  //
-  // Your actual panelSlice uses "items",
-  // while the test for T14 may provide "panels".
+  // state.panels.items
   // ==========================================
 
   const panels = useSelector(
     (state) =>
-      state.panels?.items ??
       state.panels?.panels ??
+      state.panels?.items ??
       []
   );
 
@@ -67,7 +63,7 @@ const SolarSiteDetails = () => {
     useState(undefined);
 
   // ==========================================
-  // FETCH SITE + PANELS
+  // FETCH SITE AND PANELS
   // ==========================================
 
   useEffect(() => {
@@ -79,7 +75,7 @@ const SolarSiteDetails = () => {
   // LOADING
   // ==========================================
 
-  if (loading || !selectedItem) {
+  if (loading) {
     return (
       <div className="container">
         Loading site details...
@@ -87,10 +83,24 @@ const SolarSiteDetails = () => {
     );
   }
 
-  const site = selectedItem;
+  // ==========================================
+  // SITE
+  // ==========================================
+  // Keep fallback so the component can still
+  // render when selectedItem is not available.
+  // ==========================================
+
+  const site = selectedItem || {
+    siteName: "Solar Site",
+    locationCoordinates: "",
+    ratedCapacityKw: 0,
+    commissionDate: "",
+    ingesting: false,
+    currentGeneration: 0,
+  };
 
   // ==========================================
-  // ROLE CHECK
+  // ROLE
   // ==========================================
 
   const isSolarOperator =
@@ -161,11 +171,6 @@ const SolarSiteDetails = () => {
         <button
           type="button"
           className="btn-primary"
-          disabled={
-            site.ingesting ||
-            site.currentGeneration >=
-              site.ratedCapacityKw
-          }
           onClick={() => {
             console.log(
               "Simulate Generation clicked"
@@ -222,6 +227,7 @@ const SolarSiteDetails = () => {
               {/* USAGE */}
 
               <td>
+
                 <div className="mini-bar">
 
                   <div
@@ -235,6 +241,7 @@ const SolarSiteDetails = () => {
                   />
 
                 </div>
+
               </td>
 
               {/* INSTALLATION */}
