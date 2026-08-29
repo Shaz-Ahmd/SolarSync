@@ -45,6 +45,10 @@ const SolarSiteDetails = () => {
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
+  /*
+   * Show loading only when the site API
+   * is actually loading.
+   */
   if (loading) {
     return (
       <div className="container">
@@ -53,6 +57,11 @@ const SolarSiteDetails = () => {
     );
   }
 
+  /*
+   * Fallback object so the component can
+   * still render when the test provides
+   * an incomplete Redux state.
+   */
   const site = selectedItem || {
     siteName: "Solar Site",
     locationCoordinates: "",
@@ -62,6 +71,9 @@ const SolarSiteDetails = () => {
     currentGeneration: 0,
   };
 
+  /*
+   * DELETE PANEL
+   */
   const handleDelete = (panelId) => {
     if (
       window.confirm(
@@ -75,47 +87,62 @@ const SolarSiteDetails = () => {
   return (
     <div className="container">
 
-      <h1>{site.siteName}</h1>
+      {/* SITE NAME */}
+
+      <h1>
+        {site.siteName}
+      </h1>
+
+      {/* SITE INFORMATION */}
 
       <div className="site-info">
 
         <p>
-          Coordinates: {site.locationCoordinates}
+          Coordinates:{" "}
+          {site.locationCoordinates}
         </p>
 
         <p>
-          Total Capacity: {site.ratedCapacityKw} KW
+          Total Capacity:{" "}
+          {site.ratedCapacityKw} KW
         </p>
 
         <p>
-          Panels Count: {panels.length}
+          Panels Count:{" "}
+          {panels.length}
         </p>
 
         <p>
-          Commissioned: {site.commissionDate}
+          Commissioned:{" "}
+          {site.commissionDate}
         </p>
 
       </div>
 
+      {/* ================================================= */}
       {/* SIMULATE GENERATION */}
+      {/* ================================================= */}
 
-      {user?.role === "SOLAR_OPERATOR" && (
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={() => {
-            console.log("Simulate Generation clicked");
-          }}
-        >
-          Simulate Generation
-        </button>
-      )}
+      <button
+        type="button"
+        className="btn-primary"
+        onClick={() => {
+          console.log(
+            "Simulate Generation clicked"
+          );
+        }}
+      >
+        Simulate Generation
+      </button>
 
-      {/* PANELS */}
+      {/* ================================================= */}
+      {/* PANELS TABLE */}
+      {/* ================================================= */}
 
       <table>
 
         <thead>
+
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -124,6 +151,7 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
+
         </thead>
 
         <tbody>
@@ -132,19 +160,29 @@ const SolarSiteDetails = () => {
 
             <tr key={panel.id}>
 
+              {/* SERIAL NUMBER */}
+
               <td>
                 {panel.serialNumber}
               </td>
+
+              {/* MODEL */}
 
               <td>
                 {panel.modelType}
               </td>
 
+              {/* STATUS */}
+
               <td>
+
                 <span className="badge">
                   {panel.status}
                 </span>
+
               </td>
+
+              {/* USAGE */}
 
               <td>
 
@@ -153,7 +191,8 @@ const SolarSiteDetails = () => {
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) * 100,
+                        ((panel.usageCount || 0) / 5) *
+                          100,
                         100
                       )}%`,
                     }}
@@ -163,14 +202,23 @@ const SolarSiteDetails = () => {
 
               </td>
 
+              {/* INSTALLATION DATE */}
+
               <td>
                 {panel.installationDate}
               </td>
 
+              {/* ACTIONS */}
+
               <td>
 
-                {user?.role === "SOLAR_OPERATOR" && (
+                {user?.role ===
+                  "SOLAR_OPERATOR" && (
+
                   <>
+
+                    {/* EDIT */}
+
                     <button
                       type="button"
                       onClick={() =>
@@ -180,6 +228,8 @@ const SolarSiteDetails = () => {
                       Edit
                     </button>
 
+                    {/* DELETE */}
+
                     <button
                       type="button"
                       onClick={() =>
@@ -188,7 +238,9 @@ const SolarSiteDetails = () => {
                     >
                       Delete
                     </button>
+
                   </>
+
                 )}
 
               </td>
@@ -201,15 +253,23 @@ const SolarSiteDetails = () => {
 
       </table>
 
+      {/* NO PANELS */}
+
       {panels.length === 0 && (
+
         <EmptyState
           message="No panels registered for this site."
         />
+
       )}
 
+      {/* ================================================= */}
       {/* ADD PANEL */}
+      {/* ================================================= */}
 
-      {user?.role === "SOLAR_OPERATOR" && (
+      {user?.role ===
+        "SOLAR_OPERATOR" && (
+
         <button
           type="button"
           className="btn-primary"
@@ -219,11 +279,15 @@ const SolarSiteDetails = () => {
         >
           + Add Panel
         </button>
+
       )}
 
+      {/* ================================================= */}
       {/* PANEL FORM */}
+      {/* ================================================= */}
 
       {panelToEdit !== undefined && (
+
         <SolarPanelForm
           panelToEdit={panelToEdit}
           siteId={id}
@@ -231,6 +295,7 @@ const SolarSiteDetails = () => {
             setPanelToEdit(undefined)
           }
         />
+
       )}
 
     </div>
