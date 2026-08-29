@@ -1,22 +1,30 @@
 import React from "react";
 
 const StatusDonut = ({ data = [] }) => {
-  // Make sure data is always an array
-  const safeData = Array.isArray(data) ? data : [];
+  const safeData = Array.isArray(data)
+    ? data
+        .map((item) => ({
+          ...item,
+          value: Number(item?.value) || 0,
+        }))
+        .filter((item) => item.value > 0)
+    : [];
 
   const total = safeData.reduce(
-    (sum, item) => sum + (Number(item.value) || 0),
+    (sum, item) => sum + item.value,
     0
   );
 
-  // No ticket data
   if (total === 0) {
     return (
       <div className="status-donut">
+
         <h3>Ticket Status</h3>
+
         <div className="no-ticket-data">
           No Ticket Data
         </div>
+
       </div>
     );
   }
@@ -24,13 +32,14 @@ const StatusDonut = ({ data = [] }) => {
   let currentAngle = -Math.PI / 2;
 
   const arcs = safeData.map((item) => {
-    const value = Number(item.value) || 0;
-
     const angle =
-      (value / total) * Math.PI * 2;
+      (item.value / total) *
+      Math.PI *
+      2;
 
     const startAngle = currentAngle;
-    const endAngle = currentAngle + angle;
+    const endAngle =
+      currentAngle + angle;
 
     const x1 = Math.cos(startAngle);
     const y1 = Math.sin(startAngle);
@@ -50,7 +59,6 @@ const StatusDonut = ({ data = [] }) => {
 
     return {
       ...item,
-      value,
       path,
     };
   });
@@ -75,17 +83,25 @@ const StatusDonut = ({ data = [] }) => {
               fill="none"
               stroke={arc.color || "#999"}
               strokeWidth="0.25"
-              strokeLinecap="round"
+              strokeLinecap="butt"
             />
           ))}
         </svg>
 
         <div className="donut-total">
-          <strong>{total}</strong>
-          <span>Total Tickets</span>
+
+          <strong>
+            {total}
+          </strong>
+
+          <span>
+            Total Tickets
+          </span>
+
         </div>
 
       </div>
+
 
       <div className="donut-legend">
 

@@ -1,20 +1,36 @@
 import React from "react";
 
 const StatCards = ({ stats = {} }) => {
-  const dailyGeneration =
-    Number(stats?.dailyGeneration ?? stats?.dailyGenerationKwh ?? 0);
+  const safeStats =
+    stats && typeof stats === "object"
+      ? stats
+      : {};
 
-  const gridConsumption =
-    Number(stats?.gridConsumption ?? stats?.gridConsumptionKwh ?? 0);
+  const dailyGeneration = Number(
+    safeStats.dailyGeneration ??
+      safeStats.dailyGenerationKwh ??
+      0
+  );
 
-  const systemEfficiency =
-    Number(stats?.systemEfficiency ?? stats?.efficiency ?? 0);
+  const gridConsumption = Number(
+    safeStats.gridConsumption ??
+      safeStats.gridConsumptionKwh ??
+      0
+  );
 
-  const activePanels =
-    Number(stats?.activePanels ?? 0);
+  const systemEfficiency = Number(
+    safeStats.systemEfficiency ??
+      safeStats.efficiency ??
+      0
+  );
 
-  const openTickets =
-    Number(stats?.openTickets ?? 0);
+  const activePanels = Number(
+    safeStats.activePanels ?? 0
+  );
+
+  const openTickets = Number(
+    safeStats.openTickets ?? 0
+  );
 
   return (
     <div className="stat-cards">
