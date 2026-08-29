@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createSite } from '../../store/slices/siteSlice';
+
+import { createSite } from "../../store/slices/siteSlice";
 
 const SolarSiteForm = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -15,19 +16,19 @@ const SolarSiteForm = ({ onClose }) => {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((previous) => ({
+      ...previous,
       [e.target.name]: e.target.value,
-    });
+    }));
 
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const coordinateRegex =
-      /^-?\d+(\.\d+)?\s*-?\d+(\.\d+)?$/;
+      /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
 
     if (
       !coordinateRegex.test(
@@ -37,17 +38,27 @@ const SolarSiteForm = ({ onClose }) => {
       setError(
         'Invalid coordinates. Please use "Lat, Lng" format (e.g. 34.05, -118.24).'
       );
-
       return;
     }
 
-    dispatch(createSite(formData));
+    try {
+      await dispatch(
+        createSite(formData)
+      ).unwrap();
 
-    onClose();
+      onClose();
+    } catch (error) {
+      setError(
+        typeof error === "string"
+          ? error
+          : "Failed to create solar site."
+      );
+    }
   };
 
   return (
     <div className="modal-overlay">
+
       <div className="modal-card">
 
         <h2>Register New Solar Site</h2>
@@ -67,7 +78,9 @@ const SolarSiteForm = ({ onClose }) => {
             type="text"
             name="locationCoordinates"
             placeholder="e.g. 34.05, -118.24"
-            value={formData.locationCoordinates}
+            value={
+              formData.locationCoordinates
+            }
             onChange={handleChange}
             required
           />
@@ -82,7 +95,9 @@ const SolarSiteForm = ({ onClose }) => {
             type="number"
             name="ratedCapacityKw"
             placeholder="e.g. 500.0"
-            value={formData.ratedCapacityKw}
+            value={
+              formData.ratedCapacityKw
+            }
             onChange={handleChange}
             required
           />
@@ -90,7 +105,9 @@ const SolarSiteForm = ({ onClose }) => {
           <input
             type="date"
             name="commissionDate"
-            value={formData.commissionDate}
+            value={
+              formData.commissionDate
+            }
             onChange={handleChange}
             required
           />
@@ -112,6 +129,7 @@ const SolarSiteForm = ({ onClose }) => {
         </form>
 
       </div>
+
     </div>
   );
 };

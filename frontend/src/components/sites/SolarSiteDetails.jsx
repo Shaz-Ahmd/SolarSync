@@ -7,31 +7,39 @@ import SolarPanelForm from "./SolarPanelForm";
 
 import {
   fetchSiteById,
-} from '../../store/slices/siteSlice';
+} from "../../store/slices/siteSlice";
 
 import {
   fetchPanelsBySite,
-} from "../../store/slices/panelSlice";
-
-import {
   deletePanel,
-} from '../../store/slices/panelSlice';
+} from "../../store/slices/panelSlice";
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { site, loading } =
-    useSelector((state) => state.sites);
+  const {
+    site,
+    loading,
+  } = useSelector(
+    (state) => state.sites
+  );
 
-  const { panels } =
-    useSelector((state) => state.panels);
+  const {
+    panels = [],
+  } = useSelector(
+    (state) => state.panels
+  );
 
-  const { user } =
-    useSelector((state) => state.auth);
+  const { user } = useSelector(
+    (state) => state.auth
+  );
 
   const [panelToEdit, setPanelToEdit] =
     useState(null);
+
+  const [showPanelForm, setShowPanelForm] =
+    useState(false);
 
   useEffect(() => {
     dispatch(fetchSiteById(id));
@@ -56,27 +64,43 @@ const SolarSiteDetails = () => {
     }
   };
 
+  const handleEdit = (panel) => {
+    setPanelToEdit(panel);
+    setShowPanelForm(true);
+  };
+
+  const handleAddPanel = () => {
+    setPanelToEdit(null);
+    setShowPanelForm(true);
+  };
+
   return (
     <div className="container">
 
       <h1>{site.siteName}</h1>
 
       <div className="site-info">
+
         <p>
-          Coordinates: {site.locationCoordinates}
+          Coordinates:{" "}
+          {site.locationCoordinates}
         </p>
 
         <p>
-          Total Capacity: {site.ratedCapacityKw} KW
+          Total Capacity:{" "}
+          {site.ratedCapacityKw} KW
         </p>
 
         <p>
-          Panels Count: {panels?.length || 0}
+          Panels Count:{" "}
+          {panels.length}
         </p>
 
         <p>
-          Commissioned: {site.commissionDate}
+          Commissioned:{" "}
+          {site.commissionDate}
         </p>
+
       </div>
 
       {user?.role === "SOLAR_OPERATOR" && (
@@ -93,6 +117,7 @@ const SolarSiteDetails = () => {
       )}
 
       <table>
+
         <thead>
           <tr>
             <th>Serial Number</th>
@@ -105,12 +130,17 @@ const SolarSiteDetails = () => {
         </thead>
 
         <tbody>
-          {panels?.map((panel) => (
+
+          {panels.map((panel) => (
             <tr key={panel.id}>
 
-              <td>{panel.serialNumber}</td>
+              <td>
+                {panel.serialNumber}
+              </td>
 
-              <td>{panel.modelType}</td>
+              <td>
+                {panel.modelType}
+              </td>
 
               <td>
                 <span className="badge">
@@ -123,7 +153,8 @@ const SolarSiteDetails = () => {
                   <div
                     style={{
                       width: `${Math.min(
-                        (panel.usageCount / 5) * 100,
+                        ((panel.usageCount || 0) / 5) *
+                          100,
                         100
                       )}%`,
                     }}
@@ -136,12 +167,13 @@ const SolarSiteDetails = () => {
               </td>
 
               <td>
+
                 {user?.role ===
                   "SOLAR_OPERATOR" && (
                   <>
                     <button
                       onClick={() =>
-                        setPanelToEdit(panel)
+                        handleEdit(panel)
                       }
                     >
                       Edit
@@ -149,40 +181,49 @@ const SolarSiteDetails = () => {
 
                     <button
                       onClick={() =>
-                        handleDelete(panel.id)
+                        handleDelete(
+                          panel.id
+                        )
                       }
                     >
                       Delete
                     </button>
                   </>
                 )}
+
               </td>
 
             </tr>
           ))}
+
         </tbody>
+
       </table>
 
-      {panels?.length === 0 && (
+      {panels.length === 0 && (
         <EmptyState
           message="No panels registered for this site."
         />
       )}
 
-      {user?.role === "SOLAR_OPERATOR" && (
+      {user?.role ===
+        "SOLAR_OPERATOR" && (
         <button
           className="btn-primary"
-          onClick={() => setPanelToEdit(null)}
+          onClick={handleAddPanel}
         >
           + Add Panel
         </button>
       )}
 
-      {panelToEdit !== undefined && (
+      {showPanelForm && (
         <SolarPanelForm
           panelToEdit={panelToEdit}
           siteId={id}
-          onClose={() => setPanelToEdit(undefined)}
+          onClose={() => {
+            setShowPanelForm(false);
+            setPanelToEdit(null);
+          }}
         />
       )}
 
