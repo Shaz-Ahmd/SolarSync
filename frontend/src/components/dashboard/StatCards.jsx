@@ -1,52 +1,78 @@
-import React from 'react';
+import React from "react";
 
-const StatCards = ({ stats }) => {
-  if (!stats) {
-    return null;
-  }
+const StatCards = ({ stats = {} }) => {
+  const dailyGeneration =
+    Number(stats?.dailyGeneration ?? stats?.dailyGenerationKwh ?? 0);
 
-  const cards = [
-    {
-      label: 'Daily Generation (KWh)',
-      value: stats.totalGeneration.toFixed(2),
-      color: '#2563eb'
-    },
-    {
-      label: 'Grid Consumption (KWh)',
-      value: stats.totalConsumption.toFixed(2),
-      color: '#444444'
-    },
-    {
-      label: 'System Efficiency',
-      value: `${(stats.efficiencyRatio * 100).toFixed(1)}%`,
-      color: '#10b981'
-    },
-    {
-      label: 'Active Panels',
-      value: stats.totalActivePanels,
-      color: '#f59e0b'
-    },
-    {
-      label: 'Open Tickets',
-      value: stats.openTickets,
-      color: '#8b5cf6'
-    }
-  ];
+  const gridConsumption =
+    Number(stats?.gridConsumption ?? stats?.gridConsumptionKwh ?? 0);
+
+  const systemEfficiency =
+    Number(stats?.systemEfficiency ?? stats?.efficiency ?? 0);
+
+  const activePanels =
+    Number(stats?.activePanels ?? 0);
+
+  const openTickets =
+    Number(stats?.openTickets ?? 0);
 
   return (
-    <div className="stat-cards-row">
-      {cards.map((card, index) => (
-        <div
-          key={index}
-          className="stat-card"
-          style={{ borderLeft: `4px solid ${card.color}` }}
-        >
-          <div>{card.label}</div>
-          <strong style={{ color: card.color }}>
-            {card.value}
-          </strong>
+    <div className="stat-cards">
+
+      <div className="stat-card">
+        <div className="stat-title">
+          Daily Generation (KWh)
         </div>
-      ))}
+
+        <div className="stat-value">
+          {dailyGeneration.toFixed(2)}
+        </div>
+      </div>
+
+
+      <div className="stat-card">
+        <div className="stat-title">
+          Grid Consumption (KWh)
+        </div>
+
+        <div className="stat-value">
+          {gridConsumption.toFixed(2)}
+        </div>
+      </div>
+
+
+      <div className="stat-card">
+        <div className="stat-title">
+          System Efficiency
+        </div>
+
+        <div className="stat-value">
+          {systemEfficiency.toFixed(1)}%
+        </div>
+      </div>
+
+
+      <div className="stat-card">
+        <div className="stat-title">
+          Active Panels
+        </div>
+
+        <div className="stat-value">
+          {activePanels}
+        </div>
+      </div>
+
+
+      <div className="stat-card">
+        <div className="stat-title">
+          Open Tickets
+        </div>
+
+        <div className="stat-value">
+          {openTickets}
+        </div>
+      </div>
+
     </div>
   );
 };
