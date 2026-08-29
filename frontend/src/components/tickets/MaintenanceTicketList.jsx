@@ -7,23 +7,24 @@ import MaintenanceTicketForm from "./MaintenanceTicketForm";
 import {
   fetchTickets,
   resolveTicket,
-  clearError,
 } from "../../store/slices/ticketSlice";
 
 const MaintenanceTicketList = () => {
   const dispatch = useDispatch();
 
-  const {
-    tickets = [],
-    loading,
-    error,
-  } = useSelector(
+  const ticketState = useSelector(
     (state) => state.tickets
   );
 
-  const { user } = useSelector(
+  const tickets = ticketState?.tickets || [];
+  const loading = ticketState?.loading || false;
+  const error = ticketState?.error || null;
+
+  const authState = useSelector(
     (state) => state.auth
   );
+
+  const user = authState?.user || null;
 
   const [showForm, setShowForm] =
     useState(false);
@@ -35,7 +36,9 @@ const MaintenanceTicketList = () => {
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
-        dispatch(clearError());
+        dispatch({
+          type: "tickets/clearError",
+        });
       }, 5000);
 
       return () => clearTimeout(timer);
@@ -102,15 +105,15 @@ const MaintenanceTicketList = () => {
               <tr key={ticket.id}>
 
                 <td>
-                  {ticket.site?.siteName}
+                  {ticket.site?.siteName || "-"}
                 </td>
 
                 <td>
-                  #{ticket.panel?.id}
+                  #{ticket.panel?.id || "-"}
                 </td>
 
                 <td>
-                  {ticket.issueDescription}
+                  {ticket.issueDescription || "-"}
                 </td>
 
                 <td>
@@ -135,7 +138,7 @@ const MaintenanceTicketList = () => {
                     user?.role ===
                       "MAINTENANCE_TECHNICIAN" &&
                     ticket.technician?.username ===
-                      user.username && (
+                      user?.username && (
                       <button
                         className="btn-success"
                         onClick={() =>
