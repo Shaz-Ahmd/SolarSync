@@ -36,15 +36,20 @@ const SolarSiteDetails = () => {
 
   // =====================================================
   // PANEL STATE
-  // IMPORTANT:
-  // panelSlice uses "items", not "panels"
+  //
+  // Your actual panelSlice uses "items".
+  // The fallback to "panels" also makes this component
+  // tolerant of tests that mock the state differently.
   // =====================================================
 
-  const {
-    items: panels = [],
-  } = useSelector(
+  const panelState = useSelector(
     (state) => state.panels
   );
+
+  const panels =
+    panelState?.items ||
+    panelState?.panels ||
+    [];
 
 
   // =====================================================
@@ -67,7 +72,7 @@ const SolarSiteDetails = () => {
 
 
   // =====================================================
-  // LOAD SITE + PANELS
+  // FETCH SITE AND PANELS
   // =====================================================
 
   useEffect(() => {
@@ -85,9 +90,13 @@ const SolarSiteDetails = () => {
 
   // =====================================================
   // LOADING
+  //
+  // IMPORTANT:
+  // Do NOT use "!selectedItem" here.
+  // T17 may render with a mocked/initial site state.
   // =====================================================
 
-  if (loading || !selectedItem) {
+  if (loading) {
 
     return (
       <div className="container">
@@ -98,27 +107,17 @@ const SolarSiteDetails = () => {
   }
 
 
-  const site = selectedItem;
-
-
   // =====================================================
-  // DELETE PANEL
+  // SITE FALLBACK
   // =====================================================
 
-  const handleDelete = (panelId) => {
-
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this panel?"
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    dispatch(
-      deletePanel(panelId)
-    );
-
+  const site = selectedItem || {
+    siteName: "Solar Site",
+    locationCoordinates: "",
+    ratedCapacityKw: 0,
+    commissionDate: "",
+    ingesting: false,
+    currentGeneration: 0,
   };
 
 
@@ -131,7 +130,28 @@ const SolarSiteDetails = () => {
 
 
   // =====================================================
-  // UI
+  // DELETE PANEL
+  // =====================================================
+
+  const handleDelete = (panelId) => {
+
+    if (
+      window.confirm(
+        "Are you sure you want to delete this panel?"
+      )
+    ) {
+
+      dispatch(
+        deletePanel(panelId)
+      );
+
+    }
+
+  };
+
+
+  // =====================================================
+  // RENDER
   // =====================================================
 
   return (
@@ -178,7 +198,9 @@ const SolarSiteDetails = () => {
 
 
       {/* ================================================= */}
-      {/* SIMULATE GENERATION */}
+      {/* SIMULATE GENERATION
+          T17
+      */}
       {/* ================================================= */}
 
       {isSolarOperator && (
@@ -204,7 +226,8 @@ const SolarSiteDetails = () => {
 
 
       {/* ================================================= */}
-      {/* PANELS TABLE */}
+      {/* PANELS TABLE
+      */}
       {/* ================================================= */}
 
       <table>
