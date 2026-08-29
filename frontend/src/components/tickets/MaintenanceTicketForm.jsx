@@ -107,18 +107,8 @@ const MaintenanceTicketForm = ({
           ? response.data
           : [];
 
-      const filteredPanels =
-        panelData.filter(
-          (panel) =>
-            panel.status ===
-              "MAINTENANCE_REQUIRED" ||
-            panel.status ===
-              "FAULTY"
-        );
-
-      setPanels(
-        filteredPanels
-      );
+      // Show all panels for the selected site.
+      setPanels(panelData);
 
     } catch (error) {
 
