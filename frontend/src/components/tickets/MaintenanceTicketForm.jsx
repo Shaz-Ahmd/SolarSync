@@ -1,124 +1,184 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
 import axios from "axios";
 
-import { fetchSites } from "../../store/slices/siteSlice";
-import { reportTicket } from "../../store/slices/ticketSlice";
+import {
+  fetchSites,
+} from "../../store/slices/siteSlice";
 
-const MaintenanceTicketForm = ({ onClose }) => {
+import {
+  reportTicket,
+} from "../../store/slices/ticketSlice";
+
+const MaintenanceTicketForm = ({
+  onClose,
+}) => {
+
   const dispatch = useDispatch();
 
   const {
-    sites = [],
-  } = useSelector((state) => state.sites);
+    items,
+  } = useSelector(
+    (state) => state.sites
+  );
 
-  const [technicians, setTechnicians] = useState([]);
-  const [panels, setPanels] = useState([]);
+  const sites =
+    Array.isArray(items) ? items : [];
 
-  const [formData, setFormData] = useState({
-    siteId: "",
-    panelId: "",
-    issueDescription: "",
-    priority: "MEDIUM",
-    technicianId: "",
-  });
+  const [technicians, setTechnicians] =
+    useState([]);
+
+  const [panels, setPanels] =
+    useState([]);
+
+  const [formData, setFormData] =
+    useState({
+      siteId: "",
+      panelId: "",
+      issueDescription: "",
+      priority: "MEDIUM",
+      technicianId: "",
+    });
 
   useEffect(() => {
+
     dispatch(fetchSites());
 
     axios
       .get("/api/users/technicians")
       .then((response) => {
+
         setTechnicians(
           Array.isArray(response.data)
             ? response.data
             : []
         );
+
       })
       .catch((error) => {
+
         console.error(
-          "Failed to fetch technicians:",
+          "Failed to load technicians:",
           error
         );
 
         setTechnicians([]);
+
       });
+
   }, [dispatch]);
 
   const handleSiteChange = async (e) => {
-    const siteId = e.target.value;
 
-    setFormData((previous) => ({
-      ...previous,
+    const siteId =
+      e.target.value;
+
+    setFormData({
+      ...formData,
       siteId,
       panelId: "",
-    }));
+    });
 
     if (!siteId) {
+
       setPanels([]);
+
       return;
+
     }
 
     try {
-      const response = await axios.get(
-        `/api/panels/site/${siteId}`
+
+      const response =
+        await axios.get(
+          `/api/panels/site/${siteId}`
+        );
+
+      const panelData =
+        Array.isArray(response.data)
+          ? response.data
+          : [];
+
+      const filteredPanels =
+        panelData.filter(
+          (panel) =>
+            panel.status ===
+              "MAINTENANCE_REQUIRED" ||
+            panel.status ===
+              "FAULTY"
+        );
+
+      setPanels(
+        filteredPanels
       );
 
-      const panelData = Array.isArray(response.data)
-        ? response.data
-        : [];
-
-      const filteredPanels = panelData.filter(
-        (panel) =>
-          panel.status === "MAINTENANCE_REQUIRED" ||
-          panel.status === "FAULTY"
-      );
-
-      setPanels(filteredPanels);
     } catch (error) {
+
       console.error(
-        "Failed to fetch panels:",
+        "Failed to load panels:",
         error
       );
 
       setPanels([]);
+
     }
+
   };
 
   const handleChange = (e) => {
-    setFormData((previous) => ({
-      ...previous,
-      [e.target.name]: e.target.value,
-    }));
+
+    setFormData({
+      ...formData,
+      [e.target.name]:
+        e.target.value,
+    });
+
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
+
       await dispatch(
         reportTicket(formData)
       ).unwrap();
 
       onClose();
+
     } catch (error) {
+
       console.error(
-        "Failed to submit ticket:",
+        "Failed to report ticket:",
         error
       );
+
     }
+
   };
 
   return (
+
     <div className="modal-overlay">
 
       <div className="modal-card">
 
-        <h2>Report Maintenance Issue</h2>
+        <h2>
+          Report Maintenance Issue
+        </h2>
 
-        <form onSubmit={handleSubmit}>
-
-          {/* SITE */}
+        <form
+          onSubmit={handleSubmit}
+        >
 
           <select
             name="siteId"
@@ -126,21 +186,23 @@ const MaintenanceTicketForm = ({ onClose }) => {
             onChange={handleSiteChange}
             required
           >
+
             <option value="">
               Select Site
             </option>
 
             {sites.map((site) => (
+
               <option
                 key={site.id}
                 value={site.id}
               >
                 {site.siteName}
               </option>
-            ))}
-          </select>
 
-          {/* PANEL */}
+            ))}
+
+          </select>
 
           <select
             name="panelId"
@@ -149,41 +211,42 @@ const MaintenanceTicketForm = ({ onClose }) => {
             required
             disabled={!formData.siteId}
           >
+
             <option value="">
               Select Panel
             </option>
 
             {panels.map((panel) => (
+
               <option
                 key={panel.id}
                 value={panel.id}
               >
-                Panel #{panel.id}
-                {panel.serialNumber
-                  ? ` (${panel.serialNumber})`
-                  : ""}
+                Panel #{panel.id} (
+                {panel.serialNumber})
               </option>
-            ))}
-          </select>
 
-          {/* DESCRIPTION */}
+            ))}
+
+          </select>
 
           <textarea
             name="issueDescription"
             rows="3"
             placeholder="Describe the fault in detail..."
-            value={formData.issueDescription}
+            value={
+              formData.issueDescription
+            }
             onChange={handleChange}
             required
           />
-
-          {/* PRIORITY */}
 
           <select
             name="priority"
             value={formData.priority}
             onChange={handleChange}
           >
+
             <option value="LOW">
               LOW
             </option>
@@ -199,9 +262,8 @@ const MaintenanceTicketForm = ({ onClose }) => {
             <option value="CRITICAL">
               CRITICAL
             </option>
-          </select>
 
-          {/* TECHNICIAN */}
+          </select>
 
           <select
             name="technicianId"
@@ -209,18 +271,22 @@ const MaintenanceTicketForm = ({ onClose }) => {
             onChange={handleChange}
             required
           >
+
             <option value="">
               Select Technician
             </option>
 
             {technicians.map((tech) => (
+
               <option
                 key={tech.id}
                 value={tech.id}
               >
                 {tech.username}
               </option>
+
             ))}
+
           </select>
 
           <button
@@ -242,6 +308,7 @@ const MaintenanceTicketForm = ({ onClose }) => {
       </div>
 
     </div>
+
   );
 };
 
