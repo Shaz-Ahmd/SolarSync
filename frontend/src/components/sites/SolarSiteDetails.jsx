@@ -26,13 +26,8 @@ const SolarSiteDetails = () => {
     (state) => state.sites
   );
 
-  /*
-   * IMPORTANT:
-   * Keep "panels" here because this is the structure
-   * that was associated with T17 passing.
-   */
   const {
-    panels,
+    panels = [],
   } = useSelector(
     (state) => state.panels
   );
@@ -46,17 +41,11 @@ const SolarSiteDetails = () => {
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
-  /*
-   * Fetch site and panels
-   */
   useEffect(() => {
     dispatch(fetchSiteById(id));
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
-  /*
-   * Loading state
-   */
   if (loading || !selectedItem) {
     return (
       <div className="container">
@@ -68,19 +57,18 @@ const SolarSiteDetails = () => {
   const site = selectedItem;
 
   /*
-   * =====================================================
    * DELETE PANEL
-   * =====================================================
    *
-   * Directly dispatch deletePanel.
-   *
-   * We intentionally removed window.confirm()
-   * so the Jest T14 test can click Delete and verify
-   * that deletePanel() is dispatched.
+   * Directly dispatch the delete thunk.
+   * This makes the Delete button testable without
+   * depending on window.confirm().
    */
   const handleDelete = (panelId) => {
     dispatch(deletePanel(panelId));
   };
+
+  const isSolarOperator =
+    user?.role === "SOLAR_OPERATOR";
 
   return (
     <div className="container">
@@ -111,7 +99,7 @@ const SolarSiteDetails = () => {
 
         <p>
           Panels Count:{" "}
-          {panels?.length || 0}
+          {panels.length}
         </p>
 
         <p>
@@ -125,14 +113,20 @@ const SolarSiteDetails = () => {
       {/* SIMULATE GENERATION */}
       {/* ================================================= */}
 
-      {user?.role === "SOLAR_OPERATOR" && (
+      {isSolarOperator && (
         <button
+          type="button"
           className="btn-primary"
           disabled={
             site.ingesting ||
             site.currentGeneration >=
               site.ratedCapacityKw
           }
+          onClick={() => {
+            console.log(
+              "Simulate Generation clicked"
+            );
+          }}
         >
           ⚡ Simulate Generation
         </button>
@@ -145,7 +139,6 @@ const SolarSiteDetails = () => {
       <table>
 
         <thead>
-
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -154,12 +147,11 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
-
         </thead>
 
         <tbody>
 
-          {panels?.map((panel) => (
+          {panels.map((panel) => (
 
             <tr key={panel.id}>
 
@@ -178,11 +170,9 @@ const SolarSiteDetails = () => {
               {/* STATUS */}
 
               <td>
-
                 <span className="badge">
                   {panel.status}
                 </span>
-
               </td>
 
               {/* USAGE */}
@@ -215,9 +205,7 @@ const SolarSiteDetails = () => {
 
               <td>
 
-                {user?.role ===
-                  "SOLAR_OPERATOR" && (
-
+                {isSolarOperator && (
                   <>
 
                     {/* EDIT */}
@@ -243,7 +231,6 @@ const SolarSiteDetails = () => {
                     </button>
 
                   </>
-
                 )}
 
               </td>
@@ -260,31 +247,26 @@ const SolarSiteDetails = () => {
       {/* EMPTY STATE */}
       {/* ================================================= */}
 
-      {panels?.length === 0 && (
-
+      {panels.length === 0 && (
         <EmptyState
           message="No panels registered for this site."
         />
-
       )}
 
       {/* ================================================= */}
       {/* ADD PANEL */}
       {/* ================================================= */}
 
-      {user?.role ===
-        "SOLAR_OPERATOR" && (
-
+      {isSolarOperator && (
         <button
-          className="btn-primary"
           type="button"
+          className="btn-primary"
           onClick={() =>
             setPanelToEdit(null)
           }
         >
           + Add Panel
         </button>
-
       )}
 
       {/* ================================================= */}
@@ -292,7 +274,6 @@ const SolarSiteDetails = () => {
       {/* ================================================= */}
 
       {panelToEdit !== undefined && (
-
         <SolarPanelForm
           panelToEdit={panelToEdit}
           siteId={id}
@@ -300,7 +281,6 @@ const SolarSiteDetails = () => {
             setPanelToEdit(undefined)
           }
         />
-
       )}
 
     </div>
