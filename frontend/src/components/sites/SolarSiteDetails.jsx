@@ -240,20 +240,14 @@ const SolarSiteDetails = () => {
 
       )}
 
-      {user?.role ===
-        "SOLAR_OPERATOR" && (
-
-        <button
-          className="btn-primary"
-          type="button"
-          onClick={() =>
-            setPanelToEdit(null)
-          }
-        >
-          + Add Panel
-        </button>
-
-      )}
+      {user?.role === "SOLAR_OPERATOR" && (
+  <button
+    type="button"
+    className="btn-primary"
+  >
+    ⚡ Simulate Generation
+  </button>
+)}
 
       {panelToEdit !== undefined && (
 
