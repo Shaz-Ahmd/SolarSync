@@ -16,9 +16,7 @@ const MaintenanceTicketList = () => {
   items: tickets = [],
   loading,
   error,
-  } = useSelector(
-  (state) => state.tickets
-  );
+  } = useSelector((state) => state.tickets);
 
   const { user } = useSelector(
     (state) => state.auth
