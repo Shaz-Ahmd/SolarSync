@@ -1,7 +1,10 @@
-import React from 'react';
+import React from "react";
 
-const StatusDonut = ({ data }) => {
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+const StatusDonut = ({ data = [] }) => {
+  const total = data.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
 
   if (total === 0) {
     return <div>No Ticket Data</div>;
@@ -10,7 +13,8 @@ const StatusDonut = ({ data }) => {
   let currentAngle = -Math.PI / 2;
 
   const arcs = data.map((item) => {
-    const angle = (item.value / total) * Math.PI * 2;
+    const angle =
+      (item.value / total) * Math.PI * 2;
 
     const startAngle = currentAngle;
     const endAngle = currentAngle + angle;
@@ -21,7 +25,8 @@ const StatusDonut = ({ data }) => {
     const x2 = Math.cos(endAngle);
     const y2 = Math.sin(endAngle);
 
-    const largeArcFlag = angle > Math.PI ? 1 : 0;
+    const largeArcFlag =
+      angle > Math.PI ? 1 : 0;
 
     const path = `
       M ${x1} ${y1}
@@ -32,7 +37,7 @@ const StatusDonut = ({ data }) => {
 
     return {
       ...item,
-      path
+      path,
     };
   });
 
@@ -57,7 +62,9 @@ const StatusDonut = ({ data }) => {
       <div className="donut-legend">
         {data.map((item, index) => (
           <div key={index}>
-            <span>{item.label}: {item.value}</span>
+            <span>
+              {item.label}: {item.value}
+            </span>
           </div>
         ))}
       </div>
