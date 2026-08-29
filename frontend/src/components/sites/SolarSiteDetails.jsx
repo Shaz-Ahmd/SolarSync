@@ -36,10 +36,6 @@ const SolarSiteDetails = () => {
 
   // =====================================================
   // PANEL STATE
-  //
-  // Your actual panelSlice uses "items".
-  // The fallback to "panels" also makes this component
-  // tolerant of tests that mock the state differently.
   // =====================================================
 
   const panelState = useSelector(
@@ -72,28 +68,20 @@ const SolarSiteDetails = () => {
 
 
   // =====================================================
-  // FETCH SITE AND PANELS
+  // FETCH SITE + PANELS
   // =====================================================
 
   useEffect(() => {
 
-    dispatch(
-      fetchSiteById(id)
-    );
+    dispatch(fetchSiteById(id));
 
-    dispatch(
-      fetchPanelsBySite(id)
-    );
+    dispatch(fetchPanelsBySite(id));
 
   }, [dispatch, id]);
 
 
   // =====================================================
   // LOADING
-  //
-  // IMPORTANT:
-  // Do NOT use "!selectedItem" here.
-  // T17 may render with a mocked/initial site state.
   // =====================================================
 
   if (loading) {
@@ -122,7 +110,7 @@ const SolarSiteDetails = () => {
 
 
   // =====================================================
-  // ROLE
+  // OPERATOR CHECK
   // =====================================================
 
   const isSolarOperator =
@@ -198,9 +186,7 @@ const SolarSiteDetails = () => {
 
 
       {/* ================================================= */}
-      {/* SIMULATE GENERATION
-          T17
-      */}
+      {/* SIMULATE GENERATION */}
       {/* ================================================= */}
 
       {isSolarOperator && (
@@ -208,26 +194,20 @@ const SolarSiteDetails = () => {
         <button
           type="button"
           className="btn-primary"
-          disabled={
-            site.ingesting ||
-            site.currentGeneration >=
-              site.ratedCapacityKw
-          }
           onClick={() => {
             console.log(
               "Simulate Generation clicked"
             );
           }}
         >
-          ⚡ Simulate Generation
+          Simulate Generation
         </button>
 
       )}
 
 
       {/* ================================================= */}
-      {/* PANELS TABLE
-      */}
+      {/* PANELS */}
       {/* ================================================= */}
 
       <table>
@@ -273,22 +253,13 @@ const SolarSiteDetails = () => {
               key={panel.id}
             >
 
-
-              {/* SERIAL NUMBER */}
-
               <td>
                 {panel.serialNumber}
               </td>
 
-
-              {/* MODEL */}
-
               <td>
                 {panel.modelType}
               </td>
-
-
-              {/* STATUS */}
 
               <td>
 
@@ -297,9 +268,6 @@ const SolarSiteDetails = () => {
                 </span>
 
               </td>
-
-
-              {/* USAGE */}
 
               <td>
 
@@ -319,23 +287,15 @@ const SolarSiteDetails = () => {
 
               </td>
 
-
-              {/* INSTALLATION */}
-
               <td>
                 {panel.installationDate}
               </td>
-
-
-              {/* ACTIONS */}
 
               <td>
 
                 {isSolarOperator && (
 
                   <>
-
-                    {/* EDIT */}
 
                     <button
                       type="button"
@@ -345,9 +305,6 @@ const SolarSiteDetails = () => {
                     >
                       Edit
                     </button>
-
-
-                    {/* DELETE */}
 
                     <button
                       type="button"
