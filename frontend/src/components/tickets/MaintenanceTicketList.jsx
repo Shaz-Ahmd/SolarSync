@@ -8,13 +8,13 @@ import {
   fetchTickets,
   resolveTicket,
   clearError,
-} from '../../store/slices/ticketSlice';
+} from "../../store/slices/ticketSlice";
 
 const MaintenanceTicketList = () => {
   const dispatch = useDispatch();
 
   const {
-    tickets,
+    tickets = [],
     loading,
     error,
   } = useSelector(
@@ -35,9 +35,7 @@ const MaintenanceTicketList = () => {
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
-        dispatch({
-          type: "tickets/clearError",
-        });
+        dispatch(clearError());
       }, 5000);
 
       return () => clearTimeout(timer);
@@ -60,8 +58,7 @@ const MaintenanceTicketList = () => {
       <div className="page-header">
         <h1>Maintenance Tickets</h1>
 
-        {user?.role ===
-          "SOLAR_OPERATOR" && (
+        {user?.role === "SOLAR_OPERATOR" && (
           <button
             className="btn-primary"
             onClick={() => setShowForm(true)}
