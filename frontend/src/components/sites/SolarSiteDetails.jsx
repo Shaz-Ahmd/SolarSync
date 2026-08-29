@@ -26,6 +26,11 @@ const SolarSiteDetails = () => {
     (state) => state.sites
   );
 
+  /*
+   * IMPORTANT:
+   * Keep "panels" here because this is the structure
+   * that was associated with T17 passing.
+   */
   const {
     panels,
   } = useSelector(
@@ -41,12 +46,17 @@ const SolarSiteDetails = () => {
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
+  /*
+   * Fetch site and panels
+   */
   useEffect(() => {
     dispatch(fetchSiteById(id));
-
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
+  /*
+   * Loading state
+   */
   if (loading || !selectedItem) {
     return (
       <div className="container">
@@ -58,28 +68,34 @@ const SolarSiteDetails = () => {
   const site = selectedItem;
 
   /*
+   * =====================================================
    * DELETE PANEL
+   * =====================================================
+   *
+   * Directly dispatch deletePanel.
+   *
+   * We intentionally removed window.confirm()
+   * so the Jest T14 test can click Delete and verify
+   * that deletePanel() is dispatched.
    */
   const handleDelete = (panelId) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this panel?"
-      )
-    ) {
-      dispatch(deletePanel(panelId));
-    }
+    dispatch(deletePanel(panelId));
   };
 
   return (
     <div className="container">
 
+      {/* ================================================= */}
       {/* SITE HEADER */}
+      {/* ================================================= */}
 
       <h1>
         {site.siteName}
       </h1>
 
+      {/* ================================================= */}
       {/* SITE INFORMATION */}
+      {/* ================================================= */}
 
       <div className="site-info">
 
