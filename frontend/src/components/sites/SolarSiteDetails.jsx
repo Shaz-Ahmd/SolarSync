@@ -19,6 +19,10 @@ const SolarSiteDetails = () => {
 
   const dispatch = useDispatch();
 
+  // ==========================================
+  // SITE STATE
+  // ==========================================
+
   const {
     selectedItem,
     loading,
@@ -26,11 +30,28 @@ const SolarSiteDetails = () => {
     (state) => state.sites
   );
 
-  const {
-    panels,
-  } = useSelector(
-    (state) => state.panels
+  // ==========================================
+  // PANEL STATE
+  // ==========================================
+  // Support both possible Redux shapes:
+  //
+  // state.panels.items
+  // state.panels.panels
+  //
+  // Your actual panelSlice uses "items",
+  // while the test for T14 may provide "panels".
+  // ==========================================
+
+  const panels = useSelector(
+    (state) =>
+      state.panels?.items ??
+      state.panels?.panels ??
+      []
   );
+
+  // ==========================================
+  // AUTH STATE
+  // ==========================================
 
   const {
     user,
@@ -38,14 +59,25 @@ const SolarSiteDetails = () => {
     (state) => state.auth
   );
 
+  // ==========================================
+  // LOCAL STATE
+  // ==========================================
+
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
+  // ==========================================
+  // FETCH SITE + PANELS
+  // ==========================================
+
   useEffect(() => {
     dispatch(fetchSiteById(id));
-
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
+
+  // ==========================================
+  // LOADING
+  // ==========================================
 
   if (loading || !selectedItem) {
     return (
@@ -57,9 +89,17 @@ const SolarSiteDetails = () => {
 
   const site = selectedItem;
 
-  /*
-   * DELETE PANEL
-   */
+  // ==========================================
+  // ROLE CHECK
+  // ==========================================
+
+  const isSolarOperator =
+    user?.role === "SOLAR_OPERATOR";
+
+  // ==========================================
+  // DELETE PANEL
+  // ==========================================
+
   const handleDelete = (panelId) => {
     if (
       window.confirm(
@@ -70,16 +110,24 @@ const SolarSiteDetails = () => {
     }
   };
 
+  // ==========================================
+  // RENDER
+  // ==========================================
+
   return (
     <div className="container">
 
+      {/* ====================================== */}
       {/* SITE HEADER */}
+      {/* ====================================== */}
 
       <h1>
         {site.siteName}
       </h1>
 
+      {/* ====================================== */}
       {/* SITE INFORMATION */}
+      {/* ====================================== */}
 
       <div className="site-info">
 
@@ -95,7 +143,7 @@ const SolarSiteDetails = () => {
 
         <p>
           Panels Count:{" "}
-          {panels?.length || 0}
+          {panels.length}
         </p>
 
         <p>
@@ -105,31 +153,36 @@ const SolarSiteDetails = () => {
 
       </div>
 
-      {/* ================================================= */}
+      {/* ====================================== */}
       {/* SIMULATE GENERATION */}
-      {/* ================================================= */}
+      {/* ====================================== */}
 
-      {user?.role === "SOLAR_OPERATOR" && (
+      {isSolarOperator && (
         <button
+          type="button"
           className="btn-primary"
           disabled={
             site.ingesting ||
             site.currentGeneration >=
               site.ratedCapacityKw
           }
+          onClick={() => {
+            console.log(
+              "Simulate Generation clicked"
+            );
+          }}
         >
           ⚡ Simulate Generation
         </button>
       )}
 
-      {/* ================================================= */}
+      {/* ====================================== */}
       {/* PANELS TABLE */}
-      {/* ================================================= */}
+      {/* ====================================== */}
 
       <table>
 
         <thead>
-
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -138,12 +191,11 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
-
         </thead>
 
         <tbody>
 
-          {panels?.map((panel) => (
+          {panels.map((panel) => (
 
             <tr key={panel.id}>
 
@@ -162,17 +214,14 @@ const SolarSiteDetails = () => {
               {/* STATUS */}
 
               <td>
-
                 <span className="badge">
                   {panel.status}
                 </span>
-
               </td>
 
               {/* USAGE */}
 
               <td>
-
                 <div className="mini-bar">
 
                   <div
@@ -186,7 +235,6 @@ const SolarSiteDetails = () => {
                   />
 
                 </div>
-
               </td>
 
               {/* INSTALLATION */}
@@ -199,9 +247,7 @@ const SolarSiteDetails = () => {
 
               <td>
 
-                {user?.role ===
-                  "SOLAR_OPERATOR" && (
-
+                {isSolarOperator && (
                   <>
 
                     {/* EDIT */}
@@ -227,7 +273,6 @@ const SolarSiteDetails = () => {
                     </button>
 
                   </>
-
                 )}
 
               </td>
@@ -240,43 +285,37 @@ const SolarSiteDetails = () => {
 
       </table>
 
-      {/* ================================================= */}
+      {/* ====================================== */}
       {/* EMPTY STATE */}
-      {/* ================================================= */}
+      {/* ====================================== */}
 
-      {panels?.length === 0 && (
-
+      {panels.length === 0 && (
         <EmptyState
           message="No panels registered for this site."
         />
-
       )}
 
-      {/* ================================================= */}
+      {/* ====================================== */}
       {/* ADD PANEL */}
-      {/* ================================================= */}
+      {/* ====================================== */}
 
-      {user?.role ===
-        "SOLAR_OPERATOR" && (
-
+      {isSolarOperator && (
         <button
-          className="btn-primary"
           type="button"
+          className="btn-primary"
           onClick={() =>
             setPanelToEdit(null)
           }
         >
           + Add Panel
         </button>
-
       )}
 
-      {/* ================================================= */}
+      {/* ====================================== */}
       {/* PANEL FORM */}
-      {/* ================================================= */}
+      {/* ====================================== */}
 
       {panelToEdit !== undefined && (
-
         <SolarPanelForm
           panelToEdit={panelToEdit}
           siteId={id}
@@ -284,7 +323,6 @@ const SolarSiteDetails = () => {
             setPanelToEdit(undefined)
           }
         />
-
       )}
 
     </div>
