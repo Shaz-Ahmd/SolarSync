@@ -99,17 +99,18 @@ const SolarSiteDetails = () => {
 
       {/* SIMULATE GENERATION */}
 
-      {isSolarOperator && (
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={() => {
-            console.log("Simulate Generation clicked");
-          }}
-        >
-          Simulate Generation
-        </button>
-      )}
+      <button
+  type="button"
+  className="btn-primary"
+  disabled={user?.role !== "SOLAR_OPERATOR"}
+  onClick={() => {
+    if (user?.role === "SOLAR_OPERATOR") {
+      console.log("Simulate Generation clicked");
+    }
+  }}
+>
+  Simulate Generation
+</button>
 
       {/* PANELS */}
 
