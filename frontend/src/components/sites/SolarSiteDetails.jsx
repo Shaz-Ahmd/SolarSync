@@ -16,6 +16,7 @@ import {
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
+
   const dispatch = useDispatch();
 
   const {
@@ -26,7 +27,7 @@ const SolarSiteDetails = () => {
   );
 
   const {
-    items: panels = [],
+    panels,
   } = useSelector(
     (state) => state.panels
   );
@@ -40,18 +41,13 @@ const SolarSiteDetails = () => {
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
-  /*
-   * Fetch site and panels when the page loads
-   */
   useEffect(() => {
     dispatch(fetchSiteById(id));
+
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
-  /*
-   * Loading state
-   */
-  if (loading) {
+  if (loading || !selectedItem) {
     return (
       <div className="container">
         Loading site details...
@@ -59,26 +55,10 @@ const SolarSiteDetails = () => {
     );
   }
 
-  /*
-   * Fallback site object
-   */
-  const site = selectedItem || {
-    siteName: "Solar Site",
-    locationCoordinates: "",
-    ratedCapacityKw: 0,
-    commissionDate: "",
-    ingesting: false,
-    currentGeneration: 0,
-  };
+  const site = selectedItem;
 
   /*
-   * Check whether logged-in user is a SOLAR_OPERATOR
-   */
-  const isSolarOperator =
-    user?.role === "SOLAR_OPERATOR";
-
-  /*
-   * Delete panel
+   * DELETE PANEL
    */
   const handleDelete = (panelId) => {
     if (
@@ -93,17 +73,13 @@ const SolarSiteDetails = () => {
   return (
     <div className="container">
 
-      {/* ============================== */}
       {/* SITE HEADER */}
-      {/* ============================== */}
 
       <h1>
         {site.siteName}
       </h1>
 
-      {/* ============================== */}
       {/* SITE INFORMATION */}
-      {/* ============================== */}
 
       <div className="site-info">
 
@@ -119,7 +95,7 @@ const SolarSiteDetails = () => {
 
         <p>
           Panels Count:{" "}
-          {panels.length}
+          {panels?.length || 0}
         </p>
 
         <p>
@@ -129,36 +105,31 @@ const SolarSiteDetails = () => {
 
       </div>
 
-      {/* ============================== */}
+      {/* ================================================= */}
       {/* SIMULATE GENERATION */}
-      {/* ============================== */}
+      {/* ================================================= */}
 
-      {isSolarOperator && (
+      {user?.role === "SOLAR_OPERATOR" && (
         <button
-          type="button"
           className="btn-primary"
           disabled={
             site.ingesting ||
             site.currentGeneration >=
               site.ratedCapacityKw
           }
-          onClick={() => {
-            console.log(
-              "Simulate Generation clicked"
-            );
-          }}
         >
           ⚡ Simulate Generation
         </button>
       )}
 
-      {/* ============================== */}
+      {/* ================================================= */}
       {/* PANELS TABLE */}
-      {/* ============================== */}
+      {/* ================================================= */}
 
       <table>
 
         <thead>
+
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -167,11 +138,12 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
+
         </thead>
 
         <tbody>
 
-          {panels.map((panel) => (
+          {panels?.map((panel) => (
 
             <tr key={panel.id}>
 
@@ -190,15 +162,19 @@ const SolarSiteDetails = () => {
               {/* STATUS */}
 
               <td>
+
                 <span className="badge">
                   {panel.status}
                 </span>
+
               </td>
 
               {/* USAGE */}
 
               <td>
+
                 <div className="mini-bar">
+
                   <div
                     style={{
                       width: `${Math.min(
@@ -208,7 +184,9 @@ const SolarSiteDetails = () => {
                       )}%`,
                     }}
                   />
+
                 </div>
+
               </td>
 
               {/* INSTALLATION */}
@@ -221,8 +199,11 @@ const SolarSiteDetails = () => {
 
               <td>
 
-                {isSolarOperator && (
+                {user?.role ===
+                  "SOLAR_OPERATOR" && (
+
                   <>
+
                     {/* EDIT */}
 
                     <button
@@ -244,7 +225,9 @@ const SolarSiteDetails = () => {
                     >
                       Delete
                     </button>
+
                   </>
+
                 )}
 
               </td>
@@ -257,37 +240,43 @@ const SolarSiteDetails = () => {
 
       </table>
 
-      {/* ============================== */}
+      {/* ================================================= */}
       {/* EMPTY STATE */}
-      {/* ============================== */}
+      {/* ================================================= */}
 
-      {panels.length === 0 && (
+      {panels?.length === 0 && (
+
         <EmptyState
           message="No panels registered for this site."
         />
+
       )}
 
-      {/* ============================== */}
+      {/* ================================================= */}
       {/* ADD PANEL */}
-      {/* ============================== */}
+      {/* ================================================= */}
 
-      {isSolarOperator && (
+      {user?.role ===
+        "SOLAR_OPERATOR" && (
+
         <button
-          type="button"
           className="btn-primary"
+          type="button"
           onClick={() =>
             setPanelToEdit(null)
           }
         >
           + Add Panel
         </button>
+
       )}
 
-      {/* ============================== */}
+      {/* ================================================= */}
       {/* PANEL FORM */}
-      {/* ============================== */}
+      {/* ================================================= */}
 
       {panelToEdit !== undefined && (
+
         <SolarPanelForm
           panelToEdit={panelToEdit}
           siteId={id}
@@ -295,6 +284,7 @@ const SolarSiteDetails = () => {
             setPanelToEdit(undefined)
           }
         />
+
       )}
 
     </div>
