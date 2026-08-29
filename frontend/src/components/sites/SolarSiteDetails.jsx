@@ -19,58 +19,27 @@ const SolarSiteDetails = () => {
 
   const dispatch = useDispatch();
 
-  // ======================================================
-  // SITE STATE
-  // ======================================================
-
   const {
     selectedItem,
     loading,
-  } = useSelector(
-    (state) => state.sites
-  );
-
-  // ======================================================
-  // PANEL STATE
-  // ======================================================
+  } = useSelector((state) => state.sites);
 
   const {
-    items: panels = [],
-  } = useSelector(
-    (state) => state.panels
-  );
-
-  // ======================================================
-  // AUTH STATE
-  // ======================================================
+    panels = [],
+  } = useSelector((state) => state.panels);
 
   const {
     user,
-  } = useSelector(
-    (state) => state.auth
-  );
+  } = useSelector((state) => state.auth);
 
-  // ======================================================
-  // PANEL EDIT STATE
-  // ======================================================
-
-  const [panelToEdit, setPanelToEdit] =
-    useState(undefined);
-
-  // ======================================================
-  // FETCH SITE + PANELS
-  // ======================================================
+  const [panelToEdit, setPanelToEdit] = useState(undefined);
 
   useEffect(() => {
     dispatch(fetchSiteById(id));
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
-  // ======================================================
-  // LOADING
-  // ======================================================
-
-  if (loading) {
+  if (loading || !selectedItem) {
     return (
       <div className="container">
         Loading site details...
@@ -78,34 +47,10 @@ const SolarSiteDetails = () => {
     );
   }
 
-  // ======================================================
-  // FALLBACK SITE
-  //
-  // IMPORTANT FOR T17:
-  // Do NOT return early when selectedItem is null.
-  // The test may render the component without providing
-  // a selected site and still expect the operator button.
-  // ======================================================
-
-  const site = selectedItem || {
-    siteName: "Solar Site",
-    locationCoordinates: "",
-    ratedCapacityKw: 0,
-    commissionDate: "",
-    ingesting: false,
-    currentGeneration: 0,
-  };
-
-  // ======================================================
-  // ROLE CHECK
-  // ======================================================
+  const site = selectedItem;
 
   const isSolarOperator =
     user?.role === "SOLAR_OPERATOR";
-
-  // ======================================================
-  // DELETE PANEL
-  // ======================================================
 
   const handleDelete = (panelId) => {
     if (
@@ -117,24 +62,12 @@ const SolarSiteDetails = () => {
     }
   };
 
-  // ======================================================
-  // RENDER
-  // ======================================================
-
   return (
     <div className="container">
-
-      {/* ================================================= */}
-      {/* SITE HEADER */}
-      {/* ================================================= */}
 
       <h1>
         {site.siteName}
       </h1>
-
-      {/* ================================================= */}
-      {/* SITE INFORMATION */}
-      {/* ================================================= */}
 
       <div className="site-info">
 
@@ -161,36 +94,25 @@ const SolarSiteDetails = () => {
       </div>
 
       {/* ================================================= */}
-      {/* T17 - SIMULATE GENERATION */}
+      {/* SIMULATE GENERATION */}
       {/* ================================================= */}
 
       {isSolarOperator && (
         <button
           type="button"
           className="btn-primary"
-          disabled={
-            site.ingesting ||
-            site.currentGeneration >=
-              site.ratedCapacityKw
-          }
-          onClick={() => {
-            console.log(
-              "Simulate Generation clicked"
-            );
-          }}
         >
-          ⚡ Simulate Generation
+          Simulate Generation
         </button>
       )}
 
       {/* ================================================= */}
-      {/* PANELS TABLE */}
+      {/* PANELS */}
       {/* ================================================= */}
 
       <table>
 
         <thead>
-
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -199,72 +121,48 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
-
         </thead>
 
         <tbody>
 
           {panels.map((panel) => (
-
             <tr key={panel.id}>
-
-              {/* SERIAL NUMBER */}
 
               <td>
                 {panel.serialNumber}
               </td>
 
-              {/* MODEL */}
-
               <td>
                 {panel.modelType}
               </td>
 
-              {/* STATUS */}
-
               <td>
-
                 <span className="badge">
                   {panel.status}
                 </span>
-
               </td>
 
-              {/* USAGE */}
-
               <td>
-
                 <div className="mini-bar">
-
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) *
-                          100,
+                        ((panel.usageCount || 0) / 5) * 100,
                         100
                       )}%`,
                     }}
                   />
-
                 </div>
-
               </td>
-
-              {/* INSTALLATION */}
 
               <td>
                 {panel.installationDate}
               </td>
 
-              {/* ACTIONS */}
-
               <td>
 
                 {isSolarOperator && (
                   <>
-
-                    {/* EDIT */}
-
                     <button
                       type="button"
                       onClick={() =>
@@ -274,8 +172,6 @@ const SolarSiteDetails = () => {
                       Edit
                     </button>
 
-                    {/* DELETE */}
-
                     <button
                       type="button"
                       onClick={() =>
@@ -284,14 +180,12 @@ const SolarSiteDetails = () => {
                     >
                       Delete
                     </button>
-
                   </>
                 )}
 
               </td>
 
             </tr>
-
           ))}
 
         </tbody>
