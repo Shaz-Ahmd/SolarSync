@@ -2,7 +2,6 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:8080";
 
-// Request interceptor
 axios.interceptors.request.use(
   (config) => {
     const storedUser = localStorage.getItem("user");
@@ -17,8 +16,9 @@ axios.interceptors.request.use(
       user = null;
     }
 
-    if (user && user.token) {
+    if (user?.token) {
       config.headers = config.headers || {};
+
       config.headers.Authorization =
         `Bearer ${user.token}`;
     }
@@ -30,15 +30,11 @@ axios.interceptors.request.use(
   }
 );
 
-// Response interceptor
 axios.interceptors.response.use(
   (response) => response,
 
   (error) => {
-    if (
-      error.response &&
-      error.response.status === 401
-    ) {
+    if (error.response?.status === 401) {
       localStorage.removeItem("user");
       window.location.href = "/login";
     }

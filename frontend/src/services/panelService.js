@@ -3,15 +3,22 @@ import axios from "axios";
 const panelService = {
 
   getBySite: (siteId) => {
-    return axios.get(`/api/panels/site/${siteId}`);
+    return axios.get(
+      `/api/panels/site/${siteId}`
+    );
   },
 
   getById: (id) => {
-    return axios.get(`/api/panels/${id}`);
+    return axios.get(
+      `/api/panels/${id}`
+    );
   },
 
   createPanel: (panelData) => {
-    return axios.post("/api/panels", panelData);
+    return axios.post(
+      "/api/panels",
+      panelData
+    );
   },
 
   updatePanel: (id, panelData) => {
@@ -22,7 +29,9 @@ const panelService = {
   },
 
   deletePanel: (id) => {
-    return axios.delete(`/api/panels/${id}`);
+    return axios.delete(
+      `/api/panels/${id}`
+    );
   },
 
 };

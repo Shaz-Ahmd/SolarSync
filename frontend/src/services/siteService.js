@@ -11,15 +11,23 @@ const siteService = {
   },
 
   create: (siteData) => {
-    return axios.post("/api/sites", siteData);
+    return axios.post(
+      "/api/sites",
+      siteData
+    );
   },
 
   update: (id, siteData) => {
-    return axios.put(`/api/sites/${id}`, siteData);
+    return axios.put(
+      `/api/sites/${id}`,
+      siteData
+    );
   },
 
   delete: (id) => {
-    return axios.delete(`/api/sites/${id}`);
+    return axios.delete(
+      `/api/sites/${id}`
+    );
   },
 
 };
