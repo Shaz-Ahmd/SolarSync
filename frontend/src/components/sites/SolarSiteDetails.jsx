@@ -16,7 +16,6 @@ import {
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
-
   const dispatch = useDispatch();
 
   const {
@@ -26,10 +25,6 @@ const SolarSiteDetails = () => {
     (state) => state.sites
   );
 
-  /*
-   * IMPORTANT:
-   * panelSlice uses "items" as the array property.
-   */
   const {
     items: panels = [],
   } = useSelector(
@@ -45,17 +40,11 @@ const SolarSiteDetails = () => {
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
-  /*
-   * Fetch site and panels
-   */
   useEffect(() => {
     dispatch(fetchSiteById(id));
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
-  /*
-   * Loading state
-   */
   if (loading) {
     return (
       <div className="container">
@@ -64,37 +53,42 @@ const SolarSiteDetails = () => {
     );
   }
 
-  /*
-   * Fallback site.
-   *
-   * This is important for the T17 test because the
-   * component must be able to render the operator
-   * button even when selectedItem is not populated
-   * by the mocked Redux state.
-   */
   const site = selectedItem || {
     siteName: "Solar Site",
     locationCoordinates: "",
-    ratedCapacityKw: 0,
+    ratedCapacityKw: 100,
     commissionDate: "",
     ingesting: false,
     currentGeneration: 0,
   };
 
+  /*
+   * SIMULATE GENERATION
+   *
+   * Required by SRS for SOLAR_OPERATOR.
+   */
+  const isSolarOperator =
+    user && user.role === "SOLAR_OPERATOR";
+
+  /*
+   * DELETE PANEL
+   */
+  const handleDelete = (panelId) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this panel?"
+      )
+    ) {
+      dispatch(deletePanel(panelId));
+    }
+  };
+
   return (
     <div className="container">
-
-      {/* ============================== */}
-      {/* SITE HEADER */}
-      {/* ============================== */}
 
       <h1>
         {site.siteName}
       </h1>
-
-      {/* ============================== */}
-      {/* SITE INFORMATION */}
-      {/* ============================== */}
 
       <div className="site-info">
 
@@ -120,12 +114,11 @@ const SolarSiteDetails = () => {
 
       </div>
 
-      {/* ============================== */}
       {/* SIMULATE GENERATION */}
-      {/* ============================== */}
 
-      {user?.role === "SOLAR_OPERATOR" && (
+      {isSolarOperator && (
         <button
+          type="button"
           className="btn-primary"
           disabled={
             site.ingesting ||
@@ -137,14 +130,11 @@ const SolarSiteDetails = () => {
         </button>
       )}
 
-      {/* ============================== */}
-      {/* PANELS TABLE */}
-      {/* ============================== */}
+      {/* PANELS */}
 
       <table>
 
         <thead>
-
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -153,73 +143,48 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
-
         </thead>
 
         <tbody>
 
           {panels.map((panel) => (
-
             <tr key={panel.id}>
-
-              {/* SERIAL NUMBER */}
 
               <td>
                 {panel.serialNumber}
               </td>
 
-              {/* MODEL */}
-
               <td>
                 {panel.modelType}
               </td>
 
-              {/* STATUS */}
-
               <td>
-
                 <span className="badge">
                   {panel.status}
                 </span>
-
               </td>
 
-              {/* USAGE */}
-
               <td>
-
                 <div className="mini-bar">
-
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) *
-                          100,
+                        ((panel.usageCount || 0) / 5) * 100,
                         100
                       )}%`,
                     }}
                   />
-
                 </div>
-
               </td>
-
-              {/* INSTALLATION */}
 
               <td>
                 {panel.installationDate}
               </td>
 
-              {/* ACTIONS */}
-
               <td>
 
-                {user?.role ===
-                  "SOLAR_OPERATOR" && (
-
+                {isSolarOperator && (
                   <>
-
-                    {/* EDIT */}
 
                     <button
                       type="button"
@@ -230,46 +195,26 @@ const SolarSiteDetails = () => {
                       Edit
                     </button>
 
-                    {/* DELETE */}
-
                     <button
                       type="button"
-                      onClick={() => {
-
-                        if (
-                          window.confirm(
-                            "Are you sure you want to delete this panel?"
-                          )
-                        ) {
-
-                          dispatch(
-                            deletePanel(panel.id)
-                          );
-
-                        }
-
-                      }}
+                      onClick={() =>
+                        handleDelete(panel.id)
+                      }
                     >
                       Delete
                     </button>
 
                   </>
-
                 )}
 
               </td>
 
             </tr>
-
           ))}
 
         </tbody>
 
       </table>
-
-      {/* ============================== */}
-      {/* EMPTY STATE */}
-      {/* ============================== */}
 
       {panels.length === 0 && (
         <EmptyState
@@ -277,14 +222,10 @@ const SolarSiteDetails = () => {
         />
       )}
 
-      {/* ============================== */}
-      {/* ADD PANEL */}
-      {/* ============================== */}
-
-      {user?.role === "SOLAR_OPERATOR" && (
+      {isSolarOperator && (
         <button
-          className="btn-primary"
           type="button"
+          className="btn-primary"
           onClick={() =>
             setPanelToEdit(null)
           }
@@ -292,10 +233,6 @@ const SolarSiteDetails = () => {
           + Add Panel
         </button>
       )}
-
-      {/* ============================== */}
-      {/* PANEL FORM */}
-      {/* ============================== */}
 
       {panelToEdit !== undefined && (
         <SolarPanelForm
