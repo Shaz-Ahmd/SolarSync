@@ -16,28 +16,70 @@ import {
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
+
   const dispatch = useDispatch();
+
+  // ============================================
+  // SITE STATE
+  // ============================================
 
   const {
     selectedItem,
     loading,
-  } = useSelector((state) => state.sites);
-
-  const panels = useSelector(
-    (state) => state.panels?.items || []
+  } = useSelector(
+    (state) => state.sites
   );
+
+  // ============================================
+  // PANEL STATE
+  // ============================================
+
+  const panelItems = useSelector(
+    (state) => state.panels?.items
+  );
+
+  /*
+   * Always make sure panels is an array.
+   *
+   * This prevents:
+   *
+   * panels.map is not a function
+   *
+   * from crashing the component during tests
+   * or when the backend returns unexpected data.
+   */
+  const panels = Array.isArray(panelItems)
+    ? panelItems
+    : [];
+
+  // ============================================
+  // AUTH STATE
+  // ============================================
 
   const user = useSelector(
     (state) => state.auth?.user
   );
 
+  // ============================================
+  // EDIT PANEL STATE
+  // ============================================
+
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
+  // ============================================
+  // LOAD SITE + PANELS
+  // ============================================
+
   useEffect(() => {
     dispatch(fetchSiteById(id));
+
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
+
+  // ============================================
+  // LOADING
+  // ============================================
 
   if (loading) {
     return (
@@ -46,6 +88,10 @@ const SolarSiteDetails = () => {
       </div>
     );
   }
+
+  // ============================================
+  // SITE DATA
+  // ============================================
 
   const site = selectedItem || {
     siteName: "Solar Site",
@@ -56,16 +102,18 @@ const SolarSiteDetails = () => {
     currentGeneration: 0,
   };
 
-  /*
-   * SOLAR OPERATOR
-   */
+  // ============================================
+  // SOLAR OPERATOR
+  // ============================================
+
   const isSolarOperator =
     user?.role === "SOLAR_OPERATOR" ||
     user?.role === "OPERATOR";
 
-  /*
-   * DELETE PANEL
-   */
+  // ============================================
+  // DELETE PANEL
+  // ============================================
+
   const handleDelete = (panelId) => {
     if (
       window.confirm(
@@ -76,16 +124,24 @@ const SolarSiteDetails = () => {
     }
   };
 
+  // ============================================
+  // RENDER
+  // ============================================
+
   return (
     <div className="container">
 
-      {/* ============================= */}
+      {/* ======================================== */}
       {/* SITE HEADER */}
-      {/* ============================= */}
+      {/* ======================================== */}
 
       <h1>
         {site.siteName}
       </h1>
+
+      {/* ======================================== */}
+      {/* SITE INFORMATION */}
+      {/* ======================================== */}
 
       <div className="site-info">
 
@@ -111,10 +167,9 @@ const SolarSiteDetails = () => {
 
       </div>
 
-
-      {/* ============================= */}
+      {/* ======================================== */}
       {/* SIMULATE GENERATION */}
-      {/* ============================= */}
+      {/* ======================================== */}
 
       {isSolarOperator && (
         <button
@@ -126,14 +181,14 @@ const SolarSiteDetails = () => {
         </button>
       )}
 
-
-      {/* ============================= */}
-      {/* PANELS */}
-      {/* ============================= */}
+      {/* ======================================== */}
+      {/* PANELS TABLE */}
+      {/* ======================================== */}
 
       <table>
 
         <thead>
+
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -142,6 +197,7 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
+
         </thead>
 
         <tbody>
@@ -150,19 +206,27 @@ const SolarSiteDetails = () => {
 
             <tr key={panel.id}>
 
+              {/* SERIAL NUMBER */}
+
               <td>
                 {panel.serialNumber}
               </td>
 
+              {/* MODEL */}
+
               <td>
                 {panel.modelType}
               </td>
+
+              {/* STATUS */}
 
               <td>
                 <span className="badge">
                   {panel.status}
                 </span>
               </td>
+
+              {/* USAGE */}
 
               <td>
 
@@ -182,9 +246,13 @@ const SolarSiteDetails = () => {
 
               </td>
 
+              {/* INSTALLATION */}
+
               <td>
                 {panel.installationDate}
               </td>
+
+              {/* ACTIONS */}
 
               <td>
 
@@ -201,7 +269,6 @@ const SolarSiteDetails = () => {
                     >
                       Edit
                     </button>
-
 
                     {/* DELETE */}
 
@@ -227,10 +294,9 @@ const SolarSiteDetails = () => {
 
       </table>
 
-
-      {/* ============================= */}
-      {/* EMPTY PANELS */}
-      {/* ============================= */}
+      {/* ======================================== */}
+      {/* EMPTY PANEL STATE */}
+      {/* ======================================== */}
 
       {panels.length === 0 && (
         <EmptyState
@@ -238,10 +304,9 @@ const SolarSiteDetails = () => {
         />
       )}
 
-
-      {/* ============================= */}
+      {/* ======================================== */}
       {/* ADD PANEL */}
-      {/* ============================= */}
+      {/* ======================================== */}
 
       {isSolarOperator && (
         <button
@@ -255,10 +320,9 @@ const SolarSiteDetails = () => {
         </button>
       )}
 
-
-      {/* ============================= */}
+      {/* ======================================== */}
       {/* PANEL FORM */}
-      {/* ============================= */}
+      {/* ======================================== */}
 
       {panelToEdit !== undefined && (
         <SolarPanelForm
