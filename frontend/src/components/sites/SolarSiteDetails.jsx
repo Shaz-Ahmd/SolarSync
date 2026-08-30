@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import EmptyState from "../common/EmptyState";
 import SolarPanelForm from "./SolarPanelForm";
 
-import { fetchSiteById } from "../../store/slices/siteSlice";
+import {
+  fetchSiteById,
+} from "../../store/slices/siteSlice";
 
 import {
   fetchPanelsBySite,
@@ -16,9 +18,10 @@ const SolarSiteDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { selectedItem, loading } = useSelector(
-    (state) => state.sites
-  );
+  const {
+    selectedItem,
+    loading,
+  } = useSelector((state) => state.sites);
 
   const panels = useSelector(
     (state) => state.panels?.items || []
@@ -36,10 +39,6 @@ const SolarSiteDetails = () => {
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
-  /*
-   * IMPORTANT:
-   * Do not return before the operator button can be rendered.
-   */
   if (loading) {
     return (
       <div className="container">
@@ -58,22 +57,21 @@ const SolarSiteDetails = () => {
   };
 
   /*
-   * Keep the role check simple.
-   * T17 specifically requires the Simulate Generation
-   * button to exist for SOLAR_OPERATOR.
+   * SOLAR OPERATOR
    */
   const isSolarOperator =
-    user?.role === "SOLAR_OPERATOR";
+    user?.role === "SOLAR_OPERATOR" ||
+    user?.role === "OPERATOR";
 
   /*
-   * T14 DELETE PANEL
+   * DELETE PANEL
    */
   const handleDelete = (panelId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this panel?"
-    );
-
-    if (confirmed) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this panel?"
+      )
+    ) {
       dispatch(deletePanel(panelId));
     }
   };
@@ -85,11 +83,9 @@ const SolarSiteDetails = () => {
       {/* SITE HEADER */}
       {/* ============================= */}
 
-      <h1>{site.siteName}</h1>
-
-      {/* ============================= */}
-      {/* SITE INFORMATION */}
-      {/* ============================= */}
+      <h1>
+        {site.siteName}
+      </h1>
 
       <div className="site-info">
 
@@ -115,9 +111,10 @@ const SolarSiteDetails = () => {
 
       </div>
 
-      {/* ========================================== */}
-      {/* T17 - SIMULATE GENERATION */}
-      {/* ========================================== */}
+
+      {/* ============================= */}
+      {/* SIMULATE GENERATION */}
+      {/* ============================= */}
 
       {isSolarOperator && (
         <button
@@ -129,8 +126,9 @@ const SolarSiteDetails = () => {
         </button>
       )}
 
+
       {/* ============================= */}
-      {/* PANELS TABLE */}
+      {/* PANELS */}
       {/* ============================= */}
 
       <table>
@@ -149,6 +147,7 @@ const SolarSiteDetails = () => {
         <tbody>
 
           {panels.map((panel) => (
+
             <tr key={panel.id}>
 
               <td>
@@ -166,16 +165,21 @@ const SolarSiteDetails = () => {
               </td>
 
               <td>
+
                 <div className="mini-bar">
+
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) * 100,
+                        ((panel.usageCount || 0) / 5) *
+                          100,
                         100
                       )}%`,
                     }}
                   />
+
                 </div>
+
               </td>
 
               <td>
@@ -186,6 +190,7 @@ const SolarSiteDetails = () => {
 
                 {isSolarOperator && (
                   <>
+
                     {/* EDIT */}
 
                     <button
@@ -197,7 +202,8 @@ const SolarSiteDetails = () => {
                       Edit
                     </button>
 
-                    {/* DELETE - T14 */}
+
+                    {/* DELETE */}
 
                     <button
                       type="button"
@@ -207,20 +213,23 @@ const SolarSiteDetails = () => {
                     >
                       Delete
                     </button>
+
                   </>
                 )}
 
               </td>
 
             </tr>
+
           ))}
 
         </tbody>
 
       </table>
 
+
       {/* ============================= */}
-      {/* EMPTY STATE */}
+      {/* EMPTY PANELS */}
       {/* ============================= */}
 
       {panels.length === 0 && (
@@ -228,6 +237,7 @@ const SolarSiteDetails = () => {
           message="No panels registered for this site."
         />
       )}
+
 
       {/* ============================= */}
       {/* ADD PANEL */}
@@ -244,6 +254,7 @@ const SolarSiteDetails = () => {
           + Add Panel
         </button>
       )}
+
 
       {/* ============================= */}
       {/* PANEL FORM */}
