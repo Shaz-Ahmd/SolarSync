@@ -125,7 +125,7 @@ const SolarSiteDetails = () => {
           className="btn-primary"
           data-testid="simulate-generation"
         >
-          Simulate Generation
+          ⚡ Simulate Generation
         </button>
       )}
 
