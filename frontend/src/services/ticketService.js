@@ -1,25 +1,26 @@
-import api from "./api";
+import axios from "axios";
 
 const ticketService = {
 
-  // GET /api/tickets
   getAll: () => {
-    return api.get("/api/tickets");
+    return axios.get("/api/tickets");
   },
 
-  // POST /api/tickets
   create: (ticketData) => {
-    return api.post("/api/tickets", ticketData);
+    return axios.post(
+      "/api/tickets",
+      ticketData
+    );
   },
 
-  // PUT /api/tickets/{id}/resolve
   resolve: (ticketId) => {
-    return api.put(`/api/tickets/${ticketId}/resolve`);
+    return axios.put(
+      `/api/tickets/${ticketId}/resolve`
+    );
   },
 
-  // PUT /api/tickets/{id}/assign
   assign: (ticketId, technicianId) => {
-    return api.put(
+    return axios.put(
       `/api/tickets/${ticketId}/assign`,
       { technicianId }
     );
