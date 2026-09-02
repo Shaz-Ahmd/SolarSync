@@ -29,99 +29,144 @@ import "./App.css";
 // ======================================================
 
 export const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
+
+  const { user } = useSelector(
+    (state) => state.auth
+  );
 
   if (!user) {
     return null;
   }
 
+
+  // ======================================================
+  // ADMIN DASHBOARD DATA
+  // ======================================================
+
   const analytics = {
-    dailyGeneration: 1250.5,
+
+    dailyGeneration: 1250.50,
+
     gridConsumption: 840.25,
+
     systemEfficiency: 87.5,
+
     activePanels: 24,
+
     openTickets: 3,
 
     ticketData: [
       {
         label: "Open",
         value: 3,
-        color: "#ef4444",
+        color: "#d9574c",
       },
+
       {
         label: "In Progress",
         value: 2,
-        color: "#f59e0b",
+        color: "#e5a52f",
       },
+
       {
         label: "Resolved",
         value: 8,
-        color: "#22c55e",
+        color: "#6fc266",
       },
     ],
   };
 
+
+  // ======================================================
+  // RECENT ACTIVITY DATA
+  // ======================================================
+
   const recent = [
     {
       id: 1,
+
       timestamp: new Date().toISOString(),
+
       panel: {
         id: 1,
       },
-      generationKwh: 1250.5,
+
+      generationKwh: 1250.50,
+
       gridConsumptionKwh: 840.25,
     },
+
     {
       id: 2,
+
       timestamp: new Date().toISOString(),
+
       panel: {
         id: 2,
       },
+
       generationKwh: 980.25,
-      gridConsumptionKwh: 650.5,
+
+      gridConsumptionKwh: 650.50,
     },
+
     {
       id: 3,
+
       timestamp: new Date().toISOString(),
+
       panel: {
         id: 3,
       },
+
       generationKwh: 1100.75,
+
       gridConsumptionKwh: 720.35,
     },
   ];
 
+
   return (
+
     <main className="dashboard-page">
 
+
       {/* ==================================================
-          ADMIN HEADER
+          WELCOME SECTION
           ================================================== */}
 
       <section className="dashboard-header">
 
         <div>
+
           <p className="dashboard-eyebrow">
             SOLARSYNC CONTROL CENTER
           </p>
 
+
           <h1>
-            Welcome back, {user.username}
+            Welcome back, {user.username}!
           </h1>
+
 
           <p className="dashboard-subtitle">
             Monitor your solar infrastructure,
             generation and maintenance activity.
           </p>
+
         </div>
 
+
         <div className="dashboard-role">
+
           {user.role
             ? user.role.replace(/_/g, " ")
             : "USER"}
+
         </div>
 
       </section>
+
 
 
       {/* ==================================================
@@ -129,182 +174,70 @@ export const Dashboard = () => {
           ================================================== */}
 
       {user.role === "SYSTEM_ADMINISTRATOR" && (
+
         <>
 
-          {/* STATISTICS */}
+
+          {/* ==================================================
+              SYSTEM OVERVIEW
+              ================================================== */}
 
           <section className="dashboard-section">
 
             <div className="section-heading">
+
               <div>
-                <h2>System Overview</h2>
+
+                <h2>
+                  System Overview
+                </h2>
+
                 <p>
                   Current solar network performance
                 </p>
+
               </div>
+
             </div>
 
-            <StatCards stats={analytics} />
+
+            <StatCards
+              stats={analytics}
+            />
 
           </section>
 
 
-          {/* ANALYTICS */}
+
+          {/* ==================================================
+              BOTTOM DASHBOARD
+              ================================================== */}
 
           <section className="dashboard-grid">
 
-            <div className="dashboard-panel dashboard-chart-panel">
 
-              <div className="panel-header">
-
-                <div>
-                  <h2>Energy Performance</h2>
-                  <p>
-                    Daily generation and grid consumption
-                  </p>
-                </div>
-
-                <select
-                  className="chart-select"
-                  defaultValue="today"
-                >
-                  <option value="today">
-                    Today
-                  </option>
-
-                  <option value="week">
-                    This Week
-                  </option>
-
-                  <option value="month">
-                    This Month
-                  </option>
-                </select>
-
-              </div>
-
-              <div className="energy-chart">
-
-                <div className="chart-y-axis">
-                  <span>1500</span>
-                  <span>1000</span>
-                  <span>500</span>
-                  <span>0</span>
-                </div>
-
-                <div className="chart-area">
-
-                  <div className="chart-grid-line" />
-                  <div className="chart-grid-line" />
-                  <div className="chart-grid-line" />
-                  <div className="chart-grid-line" />
-
-                  <svg
-                    viewBox="0 0 800 300"
-                    preserveAspectRatio="none"
-                    className="energy-svg"
-                  >
-
-                    {/* Generation line */}
-
-                    <polyline
-                      points="
-                        0,220
-                        100,180
-                        200,195
-                        300,125
-                        400,150
-                        500,80
-                        600,105
-                        700,45
-                        800,70
-                      "
-                      fill="none"
-                      stroke="#2563eb"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-
-                    {/* Grid consumption line */}
-
-                    <polyline
-                      points="
-                        0,255
-                        100,230
-                        200,245
-                        300,205
-                        400,220
-                        500,175
-                        600,190
-                        700,145
-                        800,160
-                      "
-                      fill="none"
-                      stroke="#94a3b8"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-
-                    {/* Generation points */}
-
-                    <circle cx="0" cy="220" r="5" />
-                    <circle cx="100" cy="180" r="5" />
-                    <circle cx="200" cy="195" r="5" />
-                    <circle cx="300" cy="125" r="5" />
-                    <circle cx="400" cy="150" r="5" />
-                    <circle cx="500" cy="80" r="5" />
-                    <circle cx="600" cy="105" r="5" />
-                    <circle cx="700" cy="45" r="5" />
-                    <circle cx="800" cy="70" r="5" />
-
-                  </svg>
-
-                  <div className="chart-x-axis">
-                    <span>06 AM</span>
-                    <span>09 AM</span>
-                    <span>12 PM</span>
-                    <span>03 PM</span>
-                    <span>06 PM</span>
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              <div className="chart-legend">
-
-                <div>
-                  <span className="legend-dot generation-dot" />
-                  Solar Generation
-                </div>
-
-                <div>
-                  <span className="legend-dot consumption-dot" />
-                  Grid Consumption
-                </div>
-
-              </div>
-
-            </div>
-
-
-            {/* TICKET STATUS */}
+            {/* ==================================================
+                MAINTENANCE DISTRIBUTION
+                ================================================== */}
 
             <div className="dashboard-panel">
 
               <div className="panel-header">
 
                 <div>
-                  <h2>Maintenance Tickets</h2>
+
+                  <h2>
+                    Maintenance Distribution
+                  </h2>
+
                   <p>
                     Current ticket distribution
                   </p>
+
                 </div>
 
               </div>
+
 
               <StatusDonut
                 data={analytics.ticketData}
@@ -312,40 +245,52 @@ export const Dashboard = () => {
 
             </div>
 
-          </section>
 
 
-          {/* RECENT ACTIVITY */}
+            {/* ==================================================
+                RECENT ACTIVITY
+                ================================================== */}
 
-          <section className="dashboard-panel activity-panel">
+            <div className="dashboard-panel activity-panel">
 
-            <div className="panel-header">
+              <div className="panel-header">
 
-              <div>
-                <h2>Recent Activity</h2>
+                <div>
 
-                <p>
-                  Latest solar system readings
-                </p>
+                  <h2>
+                    Recent Activity
+                  </h2>
+
+                  <p>
+                    Latest solar system readings
+                  </p>
+
+                </div>
+
+
+                <NavLink
+                  to="/sites"
+                  className="panel-link"
+                >
+                  View Sites →
+                </NavLink>
+
               </div>
 
-              <NavLink
-                to="/sites"
-                className="panel-link"
-              >
-                View Sites →
-              </NavLink>
+
+              <RecentActivity
+                metrics={recent}
+              />
 
             </div>
 
-            <RecentActivity
-              metrics={recent}
-            />
 
           </section>
 
         </>
+
       )}
+
 
 
       {/* ==================================================
@@ -355,6 +300,7 @@ export const Dashboard = () => {
       {user.role !== "SYSTEM_ADMINISTRATOR" && (
 
         <section className="action-cards">
+
 
           <div className="action-card">
 
@@ -378,6 +324,7 @@ export const Dashboard = () => {
           </div>
 
 
+
           <div className="action-card">
 
             <div className="action-card-icon">
@@ -399,13 +346,18 @@ export const Dashboard = () => {
 
           </div>
 
+
         </section>
 
       )}
 
+
     </main>
+
   );
+
 };
+
 
 
 // ======================================================
@@ -418,6 +370,7 @@ const ProtectedRoute = ({ children }) => {
     (state) => state.auth
   );
 
+
   if (!user) {
 
     return (
@@ -429,8 +382,11 @@ const ProtectedRoute = ({ children }) => {
 
   }
 
+
   return children;
+
 };
+
 
 
 // ======================================================
@@ -447,9 +403,13 @@ const App = () => {
 
         <Navbar />
 
+
         <Routes>
 
-          {/* LOGIN */}
+
+          {/* ==================================================
+              LOGIN
+              ================================================== */}
 
           <Route
             path="/login"
@@ -457,7 +417,10 @@ const App = () => {
           />
 
 
-          {/* DASHBOARD */}
+
+          {/* ==================================================
+              ADMIN / USER DASHBOARD
+              ================================================== */}
 
           <Route
             path="/"
@@ -469,7 +432,10 @@ const App = () => {
           />
 
 
-          {/* SOLAR SITES */}
+
+          {/* ==================================================
+              SOLAR SITES
+              ================================================== */}
 
           <Route
             path="/sites"
@@ -481,7 +447,10 @@ const App = () => {
           />
 
 
-          {/* SITE DETAILS */}
+
+          {/* ==================================================
+              SITE DETAILS
+              ================================================== */}
 
           <Route
             path="/sites/:id"
@@ -493,7 +462,10 @@ const App = () => {
           />
 
 
-          {/* MAINTENANCE TICKETS */}
+
+          {/* ==================================================
+              MAINTENANCE TICKETS
+              ================================================== */}
 
           <Route
             path="/tickets"
@@ -505,7 +477,10 @@ const App = () => {
           />
 
 
-          {/* UNKNOWN ROUTE */}
+
+          {/* ==================================================
+              UNKNOWN ROUTE
+              ================================================== */}
 
           <Route
             path="*"
@@ -517,6 +492,7 @@ const App = () => {
             }
           />
 
+
         </Routes>
 
       </div>
@@ -524,6 +500,8 @@ const App = () => {
     </Router>
 
   );
+
 };
+
 
 export default App;
