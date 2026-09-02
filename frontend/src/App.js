@@ -28,11 +28,19 @@ import "./App.css";
 // ======================================================
 
 export const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
+
+  const { user } = useSelector(
+    (state) => state.auth
+  );
 
   if (!user) {
     return null;
   }
+
+
+  // ----------------------------------------------------
+  // ADMIN DASHBOARD DATA
+  // ----------------------------------------------------
 
   const analytics = {
     dailyGeneration: 1250.5,
@@ -60,99 +68,195 @@ export const Dashboard = () => {
     ],
   };
 
+
+  // ----------------------------------------------------
+  // RECENT ACTIVITY
+  // ----------------------------------------------------
+
   const recent = [
     {
       id: 1,
       timestamp: new Date().toISOString(),
+
       panel: {
         id: 1,
       },
+
       generationKwh: 1250.5,
+
       gridConsumptionKwh: 840.25,
     },
+
     {
       id: 2,
       timestamp: new Date().toISOString(),
+
       panel: {
         id: 2,
       },
+
       generationKwh: 980.25,
+
       gridConsumptionKwh: 650.5,
     },
+
     {
       id: 3,
       timestamp: new Date().toISOString(),
+
       panel: {
         id: 3,
       },
+
       generationKwh: 1100.75,
+
       gridConsumptionKwh: 720.35,
     },
   ];
 
+
   return (
-    <div className="container">
+    <div className="container dashboard-page">
+
+
+      {/* ================================================= */}
+      {/* WELCOME */}
+      {/* ================================================= */}
 
       <div className="welcome-card">
-        <h1>
-          Welcome back, {user.username}!
-        </h1>
 
-        <p>
-          Your role:{" "}
-          <strong>
-            {user.role
-              ? user.role.replace(/_/g, " ")
-              : "USER"}
-          </strong>
-        </p>
+        <div>
+
+          <p className="dashboard-label">
+            SOLARSYNC DASHBOARD
+          </p>
+
+          <h1>
+            Welcome back, {user.username}!
+          </h1>
+
+          <p className="dashboard-role">
+
+            Your role:
+
+            <strong>
+              {" "}
+              {user.role
+                ? user.role.replace(
+                    /_/g,
+                    " "
+                  )
+                : "USER"}
+            </strong>
+
+          </p>
+
+        </div>
+
       </div>
 
 
+      {/* ================================================= */}
+      {/* ADMIN DASHBOARD */}
+      {/* ================================================= */}
+
       {user.role === "SYSTEM_ADMINISTRATOR" && (
         <>
-          <StatCards stats={analytics} />
 
-          <StatusDonut
-            data={analytics.ticketData}
-          />
+          {/* STATISTICS */}
 
-          <RecentActivity
-            metrics={recent}
-          />
+          <section className="dashboard-section">
+
+            <StatCards
+              stats={analytics}
+            />
+
+          </section>
+
+
+          {/* TICKET STATUS */}
+
+          <section className="dashboard-section">
+
+            <StatusDonut
+              data={analytics.ticketData}
+            />
+
+          </section>
+
+
+          {/* RECENT ACTIVITY */}
+
+          <section className="dashboard-section">
+
+            <RecentActivity
+              metrics={recent}
+            />
+
+          </section>
+
         </>
       )}
 
 
+      {/* ================================================= */}
+      {/* OPERATOR / OTHER USERS */}
+      {/* ================================================= */}
+
       {user.role !== "SYSTEM_ADMINISTRATOR" && (
+
         <div className="action-cards">
 
+
+          {/* SOLAR SITES */}
+
           <div className="action-card">
-            <h3>Solar Sites</h3>
+
+            <div className="action-card-icon">
+              ☀️
+            </div>
+
+            <h3>
+              Solar Sites
+            </h3>
 
             <p>
-              View and manage solar sites.
+              View and manage solar
+              sites and their panels.
             </p>
 
             <a href="/sites">
-              View All Sites
+              View All Sites →
             </a>
+
           </div>
 
 
+          {/* MAINTENANCE */}
+
           <div className="action-card">
-            <h3>Maintenance Tickets</h3>
+
+            <div className="action-card-icon">
+              🔧
+            </div>
+
+            <h3>
+              Maintenance Tickets
+            </h3>
 
             <p>
-              View maintenance tickets.
+              View and manage
+              maintenance tickets.
             </p>
 
             <a href="/tickets">
-              Go to Tickets
+              Go to Tickets →
             </a>
+
           </div>
 
         </div>
+
       )}
 
     </div>
@@ -164,19 +268,26 @@ export const Dashboard = () => {
 // PROTECTED ROUTE
 // ======================================================
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({
+  children,
+}) => {
+
   const { user } = useSelector(
     (state) => state.auth
   );
 
+
   if (!user) {
+
     return (
       <Navigate
         to="/login"
         replace
       />
     );
+
   }
+
 
   return children;
 };
@@ -187,20 +298,31 @@ const ProtectedRoute = ({ children }) => {
 // ======================================================
 
 const App = () => {
+
   return (
+
     <Router>
 
       <div className="glass-container App">
 
+
+        {/* NAVBAR */}
+
         <Navbar />
 
+
+        {/* ROUTES */}
+
         <Routes>
+
 
           {/* LOGIN */}
 
           <Route
             path="/login"
-            element={<Login />}
+            element={
+              <Login />
+            }
           />
 
 
@@ -209,21 +331,29 @@ const App = () => {
           <Route
             path="/"
             element={
+
               <ProtectedRoute>
+
                 <Dashboard />
+
               </ProtectedRoute>
+
             }
           />
 
 
-          {/* SITES */}
+          {/* SOLAR SITES */}
 
           <Route
             path="/sites"
             element={
+
               <ProtectedRoute>
+
                 <SolarSiteList />
+
               </ProtectedRoute>
+
             }
           />
 
@@ -233,21 +363,29 @@ const App = () => {
           <Route
             path="/sites/:id"
             element={
+
               <ProtectedRoute>
+
                 <SolarSiteDetails />
+
               </ProtectedRoute>
+
             }
           />
 
 
-          {/* TICKETS */}
+          {/* MAINTENANCE TICKETS */}
 
           <Route
             path="/tickets"
             element={
+
               <ProtectedRoute>
+
                 <MaintenanceTicketList />
+
               </ProtectedRoute>
+
             }
           />
 
@@ -257,10 +395,12 @@ const App = () => {
           <Route
             path="*"
             element={
+
               <Navigate
                 to="/"
                 replace
               />
+
             }
           />
 
@@ -272,4 +412,5 @@ const App = () => {
   );
 };
 
-export default App; 
+
+export default App;

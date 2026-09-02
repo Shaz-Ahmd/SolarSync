@@ -1,66 +1,97 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-const Navbar = ({ user, onLogout }) => {
+import { logout, reset } from "../../store/slices/authSlice";
+
+const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { user } = useSelector((state) => state.auth);
+
+  if (!user) {
+    return null;
+  }
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+    navigate("/login");
+  };
+
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+
+    return location.pathname.startsWith(path);
+  };
+
   return (
-    <header className="navbar">
+    <nav className="navbar">
 
-      {/* Logo */}
-      <div className="navbar-logo">
+      {/* =================================================
+          BRAND
+         ================================================= */}
+
+      <div className="navbar-brand">
         SolarSync
       </div>
 
-      {/* Navigation */}
-      <nav className="navbar-nav">
 
-        <NavLink
+      {/* =================================================
+          NAVIGATION
+         ================================================= */}
+
+      <div className="navbar-links">
+
+        <Link
           to="/"
-          end
-          className={({ isActive }) =>
-            `navbar-link ${isActive ? "active" : ""}`
-          }
+          className={isActive("/") ? "active" : ""}
         >
           Home
-        </NavLink>
+        </Link>
 
-        <NavLink
+        <Link
           to="/sites"
-          className={({ isActive }) =>
-            `navbar-link ${isActive ? "active" : ""}`
-          }
+          className={isActive("/sites") ? "active" : ""}
         >
           Sites
-        </NavLink>
+        </Link>
 
-        <NavLink
+        <Link
           to="/tickets"
-          className={({ isActive }) =>
-            `navbar-link ${isActive ? "active" : ""}`
-          }
+          className={isActive("/tickets") ? "active" : ""}
         >
           Tickets
-        </NavLink>
+        </Link>
 
-      </nav>
+      </div>
 
-      {/* Right side */}
-      <div className="navbar-right">
 
-        <span className="welcome-text">
-          Welcome back {user?.username || ""}
+      {/* =================================================
+          USER
+         ================================================= */}
+
+      <div className="navbar-user">
+
+        <span>
+          Welcome back {user.username}
         </span>
 
         <button
           type="button"
-          className="logout-btn"
-          onClick={onLogout}
+          className="btn-logout"
+          onClick={handleLogout}
         >
           Logout
         </button>
 
       </div>
 
-    </header>
+    </nav>
   );
 };
 
