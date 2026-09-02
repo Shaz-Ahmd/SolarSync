@@ -1,5 +1,5 @@
 /* =========================================================
-   GLOBAL RESET
+   GLOBAL
    ========================================================= */
 
 * {
@@ -11,36 +11,21 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  width: 100%;
   min-height: 100%;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: #f3f4f6;
+  background: #f4f5f7;
   color: #172033;
 }
 
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
-}
-
-
-/* =========================================================
-   APP
-   ========================================================= */
-
 .App {
   min-height: 100vh;
-  width: 100%;
 }
 
 .glass-container {
   min-height: 100vh;
-  width: 100%;
 }
 
 
@@ -49,28 +34,10 @@ textarea {
    ========================================================= */
 
 .container {
-  width: min(1200px, calc(100% - 48px));
-  max-width: 1200px;
+  width: calc(100% - 64px);
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 0 50px;
-}
-
-
-/* =========================================================
-   PAGE HEADER
-   ========================================================= */
-
-.page-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 25px;
-}
-
-.page-header h1 {
-  margin: 0;
+  padding: 34px 0 50px;
 }
 
 
@@ -89,104 +56,97 @@ textarea {
   padding: 0 5%;
 
   background: #ffffff;
+
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 
   position: relative;
-  z-index: 100;
+  z-index: 10;
 }
 
 .navbar-brand {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
-  white-space: nowrap;
+  color: #172033;
+  text-decoration: none;
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 34px;
 }
 
 .navbar-links a {
   position: relative;
 
+  padding: 27px 0;
+
   text-decoration: none;
   color: #172033;
 
-  padding: 27px 0;
-
-  transition: color 0.2s ease;
+  font-size: 18px;
+  font-weight: 500;
 }
 
-.navbar-links a:hover {
-  color: #2563eb;
-}
+/*
+   BLUE LINE UNDER THE CURRENT PAGE
+*/
 
-.navbar-links a.active {
-  color: #2563eb;
-}
-
-.navbar-links a.active::after {
+.navbar-links a.active::after,
+.navbar-links a[aria-current="page"]::after {
   content: "";
 
   position: absolute;
+
   left: 0;
   right: 0;
-  bottom: 16px;
+  bottom: 10px;
 
   height: 3px;
 
   background: #2563eb;
+
   border-radius: 3px;
 }
 
 .navbar-user {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 18px;
 
-  white-space: nowrap;
+  font-size: 17px;
+}
+
+.btn-logout {
+  background: #c63b2f;
+  color: white;
+
+  padding: 11px 18px;
+
+  border-radius: 8px;
+
+  font-size: 15px;
+}
+
+.btn-logout:hover {
+  background: #a93228;
 }
 
 
 /* =========================================================
-   BUTTONS
+   PAGE HEADER
    ========================================================= */
 
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 7px;
-  padding: 9px 15px;
-  font-size: 14px;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 25px;
 }
 
-.btn-primary {
-  background: #2563eb;
-  color: #ffffff;
-}
-
-.btn-primary:hover {
-  background: #1d4ed8;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-success {
-  background: #16a34a;
-  color: #ffffff;
-}
-
-.btn-logout {
-  background: #dc2626;
-  color: #ffffff;
-}
-
-.btn-logout:hover {
-  background: #b91c1c;
+.page-header h1 {
+  margin: 0;
 }
 
 
@@ -195,169 +155,199 @@ button {
    ========================================================= */
 
 .welcome-card {
-  width: 100%;
+  padding: 30px;
 
-  padding: 28px;
-  margin-bottom: 30px;
-
-  border-radius: 16px;
+  margin-bottom: 32px;
 
   background: #ffffff;
+
+  border-radius: 17px;
 
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
 .welcome-card h1 {
+  margin: 8px 0 10px;
+
+  font-size: 38px;
+  line-height: 1.2;
+}
+
+.dashboard-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #596273;
+
+  letter-spacing: 0.3px;
+}
+
+.dashboard-description {
   margin: 0 0 10px;
+
+  font-size: 17px;
+  color: #273247;
+}
+
+.dashboard-role {
+  margin: 0;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #172033;
 }
 
 
 /* =========================================================
-   DASHBOARD STAT CARDS
+   DASHBOARD SECTIONS
+   ========================================================= */
+
+.dashboard-section {
+  margin-bottom: 32px;
+}
+
+.section-heading {
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  margin: 0 0 8px;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.section-heading p {
+  margin: 0;
+
+  font-size: 16px;
+  color: #596273;
+}
+
+
+/* =========================================================
+   STAT CARDS
    ========================================================= */
 
 .stat-cards {
-  width: 100%;
-
   display: grid;
+
   grid-template-columns: repeat(5, minmax(0, 1fr));
 
   gap: 20px;
 
-  margin-bottom: 36px;
+  margin-bottom: 32px;
 }
 
 .stat-card {
-  min-width: 0;
+  min-height: 120px;
 
-  padding: 22px;
+  padding: 23px;
 
   background: #ffffff;
 
-  border-radius: 14px;
+  border-radius: 15px;
 
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
 .stat-title {
-  font-size: 15px;
   margin-bottom: 12px;
-  opacity: 0.7;
+
+  font-size: 16px;
+
+  color: #626a78;
 }
 
 .stat-value {
-  font-size: 30px;
-  font-weight: bold;
+  font-size: 32px;
+
+  font-weight: 700;
+
+  color: #172033;
 }
 
 
 /* =========================================================
-   SECTION HEADINGS
-   ========================================================= */
-
-.section-header {
-  margin-bottom: 20px;
-}
-
-.section-header h2 {
-  margin: 0 0 8px;
-}
-
-.section-header p {
-  margin: 0;
-  opacity: 0.75;
-}
-
-
-/* =========================================================
-   ENERGY PERFORMANCE
-   ========================================================= */
-
-.energy-performance {
-  width: 100%;
-  margin-bottom: 40px;
-}
-
-.energy-chart-container {
-  width: 100%;
-  height: 420px;
-
-  background: #ffffff;
-
-  border-radius: 16px;
-
-  padding: 24px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-
-  overflow: hidden;
-}
-
-.energy-chart {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-
-/* =========================================================
-   CHART SELECT
-   ========================================================= */
-
-.chart-filter {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.chart-filter select {
-  width: 100%;
-}
-
-
-/* =========================================================
-   DONUT / TICKET STATUS
+   TICKET STATUS / DONUT
    ========================================================= */
 
 .status-donut {
   width: 100%;
 
-  background: #ffffff;
-
   padding: 28px;
 
-  border-radius: 16px;
+  margin-bottom: 32px;
 
-  margin-bottom: 35px;
+  background: #ffffff;
+
+  border-radius: 17px;
 
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 
   overflow: hidden;
 }
 
-.status-donut h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
+
+/*
+   IMPORTANT:
+
+   This wrapper controls the donut area.
+   It prevents the chart from becoming huge
+   and prevents cropping.
+*/
+
+.donut-wrapper {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 5px 0 8px;
 }
+
+
+/*
+   Fixed square area for Chart.js.
+
+   This is the important fix.
+*/
 
 .donut-container {
   position: relative;
 
-  width: 260px;
-  height: 260px;
+  width: 280px;
+  height: 280px;
 
-  margin: 25px auto;
+  flex: 0 0 280px;
 
-  flex-shrink: 0;
+  margin: 8px auto 22px;
 }
 
-.donut-chart {
-  display: block;
 
-  width: 260px;
-  height: 260px;
+/*
+   Make the canvas stay INSIDE the 280 x 280 area.
+*/
+
+.donut-container canvas {
+  display: block !important;
+
+  width: 280px !important;
+  height: 280px !important;
 
   max-width: 100%;
+  max-height: 100%;
 }
+
+
+/*
+   Center text inside donut
+*/
 
 .donut-total {
   position: absolute;
@@ -365,51 +355,74 @@ button {
   inset: 0;
 
   display: flex;
+
   flex-direction: column;
 
   justify-content: center;
+
   align-items: center;
 
   pointer-events: none;
+
+  text-align: center;
 }
 
 .donut-total strong {
-  font-size: 32px;
+  font-size: 36px;
+
   line-height: 1;
+
+  font-weight: 700;
+
+  color: #172033;
 }
 
 .donut-total span {
-  font-size: 14px;
   margin-top: 6px;
+
+  font-size: 14px;
+
+  color: #172033;
 }
+
+
+/*
+   Legend
+*/
 
 .donut-legend {
   display: flex;
-  justify-content: center;
-  align-items: center;
 
-  gap: 24px;
+  justify-content: center;
+
+  align-items: center;
 
   flex-wrap: wrap;
 
-  margin-top: 10px;
+  gap: 25px;
+
+  width: 100%;
 }
 
 .donut-legend-item {
   display: flex;
+
   align-items: center;
+
   gap: 8px;
 
-  font-size: 15px;
+  font-size: 16px;
+
+  color: #172033;
 }
 
 .legend-color {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
+
+  flex: 0 0 13px;
 
   border-radius: 50%;
-
-  flex-shrink: 0;
 }
 
 
@@ -417,33 +430,14 @@ button {
    RECENT ACTIVITY
    ========================================================= */
 
-.recent-activity {
-  width: 100%;
-  margin-bottom: 35px;
-}
-
-.activity-list {
-  width: 100%;
-
-  background: #ffffff;
-
-  border-radius: 14px;
-
-  overflow: hidden;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-}
-
 .activity-item {
-  width: 100%;
-
   display: grid;
 
-  grid-template-columns: 150px minmax(150px, 1fr) 150px 150px;
-
-  gap: 15px;
+  grid-template-columns: 150px 1fr 150px 150px;
 
   align-items: center;
+
+  gap: 15px;
 
   padding: 15px 18px;
 
@@ -452,18 +446,12 @@ button {
   border-bottom: 1px solid #eeeeee;
 }
 
-.activity-item:last-child {
-  border-bottom: none;
-}
-
 
 /* =========================================================
    ACTION CARDS
    ========================================================= */
 
 .action-cards {
-  width: 100%;
-
   display: grid;
 
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -472,8 +460,6 @@ button {
 }
 
 .action-card {
-  min-width: 0;
-
   padding: 25px;
 
   background: #ffffff;
@@ -492,42 +478,37 @@ button {
    TABLE
    ========================================================= */
 
-.table-wrapper {
-  width: 100%;
-
-  overflow-x: auto;
-
-  border-radius: 12px;
-}
-
 table {
   width: 100%;
 
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 
   background: #ffffff;
 
-  border-radius: 12px;
+  border-radius: 14px;
 
   overflow: hidden;
 }
 
 th,
 td {
-  padding: 14px;
+  padding: 15px 16px;
 
   text-align: left;
 
   border-bottom: 1px solid #eeeeee;
 
-  white-space: nowrap;
+  color: #172033;
 }
 
 th {
-  font-weight: 600;
+  font-weight: 700;
+
+  background: #ffffff;
 }
 
-tr:last-child td {
+tbody tr:last-child td {
   border-bottom: none;
 }
 
@@ -537,8 +518,11 @@ tr:last-child td {
    ========================================================= */
 
 .capacity-container {
-  min-width: 140px;
   width: 100%;
+
+  min-width: 160px;
+
+  max-width: 250px;
 }
 
 .capacity-container > div:first-child {
@@ -546,9 +530,13 @@ tr:last-child td {
 
   justify-content: space-between;
 
-  margin-bottom: 6px;
+  align-items: center;
+
+  margin-bottom: 7px;
 
   font-size: 12px;
+
+  color: #172033;
 }
 
 .capacity-track {
@@ -564,7 +552,7 @@ tr:last-child td {
 }
 
 .capacity-fill {
-  height: 8px;
+  height: 100%;
 
   border-radius: 10px;
 
@@ -578,6 +566,7 @@ tr:last-child td {
 
 .mini-bar {
   width: 100px;
+
   height: 8px;
 
   background: #e5e7eb;
@@ -592,12 +581,51 @@ tr:last-child td {
 
   background: #22c55e;
 
-  transition: width 0.3s ease;
+  border-radius: 10px;
 }
 
 
 /* =========================================================
-   BADGES
+   BUTTONS
+   ========================================================= */
+
+button {
+  cursor: pointer;
+
+  border: none;
+
+  border-radius: 7px;
+
+  padding: 9px 15px;
+
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: #2563eb;
+
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+.btn-success {
+  background: #16a34a;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   BADGE
    ========================================================= */
 
 .badge {
@@ -618,12 +646,12 @@ tr:last-child td {
    ========================================================= */
 
 .search-bar {
-  width: 100%;
   margin-bottom: 20px;
 }
 
 .search-bar input {
   width: 100%;
+
   box-sizing: border-box;
 }
 
@@ -652,9 +680,14 @@ textarea {
   background: #ffffff;
 }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
 }
 
 
@@ -676,8 +709,6 @@ textarea {
   justify-content: center;
 
   z-index: 1000;
-
-  padding: 20px;
 }
 
 .modal-card {
@@ -717,8 +748,6 @@ textarea {
   justify-content: center;
 
   align-items: center;
-
-  padding: 30px;
 }
 
 .login-card {
@@ -784,6 +813,7 @@ textarea {
   position: fixed;
 
   top: 20px;
+
   right: 20px;
 
   z-index: 2000;
@@ -806,125 +836,139 @@ textarea {
 
 
 /* =========================================================
-   SOLAR SITES
-   ========================================================= */
-
-.site-info {
-  background: #ffffff;
-
-  padding: 20px;
-
-  border-radius: 14px;
-
-  margin-bottom: 25px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-}
-
-.site-info p {
-  margin: 8px 0;
-}
-
-
-/* =========================================================
    RESPONSIVE
    ========================================================= */
 
 @media (max-width: 1100px) {
 
   .stat-cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .activity-item {
-    grid-template-columns: 120px minmax(120px, 1fr) 120px 120px;
+    grid-template-columns: repeat(3, 1fr);
   }
 
 }
 
-
 @media (max-width: 900px) {
 
   .container {
-    width: min(100% - 32px, 1200px);
-  }
-
-  .stat-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 40px);
   }
 
   .navbar {
-    padding: 0 25px;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .navbar-links {
+    gap: 20px;
+  }
+
+  .navbar-links a {
+    padding: 10px 0;
+  }
+
+  .navbar-links a.active::after,
+  .navbar-links a[aria-current="page"]::after {
+    bottom: 0;
+  }
+
+  .navbar-user {
+    font-size: 14px;
   }
 
   .activity-item {
     grid-template-columns: 1fr;
-    gap: 8px;
+  }
+
+  .donut-container {
+    width: 260px;
+    height: 260px;
+
+    flex-basis: 260px;
+  }
+
+  .donut-container canvas {
+    width: 260px !important;
+    height: 260px !important;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .action-cards {
     grid-template-columns: 1fr;
   }
 
-}
-
-
-@media (max-width: 600px) {
-
-  .container {
-    width: calc(100% - 24px);
-    padding-top: 20px;
+  .welcome-card h1 {
+    font-size: 30px;
   }
 
   .navbar {
-    min-height: auto;
-
-    padding: 15px;
-
     flex-direction: column;
 
-    gap: 10px;
+    align-items: center;
   }
 
-  .navbar-links {
-    gap: 18px;
+  .donut-container {
+    width: 230px;
+    height: 230px;
+
+    flex-basis: 230px;
   }
 
-  .navbar-links a {
-    padding: 8px 0;
+  .donut-container canvas {
+    width: 230px !important;
+    height: 230px !important;
   }
 
-  .navbar-links a.active::after {
-    bottom: 0;
-  }
+}
 
-  .navbar-user {
-    width: 100%;
+@media (max-width: 500px) {
 
-    justify-content: center;
+  .container {
+    width: calc(100% - 24px);
+
+    padding-top: 20px;
   }
 
   .stat-cards {
     grid-template-columns: 1fr;
   }
 
+  .status-donut {
+    padding: 20px 12px;
+  }
+
   .donut-container {
-    width: 220px;
-    height: 220px;
+    width: 210px;
+    height: 210px;
+
+    flex-basis: 210px;
   }
 
-  .donut-chart {
-    width: 220px;
-    height: 220px;
+  .donut-container canvas {
+    width: 210px !important;
+    height: 210px !important;
   }
 
-  .energy-chart-container {
-    height: 350px;
-    padding: 12px;
+  .donut-legend {
+    flex-direction: column;
+
+    gap: 10px;
   }
 
   table {
-    min-width: 700px;
+    display: block;
+
+    overflow-x: auto;
   }
 
 }
