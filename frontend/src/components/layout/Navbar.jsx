@@ -1,49 +1,66 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
-import { logout, reset } from '../../store/slices/authSlice';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-const Navbar = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { user } = useSelector((state) => state.auth);
-
-  if (!user) {
-    return null;
-  }
-
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(reset());
-    navigate('/login');
-  };
-
+const Navbar = ({ user, onLogout }) => {
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
+    <header className="navbar">
+
+      {/* Logo */}
+      <div className="navbar-logo">
         SolarSync
       </div>
 
-      <div className="navbar-links">
-        <Link to="/">Home</Link>
-        <Link to="/sites">Sites</Link>
-        <Link to="/tickets">Tickets</Link>
-      </div>
+      {/* Navigation */}
+      <nav className="navbar-nav">
 
-      <div className="navbar-user">
-        <span>
-          Welcome back {user.username}
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            `navbar-link ${isActive ? "active" : ""}`
+          }
+        >
+          Home
+        </NavLink>
+
+        <NavLink
+          to="/sites"
+          className={({ isActive }) =>
+            `navbar-link ${isActive ? "active" : ""}`
+          }
+        >
+          Sites
+        </NavLink>
+
+        <NavLink
+          to="/tickets"
+          className={({ isActive }) =>
+            `navbar-link ${isActive ? "active" : ""}`
+          }
+        >
+          Tickets
+        </NavLink>
+
+      </nav>
+
+      {/* Right side */}
+      <div className="navbar-right">
+
+        <span className="welcome-text">
+          Welcome back {user?.username || ""}
         </span>
 
         <button
-          className="btn-logout"
-          onClick={handleLogout}
+          type="button"
+          className="logout-btn"
+          onClick={onLogout}
         >
           Logout
         </button>
+
       </div>
-    </nav>
+
+    </header>
   );
 };
 
