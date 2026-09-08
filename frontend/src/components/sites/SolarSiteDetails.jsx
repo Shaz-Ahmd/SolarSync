@@ -1,3 +1,5 @@
+// src/components/sites/SolarSiteDetails.jsx
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +18,6 @@ import {
 
 const SolarSiteDetails = () => {
   const { id } = useParams();
-
   const dispatch = useDispatch();
 
   // ============================================
@@ -26,9 +27,7 @@ const SolarSiteDetails = () => {
   const {
     selectedItem,
     loading,
-  } = useSelector(
-    (state) => state.sites
-  );
+  } = useSelector((state) => state.sites);
 
   // ============================================
   // PANEL STATE
@@ -38,16 +37,6 @@ const SolarSiteDetails = () => {
     (state) => state.panels?.items
   );
 
-  /*
-   * Always make sure panels is an array.
-   *
-   * This prevents:
-   *
-   * panels.map is not a function
-   *
-   * from crashing the component during tests
-   * or when the backend returns unexpected data.
-   */
   const panels = Array.isArray(panelItems)
     ? panelItems
     : [];
@@ -61,7 +50,7 @@ const SolarSiteDetails = () => {
   );
 
   // ============================================
-  // EDIT PANEL STATE
+  // EDIT / ADD PANEL STATE
   // ============================================
 
   const [panelToEdit, setPanelToEdit] =
@@ -73,7 +62,6 @@ const SolarSiteDetails = () => {
 
   useEffect(() => {
     dispatch(fetchSiteById(id));
-
     dispatch(fetchPanelsBySite(id));
   }, [dispatch, id]);
 
@@ -96,19 +84,48 @@ const SolarSiteDetails = () => {
   const site = selectedItem || {
     siteName: "Solar Site",
     locationCoordinates: "",
-    ratedCapacityKw: 100,
+    ratedCapacityKw: 0,
     commissionDate: "",
-    ingesting: false,
-    currentGeneration: 0,
   };
 
   // ============================================
-  // SOLAR OPERATOR
+  // ROLE CHECKS
   // ============================================
 
-  const isSolarOperator =
-    user?.role === "SOLAR_OPERATOR" ||
-    user?.role === "OPERATOR";
+  const role = String(user?.role || "").toUpperCase();
+
+  const isAdmin =
+    role === "SYSTEM_ADMINISTRATOR" ||
+    role === "ADMIN";
+
+  const isOperator =
+    role === "SOLAR_OPERATOR" ||
+    role === "OPERATOR";
+
+  /*
+   * Admin and Solar Operator can manage panels.
+   *
+   * Admin:
+   * - Edit
+   * - Delete
+   * - Add Panel
+   *
+   * Operator:
+   * - Edit
+   * - Add Panel
+   *
+   * Technician:
+   * - View only
+   */
+
+  const canEditPanel =
+    isAdmin || isOperator;
+
+  const canDeletePanel =
+    isAdmin;
+
+  const canAddPanel =
+    isAdmin || isOperator;
 
   // ============================================
   // DELETE PANEL
@@ -131,17 +148,17 @@ const SolarSiteDetails = () => {
   return (
     <div className="container">
 
-      {/* ======================================== */}
-      {/* SITE HEADER */}
-      {/* ======================================== */}
+      {/* ========================================
+          SITE HEADER
+         ======================================== */}
 
       <h1>
         {site.siteName}
       </h1>
 
-      {/* ======================================== */}
-      {/* SITE INFORMATION */}
-      {/* ======================================== */}
+      {/* ========================================
+          SITE INFORMATION
+         ======================================== */}
 
       <div className="site-info">
 
@@ -167,11 +184,11 @@ const SolarSiteDetails = () => {
 
       </div>
 
-      {/* ======================================== */}
-      {/* SIMULATE GENERATION */}
-      {/* ======================================== */}
+      {/* ========================================
+          SIMULATE GENERATION
+         ======================================== */}
 
-      {isSolarOperator && (
+      {isOperator && (
         <button
           type="button"
           className="btn-primary"
@@ -181,9 +198,9 @@ const SolarSiteDetails = () => {
         </button>
       )}
 
-      {/* ======================================== */}
-      {/* PANELS TABLE */}
-      {/* ======================================== */}
+      {/* ========================================
+          PANELS TABLE
+         ======================================== */}
 
       <table>
 
@@ -256,33 +273,36 @@ const SolarSiteDetails = () => {
 
               <td>
 
-                {isSolarOperator && (
-                  <>
-
-                    {/* EDIT */}
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setPanelToEdit(panel)
-                      }
-                    >
-                      Edit
-                    </button>
-
-                    {/* DELETE */}
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(panel.id)
-                      }
-                    >
-                      Delete
-                    </button>
-
-                  </>
+                {canEditPanel && (
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() =>
+                      setPanelToEdit(panel)
+                    }
+                  >
+                    Edit
+                  </button>
                 )}
+
+                {canDeletePanel && (
+                  <button
+                    type="button"
+                    className="btn-delete"
+                    onClick={() =>
+                      handleDelete(panel.id)
+                    }
+                  >
+                    Delete
+                  </button>
+                )}
+
+                {!canEditPanel &&
+                  !canDeletePanel && (
+                    <span>
+                      View Only
+                    </span>
+                  )}
 
               </td>
 
@@ -294,9 +314,9 @@ const SolarSiteDetails = () => {
 
       </table>
 
-      {/* ======================================== */}
-      {/* EMPTY PANEL STATE */}
-      {/* ======================================== */}
+      {/* ========================================
+          EMPTY PANEL STATE
+         ======================================== */}
 
       {panels.length === 0 && (
         <EmptyState
@@ -304,11 +324,11 @@ const SolarSiteDetails = () => {
         />
       )}
 
-      {/* ======================================== */}
-      {/* ADD PANEL */}
-      {/* ======================================== */}
+      {/* ========================================
+          ADD PANEL
+         ======================================== */}
 
-      {isSolarOperator && (
+      {canAddPanel && (
         <button
           type="button"
           className="btn-primary"
@@ -320,9 +340,9 @@ const SolarSiteDetails = () => {
         </button>
       )}
 
-      {/* ======================================== */}
-      {/* PANEL FORM */}
-      {/* ======================================== */}
+      {/* ========================================
+          PANEL FORM
+         ======================================== */}
 
       {panelToEdit !== undefined && (
         <SolarPanelForm
