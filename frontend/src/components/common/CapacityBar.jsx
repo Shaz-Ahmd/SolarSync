@@ -3,9 +3,9 @@ import React from "react";
 const CapacityBar = ({
   current = 0,
   capacity = 0,
+  total = 0,
 }) => {
-
-  const safeCapacity = Number(capacity) || 0;
+  const safeCapacity = Number(capacity || total) || 0;
   const safeCurrent = Number(current) || 0;
 
   const percentage =
@@ -21,9 +21,7 @@ const CapacityBar = ({
 
   return (
     <div className="capacity-wrapper">
-
       <div className="capacity-header">
-
         <span>
           {safeCurrent.toFixed(1)} /{" "}
           {safeCapacity.toFixed(1)} KW
@@ -32,20 +30,16 @@ const CapacityBar = ({
         <span>
           {percentage.toFixed(0)}%
         </span>
-
       </div>
 
       <div className="capacity-track">
-
         <div
           className="capacity-fill"
           style={{
             width: `${percentage}%`,
           }}
         />
-
       </div>
-
     </div>
   );
 };
