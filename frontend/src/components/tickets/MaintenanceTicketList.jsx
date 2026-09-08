@@ -148,6 +148,27 @@ const MaintenanceTicketList = () => {
                 </td>
 
                 <td>
+
+                  {/* ADMIN ACTION */}
+
+                  {ticket.status !==
+                    "RESOLVED" &&
+                    user?.role ===
+                      "SYSTEM_ADMINISTRATOR" && (
+                      <button
+                        className="btn-success"
+                        onClick={() =>
+                          handleResolve(
+                            ticket.id
+                          )
+                        }
+                      >
+                        Resolve Ticket
+                      </button>
+                    )}
+
+                  {/* TECHNICIAN ACTION */}
+
                   {ticket.status !==
                     "RESOLVED" &&
                     user?.role ===
@@ -165,6 +186,7 @@ const MaintenanceTicketList = () => {
                         Resolve Ticket
                       </button>
                     )}
+
                 </td>
 
               </tr>
