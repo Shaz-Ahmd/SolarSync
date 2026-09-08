@@ -3,7 +3,9 @@ import axios from "axios";
 const ticketService = {
 
   getAll: () => {
-    return axios.get("/api/tickets");
+    return axios.get(
+      "/api/tickets"
+    );
   },
 
   create: (ticketData) => {
@@ -19,7 +21,10 @@ const ticketService = {
     );
   },
 
-  assign: (ticketId, technicianId) => {
+  assign: (
+    ticketId,
+    technicianId
+  ) => {
     return axios.put(
       `/api/tickets/${ticketId}/assign`,
       { technicianId }

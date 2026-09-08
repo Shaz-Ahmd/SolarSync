@@ -25,7 +25,9 @@ export const reportTicket = createAsyncThunk(
   "tickets/reportTicket",
   async (ticketData, { rejectWithValue }) => {
     try {
-      const response = await ticketService.create(ticketData);
+      const response =
+        await ticketService.create(ticketData);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -39,7 +41,9 @@ export const resolveTicket = createAsyncThunk(
   "tickets/resolveTicket",
   async (ticketId, { rejectWithValue }) => {
     try {
-      const response = await ticketService.resolve(ticketId);
+      const response =
+        await ticketService.resolve(ticketId);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -51,12 +55,16 @@ export const resolveTicket = createAsyncThunk(
 
 export const assignTicket = createAsyncThunk(
   "tickets/assignTicket",
-  async ({ ticketId, technicianId }, { rejectWithValue }) => {
+  async (
+    { ticketId, technicianId },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await ticketService.assign(
-        ticketId,
-        technicianId
-      );
+      const response =
+        await ticketService.assign(
+          ticketId,
+          technicianId
+        );
 
       return response.data;
     } catch (error) {
@@ -141,6 +149,7 @@ const ticketSlice = createSlice({
   },
 });
 
-export const { clearError } = ticketSlice.actions;
+export const { clearError } =
+  ticketSlice.actions;
 
 export default ticketSlice.reducer;
