@@ -6,6 +6,7 @@ const initialState = {
   analytics: null,
   loading: false,
   error: null,
+  success: false,
 };
 
 export const fetchRecentMetrics = createAsyncThunk(
@@ -40,8 +41,8 @@ export const ingestMockMetrics = createAsyncThunk(
   "metrics/ingestMockMetrics",
   async (batchData, { rejectWithValue }) => {
     try {
-      await metricService.ingestBatch(batchData);
-      return true;
+      const response = await metricService.ingestBatch(batchData);
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data || error.message
@@ -55,11 +56,17 @@ const metricSlice = createSlice({
 
   initialState,
 
-  reducers: {},
+  reducers: {
+    clearMetricStatus: (state) => {
+      state.error = null;
+      state.success = false;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
 
+      // Fetch recent metrics
       .addCase(fetchRecentMetrics.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -75,6 +82,7 @@ const metricSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Fetch analytics
       .addCase(fetchAnalytics.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -90,10 +98,27 @@ const metricSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Simulate generation
+      .addCase(ingestMockMetrics.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+
+      .addCase(ingestMockMetrics.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+      })
+
       .addCase(ingestMockMetrics.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
         state.error = action.payload;
       });
   },
 });
+
+export const { clearMetricStatus } = metricSlice.actions;
 
 export default metricSlice.reducer;

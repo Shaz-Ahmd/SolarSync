@@ -20,14 +20,29 @@ public class TicketController {
         this.maintenanceService = maintenanceService;
     }
 
+    /*
+     * REPORT ISSUE
+     *
+     * SYSTEM_ADMINISTRATOR and SOLAR_OPERATOR
+     * can report a maintenance issue.
+     */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize(
+            "hasAnyAuthority(" +
+            "'ROLE_SYSTEM_ADMINISTRATOR'," +
+            "'ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<MaintenanceTicket> reportIssue(
             @RequestBody TicketRequestDto dto) {
 
-        return ResponseEntity.ok(maintenanceService.reportIssue(dto));
+        return ResponseEntity.ok(
+                maintenanceService.reportIssue(dto));
     }
 
+    /*
+     * ASSIGN TECHNICIAN
+     *
+     * Only administrator can assign a technician.
+     */
     @PutMapping("/{id}/assign")
     @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
     public ResponseEntity<MaintenanceTicket> assignTechnician(
@@ -35,11 +50,36 @@ public class TicketController {
             @RequestParam Long technicianId) {
 
         return ResponseEntity.ok(
-                maintenanceService.assignTechnician(id, technicianId));
+                maintenanceService.assignTechnician(
+                        id,
+                        technicianId));
     }
 
+    /*
+     * START WORK
+     *
+     * ONLY MAINTENANCE TECHNICIAN.
+     *
+     * Admin cannot use this endpoint.
+     */
+    @PatchMapping("/{id}/start")
+    @PreAuthorize("hasRole('MAINTENANCE_TECHNICIAN')")
+    public ResponseEntity<MaintenanceTicket> startWork(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                maintenanceService.startWork(id));
+    }
+
+    /*
+     * RESOLVE TICKET
+     *
+     * ONLY MAINTENANCE TECHNICIAN.
+     *
+     * Admin cannot resolve technician work.
+     */
     @PatchMapping("/{id}/resolve")
-    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_MAINTENANCE_TECHNICIAN')")
+    @PreAuthorize("hasRole('MAINTENANCE_TECHNICIAN')")
     public ResponseEntity<MaintenanceTicket> resolveTicket(
             @PathVariable Long id) {
 
@@ -47,6 +87,11 @@ public class TicketController {
                 maintenanceService.resolveTicket(id));
     }
 
+    /*
+     * GET ALL TICKETS
+     *
+     * Authenticated users can view tickets.
+     */
     @GetMapping
     public ResponseEntity<List<MaintenanceTicket>> getAllTickets() {
 
@@ -54,9 +99,13 @@ public class TicketController {
                 maintenanceService.getAllTickets());
     }
 
+    /*
+     * GET TICKETS BY TECHNICIAN
+     */
     @GetMapping("/technician/{id}")
-    public ResponseEntity<List<MaintenanceTicket>> getTicketsByTechnician(
-            @PathVariable Long id) {
+    public ResponseEntity<List<MaintenanceTicket>>
+            getTicketsByTechnician(
+                    @PathVariable Long id) {
 
         return ResponseEntity.ok(
                 maintenanceService.getTicketsByTechnician(id));

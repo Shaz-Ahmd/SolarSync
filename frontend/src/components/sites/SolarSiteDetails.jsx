@@ -14,84 +14,51 @@ import {
   deletePanel,
 } from "../../store/slices/panelSlice";
 
+import {
+  ingestMockMetrics,
+  clearMetricStatus,
+} from "../../store/slices/metricSlice";
+
 const SolarSiteDetails = () => {
   const { id } = useParams();
-
   const dispatch = useDispatch();
 
-  // ============================================
-  // SITE STATE
-  // ============================================
-
-  const {
-    selectedItem,
-    loading,
-  } = useSelector(
+  const { selectedItem, loading } = useSelector(
     (state) => state.sites
   );
-
-  // ============================================
-  // PANEL STATE
-  // ============================================
 
   const panelItems = useSelector(
     (state) => state.panels?.items
   );
 
-  /*
-   * Always make sure panels is an array.
-   *
-   * This prevents:
-   *
-   * panels.map is not a function
-   *
-   * from crashing the component during tests
-   * or when the backend returns unexpected data.
-   */
   const panels = Array.isArray(panelItems)
     ? panelItems
     : [];
-
-  // ============================================
-  // AUTH STATE
-  // ============================================
 
   const user = useSelector(
     (state) => state.auth?.user
   );
 
-  // ============================================
-  // EDIT PANEL STATE
-  // ============================================
+  const metricLoading = useSelector(
+    (state) => state.metrics?.loading || false
+  );
+
+  const metricError = useSelector(
+    (state) => state.metrics?.error
+  );
+
+  const metricSuccess = useSelector(
+    (state) => state.metrics?.success || false
+  );
 
   const [panelToEdit, setPanelToEdit] =
     useState(undefined);
 
-  // ============================================
-  // LOAD SITE + PANELS
-  // ============================================
-
   useEffect(() => {
     dispatch(fetchSiteById(id));
-
     dispatch(fetchPanelsBySite(id));
+    dispatch(clearMetricStatus());
   }, [dispatch, id]);
-
-  // ============================================
-  // LOADING
-  // ============================================
-
-  if (loading) {
-    return (
-      <div className="container">
-        Loading site details...
-      </div>
-    );
-  }
-
-  // ============================================
-  // SITE DATA
-  // ============================================
 
   const site = selectedItem || {
     siteName: "Solar Site",
@@ -102,17 +69,9 @@ const SolarSiteDetails = () => {
     currentGeneration: 0,
   };
 
-  // ============================================
-  // SOLAR OPERATOR
-  // ============================================
-
   const isSolarOperator =
     user?.role === "SOLAR_OPERATOR" ||
     user?.role === "OPERATOR";
-
-  // ============================================
-  // DELETE PANEL
-  // ============================================
 
   const handleDelete = (panelId) => {
     if (
@@ -124,71 +83,116 @@ const SolarSiteDetails = () => {
     }
   };
 
-  // ============================================
-  // RENDER
-  // ============================================
+  const handleSimulateGeneration = async () => {
+    if (panels.length === 0) {
+      window.alert(
+        "No panels are available for generation simulation."
+      );
+      return;
+    }
+
+    const metrics = panels.map((panel) => {
+      const generationKwh = Number(
+        (Math.random() * 40 + 10).toFixed(2)
+      );
+
+      const gridConsumptionKwh = Number(
+        (Math.random() * 25 + 5).toFixed(2)
+      );
+
+      return {
+        panelId: panel.id,
+        generationKwh,
+        gridConsumptionKwh,
+      };
+    });
+
+    const batchData = {
+      metrics,
+    };
+
+    try {
+      await dispatch(
+        ingestMockMetrics(batchData)
+      ).unwrap();
+
+      // Refresh panel usage and status
+      await dispatch(fetchPanelsBySite(id));
+
+      // Refresh site details
+      await dispatch(fetchSiteById(id));
+    } catch (error) {
+      console.error(
+        "Generation simulation failed:",
+        error
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container">
+        Loading site details...
+      </div>
+    );
+  }
 
   return (
     <div className="container">
 
-      {/* ======================================== */}
-      {/* SITE HEADER */}
-      {/* ======================================== */}
-
-      <h1>
-        {site.siteName}
-      </h1>
-
-      {/* ======================================== */}
-      {/* SITE INFORMATION */}
-      {/* ======================================== */}
+      <h1>{site.siteName}</h1>
 
       <div className="site-info">
-
         <p>
-          Coordinates:{" "}
-          {site.locationCoordinates}
+          Coordinates: {site.locationCoordinates}
         </p>
 
         <p>
-          Total Capacity:{" "}
-          {site.ratedCapacityKw} KW
+          Total Capacity: {site.ratedCapacityKw} KW
         </p>
 
         <p>
-          Panels Count:{" "}
-          {panels.length}
+          Panels Count: {panels.length}
         </p>
 
         <p>
-          Commissioned:{" "}
-          {site.commissionDate}
+          Commissioned: {site.commissionDate}
         </p>
-
       </div>
 
-      {/* ======================================== */}
-      {/* SIMULATE GENERATION */}
-      {/* ======================================== */}
-
       {isSolarOperator && (
-        <button
-          type="button"
-          className="btn-primary"
-          data-testid="simulate-generation"
-        >
-          ⚡ Simulate Generation
-        </button>
+        <>
+          <button
+            type="button"
+            className="btn-primary"
+            data-testid="simulate-generation"
+            onClick={handleSimulateGeneration}
+            disabled={metricLoading}
+          >
+            {metricLoading
+              ? "Simulating..."
+              : "⚡ Simulate Generation"}
+          </button>
+
+          {metricSuccess && !metricLoading && (
+            <div className="success-message">
+              Generation simulated successfully.
+            </div>
+          )}
+
+          {metricError && (
+            <div className="error-message">
+              {typeof metricError === "string"
+                ? metricError
+                : metricError?.message ||
+                  "Failed to simulate generation."}
+            </div>
+          )}
+        </>
       )}
 
-      {/* ======================================== */}
-      {/* PANELS TABLE */}
-      {/* ======================================== */}
-
       <table>
-
         <thead>
-
           <tr>
             <th>Serial Number</th>
             <th>Model</th>
@@ -197,72 +201,57 @@ const SolarSiteDetails = () => {
             <th>Installation</th>
             <th>Actions</th>
           </tr>
-
         </thead>
 
         <tbody>
-
           {panels.map((panel) => (
-
             <tr key={panel.id}>
-
-              {/* SERIAL NUMBER */}
 
               <td>
                 {panel.serialNumber}
               </td>
 
-              {/* MODEL */}
-
               <td>
                 {panel.modelType}
               </td>
 
-              {/* STATUS */}
-
               <td>
-                <span className="badge">
+                <span
+                  className={`badge badge-panel-${String(
+                    panel.status || ""
+                  )
+                    .toLowerCase()
+                    .replace(/_/g, "-")}`}
+                >
                   {panel.status}
                 </span>
               </td>
 
-              {/* USAGE */}
-
               <td>
-
                 <div className="mini-bar">
-
                   <div
                     style={{
                       width: `${Math.min(
-                        ((panel.usageCount || 0) / 5) *
-                          100,
+                        ((panel.usageCount || 0) / 5) * 100,
                         100
                       )}%`,
                     }}
                   />
-
                 </div>
-
               </td>
-
-              {/* INSTALLATION */}
 
               <td>
                 {panel.installationDate}
               </td>
 
-              {/* ACTIONS */}
-
               <td>
-
-                {isSolarOperator && (
+                {(isSolarOperator ||
+                  user?.role ===
+                    "SYSTEM_ADMINISTRATOR") && (
                   <>
-
-                    {/* EDIT */}
-
                     <button
                       type="button"
+                      className="btn-edit"
                       onClick={() =>
                         setPanelToEdit(panel)
                       }
@@ -270,33 +259,23 @@ const SolarSiteDetails = () => {
                       Edit
                     </button>
 
-                    {/* DELETE */}
-
                     <button
                       type="button"
+                      className="btn-delete"
                       onClick={() =>
                         handleDelete(panel.id)
                       }
                     >
                       Delete
                     </button>
-
                   </>
                 )}
-
               </td>
 
             </tr>
-
           ))}
-
         </tbody>
-
       </table>
-
-      {/* ======================================== */}
-      {/* EMPTY PANEL STATE */}
-      {/* ======================================== */}
 
       {panels.length === 0 && (
         <EmptyState
@@ -304,25 +283,15 @@ const SolarSiteDetails = () => {
         />
       )}
 
-      {/* ======================================== */}
-      {/* ADD PANEL */}
-      {/* ======================================== */}
-
       {isSolarOperator && (
         <button
           type="button"
           className="btn-primary"
-          onClick={() =>
-            setPanelToEdit(null)
-          }
+          onClick={() => setPanelToEdit(null)}
         >
           + Add Panel
         </button>
       )}
-
-      {/* ======================================== */}
-      {/* PANEL FORM */}
-      {/* ======================================== */}
 
       {panelToEdit !== undefined && (
         <SolarPanelForm

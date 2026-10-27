@@ -2,7 +2,10 @@ import api from "./api";
 
 const authService = {
   login: async (userData) => {
-    const response = await api.post("/api/auth/login", userData);
+    const response = await api.post(
+      "/api/auth/login",
+      userData
+    );
 
     if (response.data) {
       localStorage.setItem(
@@ -10,6 +13,15 @@ const authService = {
         JSON.stringify(response.data)
       );
     }
+
+    return response.data;
+  },
+
+  register: async (userData) => {
+    const response = await api.post(
+      "/api/auth/register",
+      userData
+    );
 
     return response.data;
   },

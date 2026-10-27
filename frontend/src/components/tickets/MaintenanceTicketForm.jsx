@@ -8,7 +8,7 @@ import {
   useSelector,
 } from "react-redux";
 
-import axios from "axios";
+import api from "../../services/api";
 
 import {
   fetchSites,
@@ -21,7 +21,6 @@ import {
 const MaintenanceTicketForm = ({
   onClose,
 }) => {
-
   const dispatch = useDispatch();
 
   const {
@@ -50,37 +49,30 @@ const MaintenanceTicketForm = ({
     });
 
   useEffect(() => {
-
     dispatch(fetchSites());
 
-    axios
+    api
       .get("/api/users/technicians")
       .then((response) => {
-
-        setTechnicians(
+        const technicianData =
           Array.isArray(response.data)
             ? response.data
-            : []
-        );
+            : [];
 
+        setTechnicians(technicianData);
       })
       .catch((error) => {
-
         console.error(
           "Failed to load technicians:",
           error
         );
 
         setTechnicians([]);
-
       });
-
   }, [dispatch]);
 
   const handleSiteChange = async (e) => {
-
-    const siteId =
-      e.target.value;
+    const siteId = e.target.value;
 
     setFormData((previous) => ({
       ...previous,
@@ -89,86 +81,57 @@ const MaintenanceTicketForm = ({
     }));
 
     if (!siteId) {
-
       setPanels([]);
-
       return;
     }
 
     try {
-
-      const response =
-        await axios.get(
-          `/api/panels/site/${siteId}`
-        );
+      const response = await api.get(
+        `/api/panels/site/${siteId}`
+      );
 
       const panelData =
         Array.isArray(response.data)
           ? response.data
           : [];
 
-      /*
-       * Do NOT filter by panel status here.
-       *
-       * The database currently contains:
-       * SP-1001 -> ACTIVE
-       * SP-1002 -> ACTIVE
-       * SP-1003 -> ACTIVE
-       *
-       * All panels belonging to the selected
-       * site should therefore be available
-       * for selection.
-       */
-
       setPanels(panelData);
-
     } catch (error) {
-
       console.error(
         "Failed to load panels:",
         error
       );
 
       setPanels([]);
-
     }
   };
 
   const handleChange = (e) => {
-
     setFormData((previous) => ({
       ...previous,
       [e.target.name]:
         e.target.value,
     }));
-
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     try {
-
       await dispatch(
         reportTicket(formData)
       ).unwrap();
 
       onClose();
-
     } catch (error) {
-
       console.error(
         "Failed to report ticket:",
         error
       );
-
     }
-
   };
 
   return (
-
     <div className="modal-overlay">
 
       <div className="modal-card">
@@ -189,22 +152,18 @@ const MaintenanceTicketForm = ({
             onChange={handleSiteChange}
             required
           >
-
             <option value="">
               Select Site
             </option>
 
             {sites.map((site) => (
-
               <option
                 key={site.id}
                 value={site.id}
               >
                 {site.siteName}
               </option>
-
             ))}
-
           </select>
 
           {/* PANEL */}
@@ -216,13 +175,11 @@ const MaintenanceTicketForm = ({
             required
             disabled={!formData.siteId}
           >
-
             <option value="">
               Select Panel
             </option>
 
             {panels.map((panel) => (
-
               <option
                 key={panel.id}
                 value={panel.id}
@@ -230,9 +187,7 @@ const MaintenanceTicketForm = ({
                 Panel #{panel.id} (
                 {panel.serialNumber})
               </option>
-
             ))}
-
           </select>
 
           {/* DESCRIPTION */}
@@ -255,7 +210,6 @@ const MaintenanceTicketForm = ({
             value={formData.priority}
             onChange={handleChange}
           >
-
             <option value="LOW">
               LOW
             </option>
@@ -271,7 +225,6 @@ const MaintenanceTicketForm = ({
             <option value="CRITICAL">
               CRITICAL
             </option>
-
           </select>
 
           {/* TECHNICIAN */}
@@ -282,22 +235,18 @@ const MaintenanceTicketForm = ({
             onChange={handleChange}
             required
           >
-
             <option value="">
               Select Technician
             </option>
 
             {technicians.map((tech) => (
-
               <option
                 key={tech.id}
                 value={tech.id}
               >
                 {tech.username}
               </option>
-
             ))}
-
           </select>
 
           {/* SUBMIT */}
@@ -323,7 +272,6 @@ const MaintenanceTicketForm = ({
       </div>
 
     </div>
-
   );
 };
 

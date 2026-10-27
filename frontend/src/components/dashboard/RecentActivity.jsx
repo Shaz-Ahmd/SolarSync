@@ -8,7 +8,7 @@ const RecentActivity = ({
     : [];
 
   return (
-    <div>
+    <div className="recent-activity">
 
       <h3>Recent Activity</h3>
 
@@ -17,7 +17,7 @@ const RecentActivity = ({
           No recent activity.
         </div>
       ) : (
-        safeMetrics.map((metric, index) => {
+        safeMetrics.slice(0, 5).map((metric, index) => {
 
           const timestamp =
             metric?.timestamp

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,10 +7,11 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Navbar from "./components/layout/Navbar";
 import Login from "./components/Login";
+import Register from "./components/Register";
 
 import SolarSiteList from "./components/sites/SolarSiteList";
 import SolarSiteDetails from "./components/sites/SolarSiteDetails";
@@ -20,80 +22,135 @@ import StatCards from "./components/dashboard/StatCards";
 import StatusDonut from "./components/dashboard/StatusDonut";
 import RecentActivity from "./components/dashboard/RecentActivity";
 
+import {
+  fetchAnalytics,
+  fetchRecentMetrics,
+} from "./store/slices/metricSlice";
+
+import {
+  fetchTickets,
+} from "./store/slices/ticketSlice";
+
 import "./App.css";
 
 
-// ======================================================
-// DASHBOARD
-// ======================================================
-
 export const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+
+  const { user } = useSelector(
+    (state) => state.auth
+  );
+
+  const {
+    analytics,
+    recent,
+    loading: metricLoading,
+    error: metricError,
+  } = useSelector(
+    (state) => state.metrics || {}
+  );
+
+  const {
+    loading: ticketLoading,
+    error: ticketError,
+  } = useSelector(
+    (state) => state.tickets || {}
+  );
+
+
+  useEffect(() => {
+
+    if (user?.role !== "SYSTEM_ADMINISTRATOR") {
+      return;
+    }
+
+    dispatch(fetchAnalytics());
+    dispatch(fetchRecentMetrics());
+    dispatch(fetchTickets());
+
+  }, [dispatch, user?.role]);
+
 
   if (!user) {
     return null;
   }
 
-  const analytics = {
-    dailyGeneration: 1250.5,
-    gridConsumption: 840.25,
-    systemEfficiency: 87.5,
-    activePanels: 24,
-    openTickets: 3,
 
-    ticketData: [
-      {
-        label: "Open",
-        value: 3,
-        color: "#ef4444",
-      },
-      {
-        label: "In Progress",
-        value: 2,
-        color: "#f59e0b",
-      },
-      {
-        label: "Resolved",
-        value: 8,
-        color: "#22c55e",
-      },
-    ],
+  const stats = {
+    dailyGeneration:
+      Number(
+        analytics?.totalGeneration
+      ) || 0,
+
+    gridConsumption:
+      Number(
+        analytics?.totalConsumption
+      ) || 0,
+
+    systemEfficiency:
+      (Number(
+        analytics?.efficiencyRatio
+      ) || 0) * 100,
+
+    activePanels:
+      Number(
+        analytics?.totalActivePanels
+      ) || 0,
+
+    openTickets:
+      Number(
+        analytics?.openTickets
+      ) || 0,
   };
 
-  const recent = [
+
+  const ticketData = [
     {
-      id: 1,
-      timestamp: new Date().toISOString(),
-      panel: {
-        id: 1,
-      },
-      generationKwh: 1250.5,
-      gridConsumptionKwh: 840.25,
+      label: "Open",
+      value:
+        Number(
+          analytics?.openTickets
+        ) || 0,
+      color: "#ef4444",
     },
+
     {
-      id: 2,
-      timestamp: new Date().toISOString(),
-      panel: {
-        id: 2,
-      },
-      generationKwh: 980.25,
-      gridConsumptionKwh: 650.5,
+      label: "In Progress",
+      value:
+        Number(
+          analytics?.inProgressTickets
+        ) || 0,
+      color: "#f59e0b",
     },
+
     {
-      id: 3,
-      timestamp: new Date().toISOString(),
-      panel: {
-        id: 3,
-      },
-      generationKwh: 1100.75,
-      gridConsumptionKwh: 720.35,
+      label: "Resolved",
+      value:
+        Number(
+          analytics?.resolvedTickets
+        ) || 0,
+      color: "#22c55e",
     },
   ];
+
+
+  const recentMetrics =
+    Array.isArray(recent)
+      ? recent
+      : [];
+
+
+  const dashboardLoading =
+    metricLoading ||
+    ticketLoading;
+
 
   return (
     <div className="container">
 
       <div className="welcome-card">
+
         <h1>
           Welcome back, {user.username}!
         </h1>
@@ -102,33 +159,82 @@ export const Dashboard = () => {
           Your role:{" "}
           <strong>
             {user.role
-              ? user.role.replace(/_/g, " ")
+              ? user.role.replace(
+                  /_/g,
+                  " "
+                )
               : "USER"}
           </strong>
         </p>
+
       </div>
 
 
-      {user.role === "SYSTEM_ADMINISTRATOR" && (
+      {user.role ===
+        "SYSTEM_ADMINISTRATOR" && (
         <>
-          <StatCards stats={analytics} />
 
-          <StatusDonut
-            data={analytics.ticketData}
+          <h2 className="section-title">
+            System Overview
+          </h2>
+
+
+          {metricError && (
+            <div className="error-message">
+              {typeof metricError === "string"
+                ? metricError
+                : "Failed to load energy analytics."}
+            </div>
+          )}
+
+
+          {ticketError && (
+            <div className="error-message">
+              {typeof ticketError === "string"
+                ? ticketError
+                : "Failed to load ticket data."}
+            </div>
+          )}
+
+
+          <StatCards
+            stats={stats}
           />
 
-          <RecentActivity
-            metrics={recent}
-          />
+
+          <div className="dashboard-grid">
+
+            <StatusDonut
+              data={ticketData}
+            />
+
+            <RecentActivity
+              metrics={recentMetrics}
+            />
+
+          </div>
+
+
+          {dashboardLoading && (
+            <div className="loading-state">
+              Updating dashboard data...
+            </div>
+          )}
+
         </>
       )}
 
 
-      {user.role !== "SYSTEM_ADMINISTRATOR" && (
+      {user.role !==
+        "SYSTEM_ADMINISTRATOR" && (
+
         <div className="action-cards">
 
           <div className="action-card">
-            <h3>Solar Sites</h3>
+
+            <h3>
+              Solar Sites
+            </h3>
 
             <p>
               View and manage solar sites.
@@ -137,11 +243,15 @@ export const Dashboard = () => {
             <a href="/sites">
               View All Sites
             </a>
+
           </div>
 
 
           <div className="action-card">
-            <h3>Maintenance Tickets</h3>
+
+            <h3>
+              Maintenance Tickets
+            </h3>
 
             <p>
               View maintenance tickets.
@@ -150,9 +260,11 @@ export const Dashboard = () => {
             <a href="/tickets">
               Go to Tickets
             </a>
+
           </div>
 
         </div>
+
       )}
 
     </div>
@@ -160,11 +272,10 @@ export const Dashboard = () => {
 };
 
 
-// ======================================================
-// PROTECTED ROUTE
-// ======================================================
+const ProtectedRoute = ({
+  children,
+}) => {
 
-const ProtectedRoute = ({ children }) => {
   const { user } = useSelector(
     (state) => state.auth
   );
@@ -182,94 +293,78 @@ const ProtectedRoute = ({ children }) => {
 };
 
 
-// ======================================================
-// APP
-// ======================================================
+const App = () => (
 
-const App = () => {
-  return (
-    <Router>
+  <Router>
 
-      <div className="glass-container App">
+    <div className="glass-container App">
 
-        <Navbar />
+      <Navbar />
 
-        <Routes>
+      <Routes>
 
-          {/* LOGIN */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-          <Route
-            path="/login"
-            element={<Login />}
-          />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sites"
+          element={
+            <ProtectedRoute>
+              <SolarSiteList />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sites/:id"
+          element={
+            <ProtectedRoute>
+              <SolarSiteDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tickets"
+          element={
+            <ProtectedRoute>
+              <MaintenanceTicketList />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
+
+      </Routes>
+
+    </div>
+
+  </Router>
+);
 
 
-          {/* DASHBOARD */}
-
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* SITES */}
-
-          <Route
-            path="/sites"
-            element={
-              <ProtectedRoute>
-                <SolarSiteList />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* SITE DETAILS */}
-
-          <Route
-            path="/sites/:id"
-            element={
-              <ProtectedRoute>
-                <SolarSiteDetails />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* TICKETS */}
-
-          <Route
-            path="/tickets"
-            element={
-              <ProtectedRoute>
-                <MaintenanceTicketList />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* UNKNOWN ROUTE */}
-
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
-          />
-
-        </Routes>
-
-      </div>
-
-    </Router>
-  );
-};
-
-export default App; 
+export default App;

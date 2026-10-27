@@ -23,13 +23,15 @@ public class UserController {
     }
 
     @GetMapping("/technicians")
-    @PreAuthorize("hasRole('SYSTEM_ADMINISTRATOR')")
+    @PreAuthorize("hasAnyRole('SYSTEM_ADMINISTRATOR', 'SOLAR_OPERATOR')")
     public ResponseEntity<List<SystemUser>> getTechnicians() {
 
         return ResponseEntity.ok(
                 userRepository.findAll()
                         .stream()
-                        .filter(user -> user.getRole() == Role.MAINTENANCE_TECHNICIAN)
+                        .filter(user ->
+                                user.getRole() ==
+                                Role.MAINTENANCE_TECHNICIAN)
                         .toList());
     }
 }

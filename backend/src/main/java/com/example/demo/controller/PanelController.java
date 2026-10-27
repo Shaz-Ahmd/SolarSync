@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.PanelDto;
+import com.example.demo.entity.PanelStatus;
 import com.example.demo.entity.SolarPanel;
 import com.example.demo.entity.SolarSite;
 import com.example.demo.repository.SolarPanelRepository;
@@ -19,8 +20,10 @@ public class PanelController {
     private final SolarPanelRepository panelRepository;
     private final SolarSiteRepository siteRepository;
 
-    public PanelController(SolarPanelRepository panelRepository,
-                           SolarSiteRepository siteRepository) {
+    public PanelController(
+            SolarPanelRepository panelRepository,
+            SolarSiteRepository siteRepository) {
+
         this.panelRepository = panelRepository;
         this.siteRepository = siteRepository;
     }
@@ -29,58 +32,90 @@ public class PanelController {
     public ResponseEntity<List<SolarPanel>> getPanelsBySite(
             @PathVariable Long siteId) {
 
-        return ResponseEntity.ok(panelRepository.findBySiteId(siteId));
+        return ResponseEntity.ok(
+                panelRepository.findBySiteId(siteId));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SolarPanel> getPanelById(
             @PathVariable Long id) {
 
-        return ResponseEntity.of(panelRepository.findById(id));
+        return ResponseEntity.of(
+                panelRepository.findById(id));
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR', 'ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize(
+            "hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR', 'ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> addPanel(
             @RequestBody PanelDto dto) {
 
         SolarSite site = siteRepository.findById(dto.getSiteId())
-                .orElseThrow(() -> new RuntimeException("Site not found"));
+                .orElseThrow(
+                        () -> new RuntimeException("Site not found"));
+
+        /*
+         * Newly registered panels are ACTIVE by default.
+         *
+         * This is important because the Add Panel form
+         * does not ask the user to select a status.
+         */
+        PanelStatus status = dto.getStatus();
+
+        if (status == null) {
+            status = PanelStatus.ACTIVE;
+        }
 
         SolarPanel panel = SolarPanel.builder()
                 .site(site)
                 .serialNumber(dto.getSerialNumber())
                 .modelType(dto.getModelType())
-                .status(dto.getStatus())
+                .status(status)
                 .installationDate(dto.getInstallationDate())
+                .usageCount(0)
                 .build();
 
-        return ResponseEntity.ok(panelRepository.save(panel));
+        return ResponseEntity.ok(
+                panelRepository.save(panel));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize(
+            "hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR', 'ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<SolarPanel> updatePanel(
             @PathVariable Long id,
             @RequestBody PanelDto dto) {
 
         SolarPanel panel = panelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Panel not found"));
+                .orElseThrow(
+                        () -> new RuntimeException("Panel not found"));
 
-        panel.setSerialNumber(dto.getSerialNumber());
-        panel.setModelType(dto.getModelType());
-        panel.setStatus(dto.getStatus());
-        panel.setInstallationDate(dto.getInstallationDate());
+        panel.setSerialNumber(
+                dto.getSerialNumber());
 
-        return ResponseEntity.ok(panelRepository.save(panel));
+        panel.setModelType(
+                dto.getModelType());
+
+        if (dto.getStatus() != null) {
+            panel.setStatus(
+                    dto.getStatus());
+        }
+
+        panel.setInstallationDate(
+                dto.getInstallationDate());
+
+        return ResponseEntity.ok(
+                panelRepository.save(panel));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR','ROLE_SOLAR_OPERATOR')")
+    @PreAuthorize(
+            "hasAnyAuthority('ROLE_SYSTEM_ADMINISTRATOR', 'ROLE_SOLAR_OPERATOR')")
     public ResponseEntity<Void> deletePanel(
             @PathVariable Long id) {
 
         panelRepository.deleteById(id);
-        return ResponseEntity.ok().build(); 
+
+        return ResponseEntity.ok().build();
     }
 }
